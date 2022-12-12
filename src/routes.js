@@ -1,6 +1,6 @@
 import MainLayout from "./components/layout/MainLayout";
 import Topbar from "./components/layout/Topbar";
-import Login from "./components/login/Login";
+import Login from "./components/views/login/Login";
 const routes = [
   {
     path: "/app",

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-
+import {useNavigate } from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -10,16 +10,29 @@ import Button from "@mui/material/Button";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { MESSAGE } from "../utilities/constant";
+import { MESSAGE } from "../../utilities/constant";
 
 import "./login.css";
+import APIKit from "../../utilities/APIKIT";
+import { URLS } from "../../utilities/URLS";
 
 function Login(props) {
+  const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:600px)");
   const [payload, setPayload] = useState({
-    email: "",
+    userName: "",
     password: "",
   });
+  const loginApi = async () => {
+    await APIKit.post(URLS.login, payload)
+    .then((res) => {
+      console.log(res);
+      if (res.data.message === "Successfully Login") {
+        navigate('/app', { replace: true });
+      }
+    });
+        
+  }
   return (
     <div>
       <Box
@@ -32,14 +45,14 @@ function Login(props) {
         <Formik
           initialValues={{ ...payload }}
           validationSchema={Yup.object().shape({
-            email: Yup.string()
-              .email(MESSAGE.email)
-              .required(MESSAGE.emailRequired),
-            password: Yup.string().max(255).required(MESSAGE.password),
+            userName: Yup.string()
+              .required(MESSAGE.name),
+            password: Yup.string().max(30).required(MESSAGE.password),
           })}
           onSubmit={(values) => {
             // same shape as initial values
             console.log(values);
+            loginApi()
           }}>
           {({
             errors,
@@ -72,21 +85,21 @@ function Login(props) {
                   </CardContent>
                   <TextField
                     error={Boolean(
-                      touched.email && errors.email && <div>{errors.email}</div>
+                      touched.userName && errors.userName && <div>{errors.userName}</div>
                     )}
-                    helperText={touched.email && errors.email}
+                    helperText={touched.userName && errors.userName}
                     onBlur={handleBlur}
                     onChange={(e) => {
                       handleChange(e);
                       setPayload({
                         ...payload,
-                        email: e.target.value.trim(),
+                        userName: e.target.value.trim(),
                       });
                     }}
                     sx={{ mt: 2, width: matches ? 400 : "auto" }}
                     id='outlined-basic'
-                    label='Email'
-                    name='email'
+                    label='userName'
+                    name='userName'
                     variant='outlined'
                   />
 

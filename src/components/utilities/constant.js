@@ -1,5 +1,5 @@
 export const MESSAGE = {
-  name: "Name is required",
+  name: "Username is required",
   email: "Invalid Email",
   password: "Password is required",
   emailRequired: "Email is required",
