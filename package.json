@@ -13,13 +13,16 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^2.29.3",
+    "formik": "^2.2.9",
+    "material-icons": "^1.13.1",
     "material-ui-confirm": "^3.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
     "react-scripts": "5.0.1",
     "redux-thunk": "^2.4.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,10 +1,7 @@
-import React from 'react';
+import React from "react";
 
 function Topbar(props) {
-    return (
-        <div>hi
-        </div>
-    );
+  return <div>hiii</div>;
 }
 
 export default Topbar;
