@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-
+import { useSnackbar } from 'notistack';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -23,12 +23,21 @@ function Login(props) {
     userName: "",
     password: "",
   });
+  const { enqueueSnackbar } = useSnackbar();
+  var variant = "";
+  const anchorOrigin ={horizontal: "right", vertical: "bottom"}
   const loginApi = async () => {
     await APIKit.post(URLS.login, payload)
     .then((res) => {
       console.log(res);
       if (res.data.message === "Successfully Login") {
+        variant = "success"
+        enqueueSnackbar(res.data.message, { variant,anchorOrigin });
+        sessionStorage.setItem("userData", JSON.stringify(res.data.data));
         navigate('/app', { replace: true });
+      } else {
+        variant = "error"
+        enqueueSnackbar(res.data.message, { variant,anchorOrigin });
       }
     });
         
@@ -50,8 +59,7 @@ function Login(props) {
             password: Yup.string().max(30).required(MESSAGE.password),
           })}
           onSubmit={(values) => {
-            // same shape as initial values
-            console.log(values);
+            // same shape as initial values          
             loginApi()
           }}>
           {({
@@ -98,7 +106,7 @@ function Login(props) {
                     }}
                     sx={{ mt: 2, width: matches ? 400 : "auto" }}
                     id='outlined-basic'
-                    label='userName'
+                    label='User Name'
                     name='userName'
                     variant='outlined'
                   />

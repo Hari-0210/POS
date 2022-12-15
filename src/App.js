@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRoutes } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 import routes from './routes';
 
@@ -9,6 +10,7 @@ function App() {
   const routing = useRoutes(routes);
   return (
     <React.StrictMode>
+      <SnackbarProvider >
     <ConfirmProvider 
     defaultOptions={{
       confirmationText: 'Yes',
@@ -17,6 +19,7 @@ function App() {
     }}>
           {routing}
     </ConfirmProvider>
+    </SnackbarProvider>
     </React.StrictMode>
   );
 }

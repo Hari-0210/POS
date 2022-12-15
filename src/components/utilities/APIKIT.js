@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { reject } from 'lodash';
 let APIKit = {
   get: (url) => {
     return new Promise((resolve, reject) => {
@@ -62,9 +61,10 @@ export const deleteToken = () => {
 }
 export function getJWT() {
   var jwt = "";
-  if (localStorage && localStorage.userData) {
+  var data = JSON.parse(sessionStorage.getItem("userData"))
+  if (data) {
     try {
-      jwt = JSON.parse(localStorage.userData).token;
+      jwt = data.token;
     } catch (err) {
 
     }
