@@ -34,7 +34,7 @@ function Login(props) {
         variant = "success"
         enqueueSnackbar(res.data.message, { variant,anchorOrigin });
         sessionStorage.setItem("userData", JSON.stringify(res.data.data));
-        navigate('/app', { replace: true });
+        navigate('/app/dashboard/', { replace: true });
       } else {
         variant = "error"
         enqueueSnackbar(res.data.message, { variant,anchorOrigin });

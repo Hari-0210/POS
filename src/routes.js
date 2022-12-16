@@ -1,6 +1,5 @@
 import React  from 'react';
 import MainLayout from "./components/layout/MainLayout";
-import Topbar from "./components/layout/Topbar";
 import Dashboard from './components/views/dashboard/Dashboard';
 import Login from "./components/views/login/Login";
 import Brands from './components/views/product/Brands';

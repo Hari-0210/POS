@@ -17,14 +17,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import './topbar.css';
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link as RouterLink } from "react-router-dom";
+import "./topbar.css";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -93,19 +94,22 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Topbar() {
+  const matches = useMediaQuery("(min-width:600px)");
   const [expanded, setExpanded] = React.useState(false);
-  const productSubMenu = [{
-    name: "Product",
-    route: "product"
-  },
-  {
-    name: "Product Categories",
-    route: "productCategories"
-  },
-  {
-    name: "Brands",
-    route: "brands"
-  }]
+  const productSubMenu = [
+    {
+      name: "Product",
+      route: "product",
+    },
+    {
+      name: "Product Categories",
+      route: "productCategories",
+    },
+    {
+      name: "Brands",
+      route: "brands",
+    },
+  ];
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -124,25 +128,33 @@ export default function Topbar() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position='fixed' open={open}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color='inherit'
-            aria-label='open drawer'
+            color="inherit"
+            aria-label="open drawer"
             onClick={handleDrawerOpen}
-            edge='start'
+            edge="start"
             sx={{
               marginRight: 5,
               ...(open && { display: "none" }),
-            }}>
+            }}
+          >
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' noWrap component='div'>
+          <Typography variant="h6" noWrap component="div">
             Mini variant drawer
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant='permanent' open={open}>
+      <Drawer
+        // ModalProps={{
+        //   keepMounted: true, // Better open performance on mobile.
+        // }}
+        anchor="left"
+        variant={"permanent"}
+        open={open}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -154,99 +166,114 @@ export default function Topbar() {
         </DrawerHeader>
         <Divider />
         <List>
-            <ListItem disablePadding sx={{ display: "block" }}>
-            <RouterLink to={'/app/dashboard/'}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}>
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}>
-                   <InboxIcon /> 
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-              </RouterLink>
-            </ListItem>
-            {open ? <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>
-           Products
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        {productSubMenu.map((txt,i) => {
-          return(
-            <>
-            <RouterLink to={`/app/${txt.route}/`}>
           <ListItem disablePadding sx={{ display: "block" }}>
+            <RouterLink to={"/app/dashboard/"}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
-                }}>
+                }}
+              >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                  }}>
-                   <InboxIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={txt.name} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            </RouterLink>
-            </>
-          )
-          
-        })}
-          </AccordionDetails>
-            </Accordion> :  <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }} className="dropdown"
+                  }}
                 >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }} class="dropbtn">
-                       <div class="dropdown-content">
-                       {productSubMenu.map((txt,i) => {
-          return(
-            <>
-            <RouterLink to={`/app/${txt.route}/`}>
-                    <Typography >{txt.name}</Typography>
-                    </RouterLink>
-            </>)})}
-                       
-        
-                </div>
-                        <AddShoppingCartIcon />
-
+                  <InboxIcon />
                 </ListItemIcon>
-              </ListItemButton>}
-            
+                <ListItemText
+                  primary="Dashboard"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </RouterLink>
+          </ListItem>
+          {open ? (
+            <Accordion
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+              >
+                <Typography sx={{ width: "33%", ml: "50px", flexShrink: 0 }}>
+                  Products
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {productSubMenu.map((txt, i) => {
+                  return (
+                    <>
+                      <RouterLink to={`/app/${txt.route}/`}>
+                        <ListItem disablePadding sx={{ display: "block" }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? "initial" : "center",
+                              px: 2.5,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : "auto",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={txt.name}
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </RouterLink>
+                    </>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          ) : (
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+              className={matches ? "dropdown" : ""}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+                class="dropbtn"
+              >
+                <div class="dropdown-content">
+                  {productSubMenu.map((txt, i) => {
+                    return (
+                      <>
+                        <RouterLink to={`/app/${txt.route}/`}>
+                          <Typography>{txt.name}</Typography>
+                        </RouterLink>
+                      </>
+                    );
+                  })}
+                </div>
+                <AddShoppingCartIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          )}
         </List>
       </Drawer>
-      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-      </Box>
+     
     </Box>
   );
 }
