@@ -4,16 +4,15 @@ import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import DirectionsIcon from "@mui/icons-material/Directions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
 
 function Product(props) {
+  const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:600px)");
   const productColumn = [
     {
@@ -71,39 +70,50 @@ function Product(props) {
       code: "12",
     },
   ];
+  const createProduct = () => {
+    navigate("/app/product/create_product", { replace: true });
+  };
   return (
     <Grid spacing={3} m={3}>
       <Grid item sm={11} md={11}>
         <Box
-        sx={{
-          p: "20px",
-          display: matches && "flex",
-          justifyContent: "space-between",
-        }}>
-        <Paper
-          component="form"
           sx={{
-            p: "2px 4px",
-            marginBottom: "20px",
-            display: "flex",
-            alignItems: "center",
-            width: matches ? 300 : 200,
-          }}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search"
-            inputProps={{ "aria-label": "search google maps" }}
-          />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-        <Stack spacing={2} direction={matches? "row" : "column"}>
-        <Button sx={{height: 50}} variant="contained">Export Products</Button>
-        <Button sx={{height: 50}} variant="contained">Import Products</Button>
-        <Button sx={{height: 50}} variant="contained">Create Products</Button>
-        </Stack>
+            p: "20px",
+            display: matches && "flex",
+            justifyContent: "space-between",
+          }}>
+          <Paper
+            component='form'
+            sx={{
+              p: "2px 4px",
+              marginBottom: "20px",
+              display: "flex",
+              alignItems: "center",
+              width: matches ? 300 : 200,
+            }}>
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder='Search'
+              inputProps={{ "aria-label": "search google maps" }}
+            />
+            <IconButton type='button' sx={{ p: "10px" }} aria-label='search'>
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+          <Stack spacing={2} direction={matches ? "row" : "column"}>
+            <Button sx={{ height: 50 }} variant='contained'>
+              Export Products
+            </Button>
+            <Button sx={{ height: 50 }} variant='contained'>
+              Import Products
+            </Button>
+            <Button
+              sx={{ height: 50 }}
+              onClick={createProduct}
+              variant='contained'>
+              Create Products
+            </Button>
+          </Stack>
         </Box>
         <CommonTable columns={productColumn} data={productData} />
       </Grid>
