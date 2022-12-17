@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { MESSAGE } from "../../utilities/constant";
 
-import "./login.css";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 
@@ -25,23 +24,21 @@ function Login(props) {
   });
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
-  const anchorOrigin ={horizontal: "right", vertical: "bottom"}
+  const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const loginApi = async () => {
-    await APIKit.post(URLS.login, payload)
-    .then((res) => {
+    await APIKit.post(URLS.login, payload).then((res) => {
       console.log(res);
       if (res.data.message === "Successfully Login") {
-        variant = "success"
-        enqueueSnackbar(res.data.message, { variant,anchorOrigin });
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
         sessionStorage.setItem("userData", JSON.stringify(res.data.data));
-        navigate('/app/dashboard/', { replace: true });
+        navigate("/app/dashboard/", { replace: true });
       } else {
-        variant = "error"
-        enqueueSnackbar(res.data.message, { variant,anchorOrigin });
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
       }
     });
-        
-  }
+  };
   return (
     <div>
       <Box
@@ -54,13 +51,14 @@ function Login(props) {
         <Formik
           initialValues={{ ...payload }}
           validationSchema={Yup.object().shape({
-            userName: Yup.string()
-              .required(MESSAGE.name),
-            password: Yup.string().max(30).required(MESSAGE.password),
+            userName: Yup.string().required(MESSAGE.name),
+            password: Yup.string()
+              .max(30)
+              .required(MESSAGE.password),
           })}
           onSubmit={(values) => {
-            // same shape as initial values          
-            loginApi()
+            // same shape as initial values
+            loginApi();
           }}>
           {({
             errors,
@@ -93,7 +91,9 @@ function Login(props) {
                   </CardContent>
                   <TextField
                     error={Boolean(
-                      touched.userName && errors.userName && <div>{errors.userName}</div>
+                      touched.userName && errors.userName && (
+                        <div>{errors.userName}</div>
+                      )
                     )}
                     helperText={touched.userName && errors.userName}
                     onBlur={handleBlur}

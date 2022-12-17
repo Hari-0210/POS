@@ -1,10 +1,14 @@
-import React  from 'react';
+import React from "react";
 import MainLayout from "./components/layout/MainLayout";
-import Dashboard from './components/views/dashboard/Dashboard';
+import Dashboard from "./components/views/dashboard/Dashboard";
 import Login from "./components/views/login/Login";
-import Brands from './components/views/product/Brands';
-import Product from './components/views/product/Product';
-import ProductCategories from './components/views/product/ProductCategories';
+import Brands from "./components/views/product/Brands";
+import Product from "./components/views/product/Product";
+import ProductCategories from "./components/views/product/ProductCategories";
+import CreateProduct from "./components/views/product/product_sub/CreateProduct";
+import CreateProductCategory from "./components/views/product/product_sub/CreateProductCategory";
+import CreateBrand from "./components/views/product/product_sub/CreateBrand";
+
 const routes = [
   {
     path: "/app",
@@ -13,8 +17,14 @@ const routes = [
       { path: "dashboard", element: <Dashboard /> },
       { path: "product", element: <Product /> },
       { path: "productCategories", element: <ProductCategories /> },
-      { path: "brands", element: <Brands /> }
-  ],
+      { path: "brands", element: <Brands /> },
+      { path: "product/create_product", element: <CreateProduct /> },
+      {
+        path: "productCategories/create_productCategory",
+        element: <CreateProductCategory />,
+      },
+      { path: "brands/create_brand", element: <CreateBrand /> },
+    ],
   },
   {
     path: "/",
