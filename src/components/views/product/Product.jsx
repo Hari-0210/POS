@@ -71,7 +71,7 @@ function Product(props) {
     },
   ];
   const createProduct = () => {
-    navigate("/app/product/create_product", { replace: true });
+    navigate("/app/product/create_product/", { replace: true });
   };
   return (
     <Grid spacing={3} m={3}>
