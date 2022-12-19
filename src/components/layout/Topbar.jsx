@@ -242,7 +242,7 @@ export default function Topbar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: "block" }}>
+          <ListItem key={"Dashboard"} disablePadding sx={{ display: "block" }}>
             <RouterLink to={"/app/dashboard/"}>
               <ListItemButton
                 sx={{
@@ -282,7 +282,7 @@ export default function Topbar() {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <ListItem disablePadding sx={{ display: "block" }}>
+                        <ListItem key={i} disablePadding sx={{ display: "block" }}>
                           <ListItemButton
                             sx={{
                               minHeight: 48,

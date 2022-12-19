@@ -252,7 +252,7 @@ const CommonTable = ({ columns, data = [], action }) => {
                   key={2}
                 >
                   {"No Data Found"}
-                </StyledTableCell>{" "}
+                </StyledTableCell>
               </StyledTableRow>
             )}
           </TableBody>

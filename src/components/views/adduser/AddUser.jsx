@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -10,6 +10,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Password } from "@mui/icons-material";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
+import { useSnackbar } from "notistack";
 
 function AddUser(props) {
   const matches = useMediaQuery("(min-width:600px)");
@@ -17,37 +18,58 @@ function AddUser(props) {
     userName: "",
     password: "",
   });
-
-  const productColumn = [
+  useEffect(() => {
+    getUserData()
+  }, []);
+  const userColumn = [
+    {
+      title: "User ID",
+      field: "userID",
+      align: "center",
+      type: ETTypes.numeric,
+    },
     {
       title: "User",
-      field: "user",
+      field: "userName",
       align: "center",
       type: ETTypes.string,
     },
     {
-      title: "Password",
-      field: "password",
+      title: "Role ID",
+      field: "roleID",
       align: "center",
-      type: ETTypes.string,
+      type: ETTypes.numeric,
     },
   ];
-  const productData = [
-    {
-      product: 1,
-      code: "12",
-    },
-  ];
+
+  const [userData, setUserData] = useState([])
+  const { enqueueSnackbar } = useSnackbar();
+  var variant = "";
+  const anchorOrigin = { horizontal: "right", vertical: "bottom" };
+  const getUserData = async () => {
+    await APIKit.get(URLS.getUser, payload).then((res) => {
+      console.log(res);
+      if (res.data.status === 200) {
+        setUserData(res.data.data)
+      } 
+    });
+  }
   const adduser = async () => {
     await APIKit.post(URLS.addUser, payload).then((res) => {
-      console.log(res);
-      if (res.data.message === "Successfully Login") {
+      if (res.data.message === "Successfully added") {
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        setPayload({userName: "", password: ""})
+        getUserData()
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
       }
     });
   };
   return (
     <div>
-      <Grid spacing={3} m={3}>
+      <Grid  m={3}>
         <Grid item sm={11} md={11}>
           <Box
             sx={{
@@ -57,6 +79,7 @@ function AddUser(props) {
             }}
             direction={matches ? "row" : "column"}>
             <TextField
+              autoComplete='off'
               sx={{ mt: 2, width: matches ? 300 : 200 }}
               id='outlined-basic'
               label='User Name'
@@ -72,13 +95,13 @@ function AddUser(props) {
             />
 
             <TextField
+              autoComplete='off'
               sx={{ mt: 2, ml: matches ? 2 : 0, width: matches ? 300 : 200 }}
               id='outlined-password-input'
               label='Password'
               type='password'
               name='password'
               value={payload.password}
-              autoComplete='current-password'
               onChange={(e) => {
                 setPayload({
                   ...payload,
@@ -99,8 +122,10 @@ function AddUser(props) {
               variant='contained'>
               Add User
             </Button>
+           
           </Box>
-          <CommonTable columns={productColumn} data={productData} />
+          
+          <CommonTable columns={userColumn} data={userData} />
         </Grid>
       </Grid>
     </div>
