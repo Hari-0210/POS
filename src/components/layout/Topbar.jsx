@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { usePath } from "hookrouter";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,7 +12,6 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -112,17 +110,24 @@ export default function Topbar() {
       path: "/app/productCategories/create_productcategory/",
       title: "Create Product Categories",
     },
+
     { path: "/app/brands/create_brand/", title: "Create Brand" },
   ];
 
   const [title, setTitle] = React.useState({ path: "", title: "" });
   const navigate = useNavigate();
   useEffect(() => {
-    setTitle(menu.find((e) => e.path === location.pathname));
+    setTitle(
+      !menu.find((e) => e.path === location.pathname)
+        ? { path: "", title: "" }
+        : menu.find((e) => e.path === location.pathname)
+    );
   }, [navigate]);
 
   const matches = useMediaQuery("(min-width:600px)");
   const [expanded, setExpanded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
   const productSubMenu = [
     {
       name: "Product",
@@ -139,6 +144,19 @@ export default function Topbar() {
   ];
   const addUser = () => {
     navigate("/app/adduser/", { replace: true });
+    setAnchorEl(null);
+  };
+  const logout = () => {
+    sessionStorage.clear();
+    navigate("/", { replace: true });
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -172,15 +190,38 @@ export default function Topbar() {
             }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' noWrap component='div'>
+          <Typography variant='h6' gutterBottom>
             {title.title}
           </Typography>
-          <Button
-            sx={{ height: 50, ml: "750px" }}
-            onClick={addUser}
-            variant='contained'>
-            Add User
-          </Button>
+
+          <IconButton
+            size='large'
+            aria-label='account of current user'
+            aria-controls='menu-appbar'
+            aria-haspopup='true'
+            onClick={handleMenu}
+            color='inherit'
+            sx={{ alignItems: "left" }}>
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            sx={{ mt: "45px" }}
+            id='menu-appbar'
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}>
+            <MenuItem onClick={addUser}>Add User</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <Drawer

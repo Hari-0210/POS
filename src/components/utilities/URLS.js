@@ -1,5 +1,6 @@
-const baseUrl ='/api/v1/';
+const baseUrl = "/api/v1/";
 
 export const URLS = {
-    login: `${baseUrl}login`
-}
+  login: `${baseUrl}login`,
+  addUser: `${baseUrl}addUser`,
+};
