@@ -45,8 +45,7 @@ function Login(props) {
         sx={{
           display: "flex",
           justifyContent: "center",
-          p: 1,
-          mt: 10,
+          p: 6,
         }}>
         <Formik
           initialValues={{ ...payload }}
