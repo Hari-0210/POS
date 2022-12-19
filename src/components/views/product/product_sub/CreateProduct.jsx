@@ -24,7 +24,7 @@ export default function CreateProduct() {
     { label: "Jackets" },
   ];
   const back = () => {
-    navigate("/app/product", { replace: true });
+    navigate("/app/product/", { replace: true });
   };
   return (
     <div>

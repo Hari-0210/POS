@@ -150,6 +150,7 @@ export default function Topbar() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+    setExpanded(!expanded)
   };
 
   return (
