@@ -137,6 +137,9 @@ export default function Topbar() {
       route: "brands",
     },
   ];
+  const addUser = () => {
+    navigate("/app/adduser/", { replace: true });
+  };
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -150,7 +153,7 @@ export default function Topbar() {
 
   const handleDrawerClose = () => {
     setOpen(false);
-    setExpanded(!expanded)
+    setExpanded(!expanded);
   };
 
   return (
@@ -172,6 +175,12 @@ export default function Topbar() {
           <Typography variant='h6' noWrap component='div'>
             {title.title}
           </Typography>
+          <Button
+            sx={{ height: 50, ml: "750px" }}
+            onClick={addUser}
+            variant='contained'>
+            Add User
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer

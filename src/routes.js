@@ -1,6 +1,8 @@
 import React from "react";
 import MainLayout from "./components/layout/MainLayout";
 import Dashboard from "./components/views/dashboard/Dashboard";
+import AddUser from "./components/views/adduser/AddUser";
+
 import Login from "./components/views/login/Login";
 import Brands from "./components/views/product/Brands";
 import Product from "./components/views/product/Product";
@@ -19,8 +21,10 @@ const routes = [
       { path: "productCategories", element: <ProductCategories /> },
       { path: "brands", element: <Brands /> },
       { path: "product/create_product", element: <CreateProduct /> },
+      { path: "adduser", element: <AddUser /> },
+
       {
-        path: "productCategories/create_productCategory",
+        path: "productCategories/create_productcategory",
         element: <CreateProductCategory />,
       },
       { path: "brands/create_brand", element: <CreateBrand /> },
