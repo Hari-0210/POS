@@ -114,8 +114,8 @@ function Product(props) {
     });
   };
 
-  const getProductCategory = async () => {
-    await APIKit.get(URLS.getProductCategory, payload).then((res) => {
+  const getProductCategory = async (data ="") => {
+    await APIKit.post(URLS.getProductCategory, {searchText: data}).then((res) => {
       if (res.data.status === 200) {
         setProductCategoryData(res.data.data);
       }
@@ -194,6 +194,9 @@ function Product(props) {
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Search"
+            onChange={(e)=> {
+              getProductCategory(e.target.value)
+            }}
             inputProps={{ "aria-label": "search google maps" }}
           />
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
