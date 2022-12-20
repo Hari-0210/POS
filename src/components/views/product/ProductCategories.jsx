@@ -13,9 +13,11 @@ import TextField from "@mui/material/TextField";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { useSnackbar } from "notistack";
+import { useConfirm } from 'material-ui-confirm';
 
 function Product(props) {
   const { enqueueSnackbar } = useSnackbar();
+  const confirm = useConfirm();
   const [payload, setPayload] = useState({
     productCategoryName: "",
   });
@@ -58,6 +60,17 @@ function Product(props) {
         productCategoryID: row.productCategoryID,
       });
     },
+    onDelete: (index, row) => {
+      console.log('delete:', index, row);
+      remove(row.productCategoryID, index);
+    }
+  };
+  const remove = (data, i) => {
+    confirm({ description: 'you want to delete the record ?' })
+      .then(() => {
+        deleteProductCategory(data)
+      })
+      .catch(() => console.log('Deletion cancelled.'));
   };
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
@@ -81,6 +94,19 @@ function Product(props) {
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
         setPayload({ productCategoryName: "" });
         setIsEdit(false);
+        getProductCategory();
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
+  };
+
+  const deleteProductCategory = async (productCategoryID) => {
+    await APIKit.get(URLS.deleteProductCategory + '/' +  productCategoryID).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
         getProductCategory();
       } else {
         variant = "error";

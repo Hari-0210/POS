@@ -7,4 +7,6 @@ export const URLS = {
   addProductCategory: `${baseUrl}addProductCategory`,
   getProductCategory: `${baseUrl}getProductCategory`,
   updateProductCategory: `${baseUrl}updateProductCategory`,
+  deleteProductCategory: `${baseUrl}deleteProductCategory`,
+
 };

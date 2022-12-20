@@ -7,7 +7,6 @@ import CommonTable from "../common/CommonTable";
 import { ETTypes } from "../common/Types";
 import Button from "@mui/material/Button";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Password } from "@mui/icons-material";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 import { useSnackbar } from "notistack";
