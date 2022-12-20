@@ -150,9 +150,9 @@ function Product(props) {
 
           <Stack spacing={2} direction={matches ? "row" : "column"}>
             {isEdit ? (
-              <>
+              <Box sx={{ mt: 2 }}>
                 <Button
-                  sx={{ height: 50, mt: 2 }}
+                  sx={{ height: 50 }}
                   onClick={updateProductCategory}
                   variant="contained"
                   disabled={!payload.productCategoryName}
@@ -160,7 +160,7 @@ function Product(props) {
                   Update Product Category
                 </Button>{" "}
                 <Button
-                  sx={{ height: 50, mt: 2 }}
+                  sx={{ height: 50}}
                   onClick={() => {
                     setIsEdit(false);
                     setPayload({ productCategoryName: "" });
@@ -169,7 +169,7 @@ function Product(props) {
                 >
                   Cancel
                 </Button>{" "}
-              </>
+              </Box>
             ) : (
               <Button
                 sx={{ height: 50, mt: 2 }}
