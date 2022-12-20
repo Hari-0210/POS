@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
 import Paper from "@mui/material/Paper";
@@ -10,52 +10,59 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
+import { URLS } from "../../utilities/URLS";
+import APIKit from "../../utilities/APIKIT";
 
 function Product(props) {
   const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:600px)");
+  useEffect(() => {
+    getProduct();
+  }, []);
+  const [product, setProduct] = useState([]);
+  const getProduct = async (data = "") => {
+    await APIKit.post(URLS.getProduct, { searchText: data }).then((res) => {
+      if (res.data.status === 200) {
+        setProduct(res.data.data);
+      }
+    });
+  };
   const productColumn = [
     {
       title: "Product",
-      field: "product",
+      field: "productName",
       align: "center",
       type: ETTypes.string,
     },
     {
       title: "Code",
-      field: "code",
+      field: "productCode",
+      align: "center",
+      type: ETTypes.string,
+    },
+    {
+      title: "Product Category",
+      field: "productCategoryName",
       align: "center",
       type: ETTypes.string,
     },
     {
       title: "Brand",
-      field: "brand",
+      field: "brandName",
       align: "center",
       type: ETTypes.string,
     },
     {
       title: "Price",
-      field: "price",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Product Unit",
-      field: "productUnit",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "In Stock",
-      field: "inStock",
+      field: "productCost",
       align: "center",
       type: ETTypes.string,
     },
     {
       title: "Created On",
-      field: "createdTime",
+      field: "createdDate",
       align: "center",
-      type: ETTypes.string,
+      type: ETTypes.date,
     },
     {
       title: "Action",
@@ -64,12 +71,7 @@ function Product(props) {
       list: [ETaction.onView, ETaction.onDelete, ETaction.onEdit],
     },
   ];
-  const productData = [
-    {
-      product: 1,
-      code: "12",
-    },
-  ];
+
   const createProduct = () => {
     navigate("/app/product/create_product/", { replace: true });
   };
@@ -81,41 +83,44 @@ function Product(props) {
             p: "20px",
             display: matches && "flex",
             justifyContent: "space-between",
-          }}>
+          }}
+        >
           <Paper
-            component='form'
+            component="form"
             sx={{
               p: "2px 4px",
               marginBottom: "20px",
               display: "flex",
               alignItems: "center",
               width: matches ? 300 : 200,
-            }}>
+            }}
+          >
             <InputBase
               sx={{ ml: 1, flex: 1 }}
-              placeholder='Search'
+              placeholder="Search"
               inputProps={{ "aria-label": "search google maps" }}
             />
-            <IconButton type='button' sx={{ p: "10px" }} aria-label='search'>
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
               <SearchIcon />
             </IconButton>
           </Paper>
           <Stack spacing={2} direction={matches ? "row" : "column"}>
-            <Button sx={{ height: 50 }} variant='contained'>
+            <Button sx={{ height: 50 }} variant="contained">
               Export Products
             </Button>
-            <Button sx={{ height: 50 }} variant='contained'>
+            <Button sx={{ height: 50 }} variant="contained">
               Import Products
             </Button>
             <Button
               sx={{ height: 50 }}
               onClick={createProduct}
-              variant='contained'>
+              variant="contained"
+            >
               Create Products
             </Button>
           </Stack>
         </Box>
-        <CommonTable columns={productColumn} data={productData} />
+        <CommonTable columns={productColumn} data={product} />
       </Grid>
     </Grid>
   );

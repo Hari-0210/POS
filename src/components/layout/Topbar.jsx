@@ -30,6 +30,7 @@ import "./topbar.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import CapitalizedText from "../utilities/CapitalizedText";
 
 const drawerWidth = 240;
 
@@ -116,6 +117,8 @@ export default function Topbar() {
 
   const [title, setTitle] = React.useState({ path: "", title: "" });
   const navigate = useNavigate();
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
+  
   useEffect(() => {
     setTitle(
       !menu.find((e) => e.path === location.pathname)
@@ -178,7 +181,7 @@ export default function Topbar() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position='fixed' open={open}>
-        <Toolbar>
+        <Toolbar >
           <IconButton
             color='inherit'
             aria-label='open drawer'
@@ -193,7 +196,10 @@ export default function Topbar() {
           <Typography variant='h6' gutterBottom>
             {title.title}
           </Typography>
-
+          <Box  sx={{ marginLeft: "auto", display: "flex" }}>
+            <Typography variant='h6' gutterBottom sx={{mt: 1}}>
+            <CapitalizedText text = {userData.userName}/>
+            </Typography>
           <IconButton
             size='large'
             aria-label='account of current user'
@@ -201,7 +207,7 @@ export default function Topbar() {
             aria-haspopup='true'
             onClick={handleMenu}
             color='inherit'
-            sx={{ alignItems: "left" }}>
+           >
             <AccountCircle />
           </IconButton>
           <Menu
@@ -222,6 +228,7 @@ export default function Topbar() {
             <MenuItem onClick={addUser}>Add User</MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer

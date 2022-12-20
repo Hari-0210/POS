@@ -207,7 +207,7 @@ const CommonTable = ({ columns, data = [], action }) => {
       } else if (head.type === ETTypes.boolean) {
         return row[head.field] ? "Yes" : "No";
       } else if (head.type === ETTypes.SNo) {
-        return row[head.field] = index +1;
+        return row[head.field] = (page * 10 ) + index +1;
       }
     }
   };
