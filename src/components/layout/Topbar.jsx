@@ -118,7 +118,7 @@ export default function Topbar() {
   const [title, setTitle] = React.useState({ path: "", title: "" });
   const navigate = useNavigate();
   const userData = JSON.parse(sessionStorage.getItem("userData"));
-  
+
   useEffect(() => {
     setTitle(
       !menu.find((e) => e.path === location.pathname)
@@ -181,7 +181,7 @@ export default function Topbar() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position='fixed' open={open}>
-        <Toolbar >
+        <Toolbar>
           <IconButton
             color='inherit'
             aria-label='open drawer'
@@ -196,38 +196,37 @@ export default function Topbar() {
           <Typography variant='h6' gutterBottom>
             {title.title}
           </Typography>
-          <Box  sx={{ marginLeft: "auto", display: "flex" }}>
-            <Typography variant='h6' gutterBottom sx={{mt: 1}}>
-            <CapitalizedText text = {userData.userName}/>
+          <Box sx={{ marginLeft: "auto", display: "flex" }}>
+            <Typography variant='h6' gutterBottom sx={{ mt: 1 }}>
+              <CapitalizedText text={userData.userName} />
             </Typography>
-          <IconButton
-            size='large'
-            aria-label='account of current user'
-            aria-controls='menu-appbar'
-            aria-haspopup='true'
-            onClick={handleMenu}
-            color='inherit'
-           >
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            sx={{ mt: "45px" }}
-            id='menu-appbar'
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}>
-            <MenuItem onClick={addUser}>Add User</MenuItem>
-            <MenuItem onClick={logout}>Logout</MenuItem>
-          </Menu>
+            <IconButton
+              size='large'
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
+              onClick={handleMenu}
+              color='inherit'>
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              sx={{ mt: "45px" }}
+              id='menu-appbar'
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}>
+              <MenuItem onClick={addUser}>Add User</MenuItem>
+              <MenuItem onClick={logout}>Logout</MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
@@ -289,7 +288,10 @@ export default function Topbar() {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <ListItem key={i} disablePadding sx={{ display: "block" }}>
+                        <ListItem
+                          key={i}
+                          disablePadding
+                          sx={{ display: "block" }}>
                           <ListItemButton
                             sx={{
                               minHeight: 48,
