@@ -25,10 +25,9 @@ function Product(props) {
   const [productCategoryData, setProductCategoryData] = useState([]);
   const productCategoryColumn = [
     {
-      title: "Product Category ID",
-      field: "productCategoryID",
+      title: "SNo",
       align: "center",
-      type: ETTypes.numeric,
+      type: ETTypes.SNo,
     },
     {
       title: "Product Category",

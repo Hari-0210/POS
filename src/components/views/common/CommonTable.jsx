@@ -206,6 +206,8 @@ const CommonTable = ({ columns, data = [], action }) => {
         );
       } else if (head.type === ETTypes.boolean) {
         return row[head.field] ? "Yes" : "No";
+      } else if (head.type === ETTypes.SNo) {
+        return row[head.field] = index +1;
       }
     }
   };
@@ -213,7 +215,7 @@ const CommonTable = ({ columns, data = [], action }) => {
   return (
     <>
       {" "}
-      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <TableContainer component={Paper}>
         <Table sx={{ minWidth: 300 }} aria-label="customized table">
           <TableHead>
             <TableRow>

@@ -7,7 +7,8 @@ export const ETTypes = {
   dateTime: "datetime",
   time: "time",
   currency: "currency",
-  link: "link"
+  link: "link",
+  SNo: "S.No",
 }
 
 export const EEditable = {
