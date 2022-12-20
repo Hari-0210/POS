@@ -8,5 +8,5 @@ export const URLS = {
   getProductCategory: `${baseUrl}getProductCategory`,
   updateProductCategory: `${baseUrl}updateProductCategory`,
   deleteProductCategory: `${baseUrl}deleteProductCategory`,
-
+  getProduct: `${baseUrl}getProduct`,
 };
