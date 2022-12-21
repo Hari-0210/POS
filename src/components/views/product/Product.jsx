@@ -12,10 +12,13 @@ import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
+import { CSVLink } from "react-csv";
 
 function Product(props) {
   const navigate = useNavigate();
   const matches = useMediaQuery("(min-width:600px)");
+
+  
   useEffect(() => {
     getProduct();
   }, []);
@@ -71,7 +74,14 @@ function Product(props) {
       list: [ETaction.onView, ETaction.onDelete, ETaction.onEdit],
     },
   ];
-
+  
+  const headers = productColumn.map(e => {
+      return {
+        label: e.title,
+        key: e.field
+      }
+  })   
+  
   const createProduct = () => {
     navigate("/app/product/create_product/", { replace: true });
   };
@@ -105,8 +115,14 @@ function Product(props) {
             </IconButton>
           </Paper>
           <Stack spacing={2} direction={matches ? "row" : "column"}>
-            <Button sx={{ height: 50 }} variant="contained">
-              Export Products
+          
+            <Button
+              sx={{ height: 50 }}
+              variant="contained"
+            >
+              <CSVLink filename={"Products.csv"} style={{color: 'white'}} data={product} headers={headers}>
+                 Export Products
+              </CSVLink>
             </Button>
             <Button sx={{ height: 50 }} variant="contained">
               Import Products

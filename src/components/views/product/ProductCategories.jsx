@@ -109,7 +109,7 @@ function Product(props) {
         getProductCategory();
       } else {
         variant = "error";
-        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        enqueueSnackbar(res.data.message.slice(21), { variant, anchorOrigin });
       }
     });
   };
