@@ -13,24 +13,72 @@ import { useNavigate } from "react-router-dom";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { CSVLink } from "react-csv";
+import { getNavigationData } from "../../Redux/Common/action";
+import { useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
+import { useConfirm } from "material-ui-confirm";
+import Loader from "../common/CommonLoader";
 
 function Product(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const confirm = useConfirm();
+  const { enqueueSnackbar } = useSnackbar();
+  var variant = "";
+  const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const matches = useMediaQuery("(min-width:600px)");
-
-  
+  const actions = {
+    onView: (index, row) => {},
+    onEdit: async (index, row) => {
+      await dispatch(getNavigationData(row));
+      navigate("/app/product/create_product/", { replace: true });
+    },
+    onDelete: (index, row) => {
+      console.log(row);
+      remove(row.productID, index);
+    },
+  };
+  const remove = (data, i) => {
+    confirm({ description: "you want to delete the record ?" })
+      .then(() => {
+        deleteProduct(data);
+      })
+      .catch(() => console.log("Deletion cancelled."));
+  };
+  const deleteProduct = async (productID) => {
+    await APIKit.get(URLS.deleteProduct + "/" + productID).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        getProduct();
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
+  };
   useEffect(() => {
     getProduct();
   }, []);
   const [product, setProduct] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const getProduct = async (data = "") => {
+    setIsLoading(true);
     await APIKit.post(URLS.getProduct, { searchText: data }).then((res) => {
       if (res.data.status === 200) {
         setProduct(res.data.data);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
     });
   };
   const productColumn = [
+    {
+      title: "SNo",
+      align: "center",
+      type: ETTypes.SNo,
+    },
     {
       title: "Product",
       field: "productName",
@@ -74,19 +122,22 @@ function Product(props) {
       list: [ETaction.onView, ETaction.onDelete, ETaction.onEdit],
     },
   ];
-  
-  const headers = productColumn.map(e => {
-      return {
-        label: e.title,
-        key: e.field
-      }
-  })   
-  
-  const createProduct = () => {
+
+  const headers = productColumn.map((e) => {
+    return {
+      label: e.title,
+      key: e.field ?? "",
+    };
+  });
+
+  const createProduct = async () => {
+    const data = {};
+    await dispatch(getNavigationData(data));
     navigate("/app/product/create_product/", { replace: true });
   };
   return (
     <Grid spacing={3} m={3}>
+      <Loader isLoading={isLoading} />
       <Grid item sm={11} md={11}>
         <Box
           sx={{
@@ -108,6 +159,9 @@ function Product(props) {
             <InputBase
               sx={{ ml: 1, flex: 1 }}
               placeholder="Search"
+              onChange={(e) => {
+                getProduct(e.target.value);
+              }}
               inputProps={{ "aria-label": "search google maps" }}
             />
             <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
@@ -115,13 +169,14 @@ function Product(props) {
             </IconButton>
           </Paper>
           <Stack spacing={2} direction={matches ? "row" : "column"}>
-          
-            <Button
-              sx={{ height: 50 }}
-              variant="contained"
-            >
-              <CSVLink filename={"Products.csv"} style={{color: 'white'}} data={product} headers={headers}>
-                 Export Products
+            <Button sx={{ height: 50 }} variant="contained">
+              <CSVLink
+                filename={"Products.csv"}
+                style={{ color: "white" }}
+                data={product}
+                headers={headers}
+              >
+                Export Products
               </CSVLink>
             </Button>
             <Button sx={{ height: 50 }} variant="contained">
@@ -136,7 +191,7 @@ function Product(props) {
             </Button>
           </Stack>
         </Box>
-        <CommonTable columns={productColumn} data={product} />
+        <CommonTable columns={productColumn} data={product} action={actions} />
       </Grid>
     </Grid>
   );

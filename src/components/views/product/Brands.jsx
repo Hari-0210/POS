@@ -15,6 +15,7 @@ import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { useSnackbar } from "notistack";
 import { useConfirm } from "material-ui-confirm";
+import Loader from "../common/CommonLoader";
 
 function Product(props) {
   const { enqueueSnackbar } = useSnackbar();
@@ -114,32 +115,38 @@ function Product(props) {
       }
     });
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const getBrand = async (data = "") => {
+    setIsLoading(true);
     await APIKit.post(URLS.getBrand, { searchText: data }).then((res) => {
       if (res.data.status === 200) {
         setBrandData(res.data.data);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
     });
   };
 
   return (
     <Grid spacing={3} m={3}>
+      <Loader isLoading={isLoading} />
       <Grid item sm={11} md={11}>
         <Box
           sx={{
             p: "0px 0px 20px",
             display: matches && "flex",
             justifyContent: "space-between",
-          }}>
+          }}
+        >
           <TextField
-            autoComplete='off'
+            autoComplete="off"
             sx={{ mt: 2, width: matches ? 300 : 200 }}
-            id='outlined-basic'
-            label='Brand Category'
-            name='brandName'
+            id="outlined-basic"
+            label="Brand Category"
+            name="brandName"
             value={payload.brandName}
-            variant='outlined'
+            variant="outlined"
             onChange={(e) => {
               setPayload({
                 ...payload,
@@ -154,8 +161,9 @@ function Product(props) {
                 <Button
                   sx={{ height: 50 }}
                   onClick={updateBrand}
-                  variant='contained'
-                  disabled={!payload.brandName}>
+                  variant="contained"
+                  disabled={!payload.brandName}
+                >
                   Update Brand
                 </Button>{" "}
                 <Button
@@ -164,7 +172,8 @@ function Product(props) {
                     setIsEdit(false);
                     setPayload({ brandName: "" });
                   }}
-                  variant='contained'>
+                  variant="contained"
+                >
                   Cancel
                 </Button>{" "}
               </Box>
@@ -172,31 +181,33 @@ function Product(props) {
               <Button
                 sx={{ height: 50, mt: 2 }}
                 onClick={createBrand}
-                variant='contained'
-                disabled={!payload.brandName}>
+                variant="contained"
+                disabled={!payload.brandName}
+              >
                 Add Brand
               </Button>
             )}
           </Stack>
         </Box>
         <Paper
-          component='form'
+          component="form"
           sx={{
             p: "2px 4px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
             width: matches ? 300 : 200,
-          }}>
+          }}
+        >
           <InputBase
             sx={{ ml: 1, flex: 1 }}
-            placeholder='Search'
+            placeholder="Search"
             onChange={(e) => {
               getBrand(e.target.value);
             }}
             inputProps={{ "aria-label": "search google maps" }}
           />
-          <IconButton type='button' sx={{ p: "10px" }} aria-label='search'>
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon />
           </IconButton>
         </Paper>

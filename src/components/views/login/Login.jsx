@@ -27,7 +27,6 @@ function Login(props) {
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const loginApi = async () => {
     await APIKit.post(URLS.login, payload).then((res) => {
-      console.log(res);
       if (res.data.message === "Successfully Login") {
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });

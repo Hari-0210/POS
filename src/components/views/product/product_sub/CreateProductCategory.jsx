@@ -1,6 +1,6 @@
 import React from "react";
 
-function CreateProductCategory(props) {
+function CreateProductCategory() {
   return <div>hiii</div>;
 }
 

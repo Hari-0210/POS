@@ -4,24 +4,30 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { MESSAGE } from "../../../utilities/constant";
 import * as Yup from "yup";
-
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import APIKit from "../../../utilities/APIKIT";
 import { URLS } from "../../../utilities/URLS";
+import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 export default function CreateProduct() {
+  const productData = useSelector((x) => x.NavigationData.navigationData);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  var variant = "";
+  const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   let regEx = {
     numbersOnly: /^[0-9]*$/,
   };
   const [brandData, setBrandData] = useState([]);
   const [productCategoryData, setProductCategoryData] = useState([]);
+  const matches = useMediaQuery("(min-width:600px)");
 
   const getBrand = async (data = "") => {
     await APIKit.post(URLS.getBrand, { searchText: data }).then((res) => {
@@ -39,17 +45,95 @@ export default function CreateProduct() {
       }
     );
   };
+  const createProduct = async () => {
+    const pay = { ...payload };
+    delete pay.productCategoryName;
+    delete pay.brandName;
+    if (pay.brand === "" || pay.productCategory === "") {
+      variant = "error";
+      enqueueSnackbar("Product Category and Brand is Mandatory", { variant, anchorOrigin });
+      return
+    }
+    await APIKit.post(URLS.addProduct, pay).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.data, { variant, anchorOrigin });
+        setPayload({
+          productName: "",
+          productCode: "",
+          productCategory: "",
+          brand: "",
+          productQty: "",
+          productCost: "",
+          productCategoryName: "",
+          brandName: "",
+        });
+        navigate("/app/product/", { replace: true });
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message.slice(21), { variant, anchorOrigin });
+      }
+    });
+  };
+  const updateProduct = async () => {
+    const pay = { ...payload };
+    pay.productID = productData.productID;
+    delete pay.productCategoryName;
+    delete pay.brandName;
+    if (pay.brand === "" || pay.productCategory === "") {
+      variant = "error";
+      enqueueSnackbar("Product Category and Brand is Mandatory", { variant, anchorOrigin });
+      return
+    }
+    await APIKit.put(URLS.updateProduct, pay).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.data, { variant, anchorOrigin });
+        setPayload({
+          productName: "",
+          productCode: "",
+          productCategory: "",
+          brand: "",
+          productQty: "",
+          productCost: "",
+          productCategoryName: "",
+          brandName: "",
+        });
+        navigate("/app/product/", { replace: true });
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message.slice(21), { variant, anchorOrigin });
+      }
+    });
+  };
+  const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
+    if (Object.keys(productData).length) {
+      setIsEdit(true);
+      setPayload({
+        productName: productData.productName,
+        productCode: productData.productCode,
+        productCategory: productData.productCategory,
+        brand: productData.brand,
+        productQty: productData.productQty,
+        productCost: productData.productCost,
+        productCategoryName: productData.productCategoryName,
+        brandName: productData.brandName,
+      });
+    }
     getBrand();
     getProductCategory();
+    // eslint-disable-next-line
   }, []);
   const [payload, setPayload] = useState({
-    name: "",
-    code: "",
+    productName: "",
+    productCode: "",
     productCategory: "",
     brand: "",
-    quantity: "",
+    productQty: "",
     productCost: "",
+    productCategoryName: "",
+    brandName: "",
   });
 
   const back = () => {
@@ -62,18 +146,20 @@ export default function CreateProduct() {
           p: "20px",
           display: "flex",
           justifyContent: "space-between",
-        }}>
+        }}
+      >
         <Typography
-          color='black'
+          color="black"
           gutterBottom
-          variant='h6'
+          variant="h6"
           sx={{
             p: "2px 4px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
             width: 200,
-          }}>
+          }}
+        >
           Create Product
         </Typography>
 
@@ -82,7 +168,8 @@ export default function CreateProduct() {
             height: 50,
           }}
           onClick={back}
-          variant='contained'>
+          variant="contained"
+        >
           Back
         </Button>
       </Box>
@@ -90,21 +177,26 @@ export default function CreateProduct() {
         <Box
           sx={{
             p: 4,
-          }}>
+          }}
+        >
           <Formik
             initialValues={{ ...payload }}
+            enableReinitialize={true}
             validationSchema={Yup.object().shape({
-              name: Yup.string().required(MESSAGE.name),
-              code: Yup.string().required(MESSAGE.code),
-              productCategory: Yup.string().required(MESSAGE.productCategory),
-              brand: Yup.string().required(MESSAGE.brand),
-              quantity: Yup.number().required(MESSAGE.quantity),
+              productName: Yup.string().required(MESSAGE.productName),
+              productCode: Yup.string().required(MESSAGE.productCode),
+              productQty: Yup.number().required(MESSAGE.quantity),
               productCost: Yup.number().required(MESSAGE.cost),
             })}
             onSubmit={(values) => {
               // same shape as initial values
-              console.log();
-            }}>
+              if (isEdit) {
+                updateProduct();
+              } else {
+                createProduct();
+              }
+            }}
+          >
             {({
               errors,
               handleBlur,
@@ -114,106 +206,149 @@ export default function CreateProduct() {
               touched,
               values,
             }) => (
-              <form autoComplete='off' onSubmit={handleSubmit}>
+              <form autoComplete="off" onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                   <Grid item md={4} sm={12}>
                     <TextField
                       error={Boolean(
-                        touched.name && errors.name && <div>{errors.name}</div>
+                        touched.productName && errors.productName && (
+                          <div>{errors.productName}</div>
+                        )
                       )}
-                      helperText={touched.name && errors.name}
+                      helperText={touched.productName && errors.productName}
                       onBlur={handleBlur}
                       onChange={(e) => {
                         handleChange(e);
                         setPayload({
                           ...payload,
-                          name: e.target.value.trim(),
+                          productName: e.target.value.trim(),
                         });
                       }}
-                      id='outlined-basic'
-                      label='Enter Name'
-                      name='name'
+                      id="outlined-basic"
+                      label="Enter Product Name"
+                      name="productName"
                       fullWidth
-                      variant='outlined'
+                      value={payload.productName}
+                      variant="outlined"
                     />
                   </Grid>
                   <Grid item md={4} sm={12}>
                     <TextField
                       error={Boolean(
-                        touched.code && errors.code && <div>{errors.code}</div>
+                        touched.productCode && errors.productCode && (
+                          <div>{errors.productCode}</div>
+                        )
                       )}
-                      helperText={touched.code && errors.code}
+                      helperText={touched.productCode && errors.productCode}
                       onBlur={handleBlur}
+                      value={payload.productCode}
                       onChange={(e) => {
                         handleChange(e);
                         setPayload({
                           ...payload,
-                          code: e.target.value.trim(),
+                          productCode: e.target.value.trim(),
                         });
                       }}
-                      id='outlined-basic'
-                      label='Code'
-                      name='code'
+                      id="outlined-basic"
+                      label="Product Code"
+                      name="productCode"
                       fullWidth
-                      variant='outlined'
+                      variant="outlined"
                     />
                   </Grid>
 
                   <Grid item md={4} sm={12}>
                     <Autocomplete
-                      disablePortal
-                      id='combo-box-demo'
+                      id="combo-box-demo"
+                      isOptionEqualToValue={(option, value) =>
+                        option.productCategoryID === value.productCategoryID
+                      }
                       options={productCategoryData}
                       getOptionLabel={(option) => option.productCategoryName}
                       fullWidth
-                      onChange={(e, value) => {
-                        setPayload({
-                          ...payload,
-                          productCategory: value.productCategoryID,
-                        });
+                      onChange={(e, value, reason) => {
+                        if (reason === "clear") {
+                          setPayload({
+                            ...payload,
+                            productCategory: "",
+                            productCategoryName: "",
+                          });
+                        } else {
+                          setPayload({
+                            ...payload,
+                            productCategory: value.productCategoryID,
+                            productCategoryName: value.productCategoryName,
+                          });
+                        }
+                      }}
+                      value={{
+                        productCategoryID: payload.productCategory,
+                        productCategoryName: payload.productCategoryName,
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label='Product Category' />
+                        <TextField
+                          sx={!matches && { width: 170 }}
+                          {...params}
+                          label="Product Category"
+                        />
                       )}
-                      name='productCategory'
-                      variant='outlined'
+                      name="productCategory"
+                      variant="outlined"
                     />
                   </Grid>
                   <Grid item md={4} sm={12}>
                     <Autocomplete
-                      disablePortal
-                      id='combo-box-demo'
+                      id="combo-box-demo"
+                      isOptionEqualToValue={(option, value) =>
+                        option.brandID === value.brandID
+                      }
                       options={brandData}
+                      value={{
+                        brandID: payload.brand,
+                        brandName: payload.brandName,
+                      }}
                       getOptionLabel={(option) => option.brandName}
                       fullWidth
-                      onChange={(e, value) => {
-                        console.log(value);
-                        setPayload({
-                          ...payload,
-                          brand: value.brandID,
-                        });
+                      onChange={(e, value, reason) => {
+                        if (reason === "clear") {
+                          setPayload({
+                            ...payload,
+                            brand: "",
+                            brandName: "",
+                          });
+                        } else {
+                          setPayload({
+                            ...payload,
+                            brand: value.brandID,
+                            brandName: value.brandName,
+                          });
+                        }
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label='Brand' />
+                        <TextField
+                          sx={!matches && { width: 170 }}
+                          {...params}
+                          label="Brand"
+                        />
                       )}
-                      name='brand'
-                      variant='outlined'
+                      name="brand"
+                      variant="outlined"
                     />
                   </Grid>
                   <Grid item md={4} sm={12}>
                     <TextField
-                      id='outlined-basic'
-                      label='Quantity'
-                      name='quantity'
-                      value={payload.quantity}
+                      id="outlined-basic"
+                      label="Quantity"
+                      name="productQty"
+                      value={payload.productQty}
                       fullWidth
-                      variant='outlined'
+                      variant="outlined"
                       error={Boolean(
-                        touched.quantity && errors.quantity && (
-                          <div>{errors.quantity}</div>
+                        touched.productQty && errors.productQty && (
+                          <div>{errors.productQty}</div>
                         )
                       )}
-                      helperText={touched.quantity && errors.quantity}
+                      helperText={touched.productQty && errors.productQty}
                       onBlur={handleBlur}
                       onChange={(e) => {
                         if (
@@ -223,7 +358,7 @@ export default function CreateProduct() {
                           handleChange(e);
                           setPayload({
                             ...payload,
-                            quantity: e.target.value.trim(),
+                            productQty: e.target.value.trim(),
                           });
                         }
                       }}
@@ -251,24 +386,22 @@ export default function CreateProduct() {
                         }
                       }}
                       value={payload.productCost}
-                      id='outlined-basic'
-                      label='Enter Product Cost'
-                      name='productCost'
+                      id="outlined-basic"
+                      label="Enter Product Cost"
+                      name="productCost"
                       fullWidth
-                      variant='outlined'
+                      variant="outlined"
                     />
                   </Grid>
                   <Button
                     sx={{
                       marginLeft: "auto",
                       mt: 2,
-                      width: 60,
-                      height: 40,
-                      borderRadius: 3,
                     }}
-                    type='submit'
-                    variant='contained'>
-                    Save
+                    type="submit"
+                    variant="contained"
+                  >
+                    {isEdit ? "Update" : "Save"}
                   </Button>
                 </Grid>
               </form>

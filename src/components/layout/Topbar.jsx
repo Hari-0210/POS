@@ -125,6 +125,7 @@ export default function Topbar() {
         ? { path: "", title: "" }
         : menu.find((e) => e.path === location.pathname)
     );
+       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const matches = useMediaQuery("(min-width:600px)");

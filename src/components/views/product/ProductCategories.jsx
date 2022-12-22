@@ -13,7 +13,8 @@ import TextField from "@mui/material/TextField";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { useSnackbar } from "notistack";
-import { useConfirm } from 'material-ui-confirm';
+import { useConfirm } from "material-ui-confirm";
+import Loader from "../common/CommonLoader";
 
 function Product(props) {
   const { enqueueSnackbar } = useSnackbar();
@@ -60,16 +61,15 @@ function Product(props) {
       });
     },
     onDelete: (index, row) => {
-      console.log('delete:', index, row);
       remove(row.productCategoryID, index);
-    }
+    },
   };
   const remove = (data, i) => {
-    confirm({ description: 'you want to delete the record ?' })
+    confirm({ description: "you want to delete the record ?" })
       .then(() => {
-        deleteProductCategory(data)
+        deleteProductCategory(data);
       })
-      .catch(() => console.log('Deletion cancelled.'));
+      .catch(() => console.log("Deletion cancelled."));
   };
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
@@ -102,27 +102,40 @@ function Product(props) {
   };
 
   const deleteProductCategory = async (productCategoryID) => {
-    await APIKit.get(URLS.deleteProductCategory + '/' +  productCategoryID).then((res) => {
-      if (res.data.status === 200) {
-        variant = "success";
-        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-        getProductCategory();
-      } else {
-        variant = "error";
-        enqueueSnackbar(res.data.message.slice(21), { variant, anchorOrigin });
+    await APIKit.get(URLS.deleteProductCategory + "/" + productCategoryID).then(
+      (res) => {
+        if (res.data.status === 200) {
+          variant = "success";
+          enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+          getProductCategory();
+        } else {
+          variant = "error";
+          enqueueSnackbar(res.data.message.slice(21), {
+            variant,
+            anchorOrigin,
+          });
+        }
       }
-    });
+    );
   };
+  const [isLoading, setIsLoading] = useState(false);
 
-  const getProductCategory = async (data ="") => {
-    await APIKit.post(URLS.getProductCategory, {searchText: data}).then((res) => {
-      if (res.data.status === 200) {
-        setProductCategoryData(res.data.data);
+  const getProductCategory = async (data = "") => {
+    setIsLoading(true);
+    await APIKit.post(URLS.getProductCategory, { searchText: data }).then(
+      (res) => {
+        if (res.data.status === 200) {
+          setProductCategoryData(res.data.data);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
       }
-    });
+    );
   };
   return (
     <Grid spacing={3} m={3}>
+      <Loader isLoading={isLoading} />
       <Grid item sm={11} md={11}>
         <Box
           sx={{
@@ -159,7 +172,7 @@ function Product(props) {
                   Update Product Category
                 </Button>{" "}
                 <Button
-                  sx={{ height: 50}}
+                  sx={{ height: 50 }}
                   onClick={() => {
                     setIsEdit(false);
                     setPayload({ productCategoryName: "" });
@@ -194,8 +207,8 @@ function Product(props) {
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Search"
-            onChange={(e)=> {
-              getProductCategory(e.target.value)
+            onChange={(e) => {
+              getProductCategory(e.target.value);
             }}
             inputProps={{ "aria-label": "search google maps" }}
           />
