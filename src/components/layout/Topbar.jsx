@@ -125,12 +125,13 @@ export default function Topbar() {
         ? { path: "", title: "" }
         : menu.find((e) => e.path === location.pathname)
     );
-       // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const matches = useMediaQuery("(min-width:600px)");
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [expandedSales, setExpandedSales] = React.useState(false);
 
   const productSubMenu = [
     {
@@ -144,6 +145,12 @@ export default function Topbar() {
     {
       name: "Brands",
       route: "brands",
+    },
+  ];
+  const salesSubMenu = [
+    {
+      name: "Sales",
+      route: "sales",
     },
   ];
   const addUser = () => {
@@ -163,6 +170,9 @@ export default function Topbar() {
     setAnchorEl(null);
   };
 
+  const handleChangeSales = (panel) => (event, isExpanded) => {
+    setExpandedSales(isExpanded ? panel : false);
+  };
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -336,6 +346,83 @@ export default function Topbar() {
                 class='dropbtn'>
                 <div class='dropdown-content'>
                   {productSubMenu.map((txt, i) => {
+                    return (
+                      <>
+                        <RouterLink to={`/app/${txt.route}/`}>
+                          <Typography>{txt.name}</Typography>
+                        </RouterLink>
+                      </>
+                    );
+                  })}
+                </div>
+                <AddShoppingCartIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+          {open ? (
+            <Accordion
+              expandedSales={expandedSales === "panel1"}
+              onChange={handleChangeSales("panel1")}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls='panel1bh-content'
+                id='panel1bh-header'>
+                <Typography sx={{ width: "33%", ml: "50px", flexShrink: 0 }}>
+                  Sales
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {salesSubMenu.map((txt, i) => {
+                  return (
+                    <>
+                      <RouterLink to={`/app/${txt.route}/`}>
+                        <ListItem
+                          key={i}
+                          disablePadding
+                          sx={{ display: "block" }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? "initial" : "center",
+                              px: 2.5,
+                            }}>
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : "auto",
+                                justifyContent: "center",
+                              }}>
+                              <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={txt.name}
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </RouterLink>
+                    </>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          ) : (
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+              className={matches ? "dropdown" : ""}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+                class='dropbtn'>
+                <div class='dropdown-content'>
+                  {salesSubMenu.map((txt, i) => {
                     return (
                       <>
                         <RouterLink to={`/app/${txt.route}/`}>
