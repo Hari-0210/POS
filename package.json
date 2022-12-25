@@ -39,12 +39,13 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.5",
     "react-scripts": "3.4.4",
+    "redux": "^4.2.0",
     "redux-thunk": "^2.4.2",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
