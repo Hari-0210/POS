@@ -129,7 +129,7 @@ function Product(props) {
   };
 
   return (
-    <Grid spacing={3} m={3}>
+    <Grid m={3}>
       <Loader isLoading={isLoading} />
       <Grid item sm={11} md={11}>
         <Box

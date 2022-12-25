@@ -110,6 +110,12 @@ function Product(props) {
       type: ETTypes.string,
     },
     {
+      title: "Quantity",
+      field: "productQty",
+      align: "center",
+      type: ETTypes.string,
+    },
+    {
       title: "Created On",
       field: "createdDate",
       align: "center",
