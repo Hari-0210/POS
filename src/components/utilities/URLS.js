@@ -16,4 +16,7 @@ export const URLS = {
   addProduct: `${baseUrl}addProduct`,
   updateProduct: `${baseUrl}updateProduct`,
   deleteProduct: `${baseUrl}deleteProduct`,
+  getCustomer: `${baseUrl}getCustomer`,
+  addCustomer: `${baseUrl}addCustomer`,
+
 };

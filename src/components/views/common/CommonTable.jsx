@@ -21,7 +21,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Icon } from "@iconify/react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import TableSortLabel from '@mui/material/TableSortLabel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
