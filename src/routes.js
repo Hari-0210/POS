@@ -12,6 +12,7 @@ import CreateProduct from "./components/views/product/product_sub/CreateProduct"
 import CreateProductCategory from "./components/views/product/product_sub/CreateProductCategory";
 import CreateBrand from "./components/views/product/product_sub/CreateBrand";
 import Sales from "./components/views/sale/Sales";
+import SalesList from "./components/views/sale/SalesList";
 
 const routes = [
   {
@@ -21,7 +22,7 @@ const routes = [
       { path: "dashboard", element: <Dashboard /> },
       { path: "product", element: <Product /> },
       { path: "sales", element: <Sales /> },
-
+      { path: "salesList", element: <SalesList /> },
       { path: "productCategories", element: <ProductCategories /> },
       { path: "brands", element: <Brands /> },
       { path: "product/create_product", element: <CreateProduct /> },

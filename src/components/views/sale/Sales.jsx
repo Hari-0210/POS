@@ -145,17 +145,18 @@ function Sales(props) {
     </tr>
     <tr>
     <td colspan="4" align="right">Total</td>
-    <td >Rs.${salesProduct.reduce(
-      (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-      0
-    ) -
+    <td >Rs.${
       salesProduct.reduce(
-        (a, b) =>
-          Number(b.productCost) * Number(b.productQty) + a,
+        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+        0
+      ) -
+      salesProduct.reduce(
+        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
         0
       ) *
         (Number(details.discount) / 100) +
-      Number(details.packingCharge)}</td>
+      Number(details.packingCharge)
+    }</td>
     </tr>
     </table>
     </div></body></html>`;
@@ -167,6 +168,7 @@ function Sales(props) {
   const [product, setProduct] = useState([]);
   const [customerList, setCustomerList] = useState([]);
   const [customerDetails, setCustomerDetails] = useState({
+    customerID: "",
     name: "",
     mobileNo: "",
     city: "",
@@ -200,6 +202,7 @@ function Sales(props) {
   };
 
   const initialValues = {
+    productID: "",
     productCode: "",
     productName: "",
     productQty: "",
@@ -219,6 +222,7 @@ function Sales(props) {
     let item = { ...customerDetails };
     for (var i = 0; i < customerList.length; i++) {
       if (customerList[i].mobileNo === customerDetails.mobileNo) {
+        item.customerID = customerList[i].customerID
         item.name = customerList[i].name;
         item.city = customerList[i].city;
         setIsDis(true);
@@ -228,6 +232,7 @@ function Sales(props) {
         break;
       } else {
         setIsDis(false);
+        item.customerID = ""
         item.name = "";
         item.city = "";
         setCustomerDetails({
@@ -283,12 +288,14 @@ function Sales(props) {
       if (product[i].productCode === item[index].productCode) {
         item[index].productName = product[i].productName;
         item[index].productCost = product[i].productCost;
+        item[index].productID = product[i].productID;
         setSalesProduct([...item]);
         editableKeyToFocus.current = `productQty${index}`;
         break;
       } else {
         item[index].productName = "";
         item[index].productCost = "";
+        item[index].productID = "";
         setSalesProduct([...item]);
       }
     }
@@ -337,6 +344,55 @@ function Sales(props) {
         setSalesProduct([...item]);
       }
     }
+  };
+  const saveSales = async () => {
+    const pay = {
+      customerID: customerDetails.customerID,
+      totalNoofProducts: Number(salesProduct.length),
+      subTotal: String(salesProduct.reduce(
+        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+        0
+      )),
+      discount: Number(details.discount),
+      packingCost: Number(details.packingCharge),
+      total: String(salesProduct.reduce(
+        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+        0
+      ) -
+        salesProduct.reduce(
+          (a, b) =>
+            Number(b.productCost) * Number(b.productQty) + a,
+          0
+        ) *
+          (Number(details.discount) / 100) +
+        Number(details.packingCharge)),
+        products: salesProduct.map(e => {
+          return{
+            productID: e.productID,
+            productQty: Number(e.productQty)
+          }
+        })
+    };
+    await APIKit.post(URLS.addSales, pay).then((res) => {
+      if (res.data.status === 200) {
+        setSalesProduct([{...initialValues}])
+        setDetails({
+          discount: "",
+          packingCharge: "",
+        })
+        setCustomerDetails({
+          customerID: "",
+          name: "",
+          mobileNo: "",
+          city: "",
+        })
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
   };
   return (
     <Grid spacing={3} m={3}>
@@ -625,7 +681,7 @@ function Sales(props) {
           }}
         >
           <ButtonGroup variant="outlined" aria-label="outlined button group">
-            <Button>Save</Button>
+            <Button onClick={saveSales}>Save</Button>
             <Button>View</Button>
             <Button onClick={printFun}>Print</Button>
           </ButtonGroup>

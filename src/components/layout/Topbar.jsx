@@ -318,10 +318,13 @@ export default function Topbar() {
                 })}
               </Collapse>
               <ListItemButton >
+              <RouterLink to={`/app/salesList/`}>
                 <ListItemIcon>
                   <ShoppingBagIcon />
                 </ListItemIcon>
+                </RouterLink>
                 <ListItemText primary="Sales" />
+
                 {openNestedMenu1 ? <ExpandLess onClick={handleClickNestedMenu1}/> : <ExpandMore onClick={handleClickNestedMenu1}/>}
               </ListItemButton>
               <Collapse in={openNestedMenu1} timeout="auto" unmountOnExit>
