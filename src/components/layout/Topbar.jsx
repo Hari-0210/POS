@@ -19,7 +19,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Link as RouterLink } from "react-router-dom";
 import "./topbar.css";
@@ -31,8 +30,8 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import StarBorder from "@mui/icons-material/StarBorder";
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -193,40 +192,38 @@ export default function Topbar() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position='fixed' open={open}>
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
+            color='inherit'
+            aria-label='open drawer'
             onClick={handleDrawerOpen}
-            edge="start"
+            edge='start'
             sx={{
               marginRight: 5,
               ...(open && { display: "none" }),
-            }}
-          >
+            }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant='h6' gutterBottom>
             {title.title}
           </Typography>
           <Box sx={{ marginLeft: "auto", display: "flex" }}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 1 }}>
+            <Typography variant='h6' gutterBottom sx={{ mt: 1 }}>
               <CapitalizedText text={userData.userName} />
             </Typography>
             <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
+              size='large'
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
               onClick={handleMenu}
-              color="inherit"
-            >
+              color='inherit'>
               <AccountCircle />
             </IconButton>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
+              id='menu-appbar'
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
@@ -238,8 +235,7 @@ export default function Topbar() {
                 horizontal: "right",
               }}
               open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
+              onClose={handleClose}>
               <MenuItem onClick={addUser}>Add User</MenuItem>
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
@@ -250,10 +246,9 @@ export default function Topbar() {
         // ModalProps={{
         //   keepMounted: true, // Better open performance on mobile.
         // }}
-        anchor="left"
+        anchor='left'
         variant={"permanent"}
-        open={open}
-      >
+        open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -272,19 +267,17 @@ export default function Topbar() {
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
-                }}
-              >
+                }}>
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Dashboard"
+                  primary='Dashboard'
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
@@ -292,19 +285,23 @@ export default function Topbar() {
           </ListItem>
           {open ? (
             <>
-              <ListItemButton >
+              <ListItemButton>
                 <ListItemIcon>
                   <AddShoppingCartIcon />
                 </ListItemIcon>
-                <ListItemText primary="Product" />
-                {openNestedMenu ? <ExpandLess onClick={handleClickNestedMenu} /> : <ExpandMore onClick={handleClickNestedMenu} />}
+                <ListItemText primary='Product' />
+                {openNestedMenu ? (
+                  <ExpandLess onClick={handleClickNestedMenu} />
+                ) : (
+                  <ExpandMore onClick={handleClickNestedMenu} />
+                )}
               </ListItemButton>
-              <Collapse in={openNestedMenu} timeout="auto" unmountOnExit>
+              <Collapse in={openNestedMenu} timeout='auto' unmountOnExit>
                 {productSubMenu.map((txt, i) => {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component="div" disablePadding>
+                        <List component='div' disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -317,22 +314,26 @@ export default function Topbar() {
                   );
                 })}
               </Collapse>
-              <ListItemButton >
-              <RouterLink to={`/app/salesList/`}>
-                <ListItemIcon>
-                  <ShoppingBagIcon />
-                </ListItemIcon>
+              <ListItemButton>
+                <RouterLink to={`/app/salesList/`}>
+                  <ListItemIcon>
+                    <ShoppingBagIcon />
+                  </ListItemIcon>
                 </RouterLink>
-                <ListItemText primary="Sales" />
+                <ListItemText primary='Sales' />
 
-                {openNestedMenu1 ? <ExpandLess onClick={handleClickNestedMenu1}/> : <ExpandMore onClick={handleClickNestedMenu1}/>}
+                {openNestedMenu1 ? (
+                  <ExpandLess onClick={handleClickNestedMenu1} />
+                ) : (
+                  <ExpandMore onClick={handleClickNestedMenu1} />
+                )}
               </ListItemButton>
-              <Collapse in={openNestedMenu1} timeout="auto" unmountOnExit>
+              <Collapse in={openNestedMenu1} timeout='auto' unmountOnExit>
                 {salesSubMenu.map((txt, i) => {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component="div" disablePadding>
+                        <List component='div' disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -352,17 +353,15 @@ export default function Topbar() {
                 sx={{
                   justifyContent: open ? "initial" : "center",
                 }}
-                className={matches ? "dropdown" : ""}
-              >
+                className={matches ? "dropdown" : ""}>
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
                   }}
-                  class="dropbtn"
-                >
-                  <div class="dropdown-content">
+                  class='dropbtn'>
+                  <div class='dropdown-content'>
                     {productSubMenu.map((txt, i) => {
                       return (
                         <>
@@ -380,17 +379,15 @@ export default function Topbar() {
                 sx={{
                   justifyContent: open ? "initial" : "center",
                 }}
-                className={matches ? "dropdown" : ""}
-              >
+                className={matches ? "dropdown" : ""}>
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
                   }}
-                  class="dropbtn"
-                >
-                  <div class="dropdown-content">
+                  class='dropbtn'>
+                  <div class='dropdown-content'>
                     {salesSubMenu.map((txt, i) => {
                       return (
                         <>

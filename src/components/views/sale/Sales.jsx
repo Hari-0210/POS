@@ -47,7 +47,6 @@ function Sales(props) {
     getCustomer();
   }, []);
   const printFun = () => {
-    const printableElements = document.getElementById("printme").innerHTML;
     // var orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
     const oldPage = document.body.innerHTML;
     const html = `<html><head><title></title>
@@ -222,7 +221,7 @@ function Sales(props) {
     let item = { ...customerDetails };
     for (var i = 0; i < customerList.length; i++) {
       if (customerList[i].mobileNo === customerDetails.mobileNo) {
-        item.customerID = customerList[i].customerID
+        item.customerID = customerList[i].customerID;
         item.name = customerList[i].name;
         item.city = customerList[i].city;
         setIsDis(true);
@@ -232,7 +231,7 @@ function Sales(props) {
         break;
       } else {
         setIsDis(false);
-        item.customerID = ""
+        item.customerID = "";
         item.name = "";
         item.city = "";
         setCustomerDetails({
@@ -349,43 +348,46 @@ function Sales(props) {
     const pay = {
       customerID: customerDetails.customerID,
       totalNoofProducts: Number(salesProduct.length),
-      subTotal: String(salesProduct.reduce(
-        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-        0
-      )),
+      subTotal: String(
+        salesProduct.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        )
+      ),
       discount: Number(details.discount),
       packingCost: Number(details.packingCharge),
-      total: String(salesProduct.reduce(
-        (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-        0
-      ) -
+      total: String(
         salesProduct.reduce(
-          (a, b) =>
-            Number(b.productCost) * Number(b.productQty) + a,
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
           0
-        ) *
-          (Number(details.discount) / 100) +
-        Number(details.packingCharge)),
-        products: salesProduct.map(e => {
-          return{
-            productID: e.productID,
-            productQty: Number(e.productQty)
-          }
-        })
+        ) -
+          salesProduct.reduce(
+            (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+            0
+          ) *
+            (Number(details.discount) / 100) +
+          Number(details.packingCharge)
+      ),
+      products: salesProduct.map((e) => {
+        return {
+          productID: e.productID,
+          productQty: Number(e.productQty),
+        };
+      }),
     };
     await APIKit.post(URLS.addSales, pay).then((res) => {
       if (res.data.status === 200) {
-        setSalesProduct([{...initialValues}])
+        setSalesProduct([{ ...initialValues }]);
         setDetails({
           discount: "",
           packingCharge: "",
-        })
+        });
         setCustomerDetails({
           customerID: "",
           name: "",
           mobileNo: "",
           city: "",
-        })
+        });
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
       } else {
@@ -399,9 +401,9 @@ function Sales(props) {
       <Loader isLoading={isLoading} />
       <Grid item sm={11} md={11}>
         <Typography
-          color="black"
+          color='black'
           gutterBottom
-          variant="h6"
+          variant='h6'
           sx={{
             p: "2px 4px",
             marginBottom: "10px",
@@ -410,8 +412,7 @@ function Sales(props) {
             display: "flex",
             alignItems: "center",
             width: 200,
-          }}
-        >
+          }}>
           Estimate
         </Typography>
 
@@ -419,14 +420,13 @@ function Sales(props) {
           <Box
             sx={{
               p: 4,
-            }}
-          >
+            }}>
             <Grid container spacing={4}>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Enter Customer Mobile Number"
-                  name="mobileNo"
+                  id='outlined-basic'
+                  label='Enter Customer Mobile Number'
+                  name='mobileNo'
                   onChange={(e) => {
                     editableKeyToFocus.current = `mobileNo`;
                     setCustomerDetails({
@@ -441,15 +441,15 @@ function Sales(props) {
                   }}
                   value={customerDetails.mobileNo}
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Enter Customer Name"
+                  id='outlined-basic'
+                  label='Enter Customer Name'
                   disabled={isDis}
-                  name="name"
+                  name='name'
                   onChange={(e) => {
                     setCustomerDetails({
                       ...customerDetails,
@@ -458,14 +458,14 @@ function Sales(props) {
                   }}
                   fullWidth
                   value={customerDetails.name}
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Customer City"
-                  name="city"
+                  id='outlined-basic'
+                  label='Customer City'
+                  name='city'
                   disabled={isDis}
                   onChange={(e) => {
                     setCustomerDetails({
@@ -480,21 +480,21 @@ function Sales(props) {
                   }}
                   fullWidth
                   value={customerDetails.city}
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
             </Grid>
           </Box>
         </Card>
-        <TableContainer component={Paper} id="printme">
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableContainer component={Paper} id='printme'>
+          <Table sx={{ minWidth: 700 }} aria-label='customized table'>
             <TableHead>
               <TableRow>
-                <StyledTableCell align="center">SNo</StyledTableCell>
-                <StyledTableCell align="center">Code</StyledTableCell>
-                <StyledTableCell align="center">Product Name</StyledTableCell>
-                <StyledTableCell align="center">Quantity</StyledTableCell>
-                <StyledTableCell align="center">Rate</StyledTableCell>
+                <StyledTableCell align='center'>SNo</StyledTableCell>
+                <StyledTableCell align='center'>Code</StyledTableCell>
+                <StyledTableCell align='center'>Product Name</StyledTableCell>
+                <StyledTableCell align='center'>Quantity</StyledTableCell>
+                <StyledTableCell align='center'>Rate</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -505,17 +505,16 @@ function Sales(props) {
                     onContextMenu={(e) => {
                       e.preventDefault();
                       addRemProduct("rem", i);
-                    }}
-                  >
-                    <StyledTableCell component="th" scope="row">
+                    }}>
+                    <StyledTableCell component='th' scope='row'>
                       {i + 1}
                     </StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell align='center'>
                       <TextField
-                        id="outlined-basic"
-                        label="Product Code"
+                        id='outlined-basic'
+                        label='Product Code'
                         name={`productCode${i}`}
-                        variant="outlined"
+                        variant='outlined'
                         // onBlur={() => {
                         //   matchProduct(i)
                         // }}
@@ -538,15 +537,15 @@ function Sales(props) {
                         }}
                       />
                     </StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell align='center'>
                       {data.productName}
                     </StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell align='center'>
                       <TextField
-                        label="Product Quantity"
-                        id="outlined-basic"
+                        label='Product Quantity'
+                        id='outlined-basic'
                         name={`productQty${i}`}
-                        variant="outlined"
+                        variant='outlined'
                         // onBlur={() => {
                         //   addRemProduct("add",i)
                         // }}
@@ -574,7 +573,7 @@ function Sales(props) {
                         }}
                       />
                     </StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell align='center'>
                       {data.productQty !== ""
                         ? data.productQty * data.productCost
                         : data.productCost}
@@ -583,10 +582,10 @@ function Sales(props) {
                 );
               })}
               <StyledTableRow>
-                <StyledTableCell colSpan={4} align="right">
+                <StyledTableCell colSpan={4} align='right'>
                   Subtotal
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align='center'>
                   {salesProduct.reduce(
                     (a, b) => Number(b.productCost) * Number(b.productQty) + a,
                     0
@@ -594,18 +593,18 @@ function Sales(props) {
                 </StyledTableCell>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableCell colSpan={4} align="right">
+                <StyledTableCell colSpan={4} align='right'>
                   Discount
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  <FormControl variant="standard">
-                    <InputLabel htmlFor="standard-adornment-amount">
+                <StyledTableCell align='center'>
+                  <FormControl variant='standard'>
+                    <InputLabel htmlFor='standard-adornment-amount'>
                       Percentage
                     </InputLabel>
                     <Input
-                      id="standard-adornment-amount"
+                      id='standard-adornment-amount'
                       startAdornment={
-                        <InputAdornment position="start">%</InputAdornment>
+                        <InputAdornment position='start'>%</InputAdornment>
                       }
                       name={`discount`}
                       autoFocus={`discount` === editableKeyToFocus.current}
@@ -622,16 +621,16 @@ function Sales(props) {
                 </StyledTableCell>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableCell colSpan={4} align="right">
+                <StyledTableCell colSpan={4} align='right'>
                   Packing Charge
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  <FormControl variant="standard">
-                    <InputLabel htmlFor="standard-adornment-amount">
+                <StyledTableCell align='center'>
+                  <FormControl variant='standard'>
+                    <InputLabel htmlFor='standard-adornment-amount'>
                       Amount
                     </InputLabel>
                     <Input
-                      id="standard-adornment-amount"
+                      id='standard-adornment-amount'
                       name={`packingCharge`}
                       autoFocus={`packingCharge` === editableKeyToFocus.current}
                       onChange={(e) => {
@@ -643,17 +642,17 @@ function Sales(props) {
                       }}
                       value={details.packingCharge}
                       startAdornment={
-                        <InputAdornment position="start">Rs</InputAdornment>
+                        <InputAdornment position='start'>Rs</InputAdornment>
                       }
                     />
                   </FormControl>
                 </StyledTableCell>
               </StyledTableRow>
               <StyledTableRow>
-                <StyledTableCell colSpan={4} align="right">
+                <StyledTableCell colSpan={4} align='right'>
                   Total
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align='center'>
                   {salesProduct.reduce(
                     (a, b) => Number(b.productCost) * Number(b.productQty) + a,
                     0
@@ -678,9 +677,8 @@ function Sales(props) {
             "& > *": {
               m: 2,
             },
-          }}
-        >
-          <ButtonGroup variant="outlined" aria-label="outlined button group">
+          }}>
+          <ButtonGroup variant='outlined' aria-label='outlined button group'>
             <Button onClick={saveSales}>Save</Button>
             <Button>View</Button>
             <Button onClick={printFun}>Print</Button>
