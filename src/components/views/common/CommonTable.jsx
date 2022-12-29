@@ -42,7 +42,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const CommonTable = ({ columns, data = [], action }) => {
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const handleChangePage = (event, newPage) => {
@@ -197,7 +196,6 @@ const CommonTable = ({ columns, data = [], action }) => {
           <a
             style={{ color: "blue", cursor: "pointer" }}
             href={row[head.field]}
-            
           >
             {row[head.field].substring(4, 25)}
           </a>
@@ -207,7 +205,7 @@ const CommonTable = ({ columns, data = [], action }) => {
       } else if (head.type === ETTypes.boolean) {
         return row[head.field] ? "Yes" : "No";
       } else if (head.type === ETTypes.SNo) {
-        return row[head.field] = (page * 10 ) + index +1;
+        return (row[head.field] = page * 10 + index + 1);
       }
     }
   };
