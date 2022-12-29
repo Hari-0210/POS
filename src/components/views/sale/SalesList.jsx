@@ -2,14 +2,56 @@ import React from "react";
 import { Grid } from "@mui/material";
 import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
+import PropTypes from "prop-types";
+import DialogContent from "@mui/material/DialogContent";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import { useConfirm } from "material-ui-confirm";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { useSnackbar } from "notistack";
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label='close'
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 function SalesList() {
   const [salesData, setSalesData] = useState([]);
   const [salesProductsData, setSalesProductsData] = useState([]);
@@ -70,44 +112,34 @@ function SalesList() {
   ];
   const salesProductsColumn = [
     {
-        title: "SNo",
-        align: "center",
-        type: ETTypes.SNo,
-      },
-      {
-        title: "Product Name",
-        field: "productName",
-        align: "center",
-        type: ETTypes.string,
-      },
-      {
-        title: "Product Quantity",
-        field: "productQty",
-        align: "center",
-        type: ETTypes.string,
-      },
-  ]
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
+      title: "SNo",
+      align: "center",
+      type: ETTypes.SNo,
+    },
+    {
+      title: "Product Name",
+      field: "productName",
+      align: "center",
+      type: ETTypes.string,
+    },
+    {
+      title: "Product Quantity",
+      field: "productQty",
+      align: "center",
+      type: ETTypes.string,
+    },
+  ];
+
   useEffect(() => {
     getSales();
   }, []);
-  const [openModal, setOpenModal] = React.useState(false);
-  const handleCloseModal = () => setOpenModal(false);
+  const [openDialogue, setOpenDialogue] = React.useState(false);
+  const handleCloseDialogue = () => setOpenDialogue(false);
 
   const actions = {
     onView: (index, row) => {
-        setOpenModal(true)
-        setSalesProductsData(row.salesProducts)
+      setOpenDialogue(true);
+      setSalesProductsData(row.salesProducts);
     },
 
     onEdit: (index, row) => {},
@@ -126,12 +158,12 @@ function SalesList() {
   const getSales = async () => {
     await APIKit.get(URLS.getSales).then((res) => {
       if (res.data.status === 200) {
-        res.data.data = res.data.data.map(e => {
-            return {
-                ...e,
-                salesProducts: JSON.parse(e.salesProducts)
-            }
-        })
+        res.data.data = res.data.data.map((e) => {
+          return {
+            ...e,
+            salesProducts: JSON.parse(e.salesProducts),
+          };
+        });
         console.log(res.data.data);
         setSalesData(res.data.data);
       } else {
@@ -163,19 +195,20 @@ function SalesList() {
           />
         </Grid>
       </Grid>
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-        <CommonTable
-            columns={salesProductsColumn}
-            data={salesProductsData}
-          />
-        </Box>
-      </Modal>
+
+      <BootstrapDialog
+        onClose={handleCloseDialogue}
+        aria-labelledby='customized-dialog-title'
+        open={openDialogue}>
+        <BootstrapDialogTitle
+          id='customized-dialog-title'
+          onClose={handleCloseDialogue}>
+          Sales Products
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+          <CommonTable columns={salesProductsColumn} data={salesProductsData} />
+        </DialogContent>
+      </BootstrapDialog>
     </div>
   );
 }
