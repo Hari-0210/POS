@@ -247,9 +247,9 @@ function SalesTableFormat(props) {
       <Loader isLoading={isLoading} />
       <Grid item sm={12} md={12}>
         <Typography
-          color="black"
+          color='black'
           gutterBottom
-          variant="h6"
+          variant='h6'
           sx={{
             marginBottom: "10px",
             marginLeft: "20px",
@@ -257,8 +257,7 @@ function SalesTableFormat(props) {
             display: "flex",
             alignItems: "center",
             width: 200,
-          }}
-        >
+          }}>
           Estimate
         </Typography>
 
@@ -266,14 +265,13 @@ function SalesTableFormat(props) {
           <Box
             sx={{
               p: 4,
-            }}
-          >
+            }}>
             <Grid container spacing={4}>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Enter Customer Mobile Number"
-                  name="mobileNo"
+                  id='outlined-basic'
+                  label='Enter Customer Mobile Number'
+                  name='mobileNo'
                   onChange={(e) => {
                     editableKeyToFocus.current = `mobileNo`;
                     setCustomerDetails({
@@ -288,15 +286,15 @@ function SalesTableFormat(props) {
                   }}
                   value={customerDetails.mobileNo}
                   fullWidth
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Enter Customer Name"
+                  id='outlined-basic'
+                  label='Enter Customer Name'
                   disabled={isDis}
-                  name="name"
+                  name='name'
                   onChange={(e) => {
                     setCustomerDetails({
                       ...customerDetails,
@@ -305,14 +303,14 @@ function SalesTableFormat(props) {
                   }}
                   fullWidth
                   value={customerDetails.name}
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
               <Grid item md={4} sm={12}>
                 <TextField
-                  id="outlined-basic"
-                  label="Customer City"
-                  name="city"
+                  id='outlined-basic'
+                  label='Customer City'
+                  name='city'
                   disabled={isDis}
                   onChange={(e) => {
                     setCustomerDetails({
@@ -327,33 +325,33 @@ function SalesTableFormat(props) {
                   }}
                   fullWidth
                   value={customerDetails.city}
-                  variant="outlined"
+                  variant='outlined'
                 />
               </Grid>
 
               <Grid item md={12} sm={12} sx={{ overflow: "auto" }}>
-                <TableContainer component={Paper} sx={{ mt: 3 }} id="printme">
-                  <Table sx={{ minWidth: 300 }} aria-label="customized table">
+                <TableContainer component={Paper} sx={{ mt: 3 }} id='printme'>
+                  <Table sx={{ minWidth: 300 }} aria-label='customized table'>
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell padding="checkbox"></StyledTableCell>
-                        <StyledTableCell align="center">SNo</StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell padding='checkbox'></StyledTableCell>
+                        <StyledTableCell align='center'>SNo</StyledTableCell>
+                        <StyledTableCell align='center'>
                           Product Name (Code)
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align='center'>
                           Quantity
                         </StyledTableCell>
-                        <StyledTableCell align="center">Rate</StyledTableCell>
+                        <StyledTableCell align='center'>Rate</StyledTableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {salesData.map((data, i) => {
                         return (
                           <StyledTableRow>
-                            <StyledTableCell padding="checkbox">
+                            <StyledTableCell padding='checkbox'>
                               <Checkbox
-                                color="primary"
+                                color='primary'
                                 checked={data.isDiscount}
                                 onChange={() => {
                                   let item = [...salesData];
@@ -365,14 +363,14 @@ function SalesTableFormat(props) {
                                 }}
                               />
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell align='center'>
                               {i + 1}
                             </StyledTableCell>
 
-                            <StyledTableCell align="center">
+                            <StyledTableCell align='center'>
                               {data.productName} ({data.productCode})
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell align='center'>
                               {/* <Fab
                               size="small"
                               color="secondary"
@@ -392,11 +390,10 @@ function SalesTableFormat(props) {
                               <AddIcon />
                             </Fab> */}
                               <FormGroup
-                                sx={{ whiteSpace: "nowrap", display: "unset" }}
-                              >
+                                sx={{ whiteSpace: "nowrap", display: "unset" }}>
                                 <Button
                                   disabled={data.productQty <= 1}
-                                  variant="text"
+                                  variant='text'
                                   sx={{ mt: 1 }}
                                   onClick={() => {
                                     editableKeyToFocus.current = `productQty${i}`;
@@ -404,12 +401,11 @@ function SalesTableFormat(props) {
                                     item[i].productQty =
                                       Number(item[i].productQty) - 1;
                                     setSalesData([...item]);
-                                  }}
-                                >
+                                  }}>
                                   <RemoveIcon />
                                 </Button>
                                 <TextField
-                                  variant="outlined"
+                                  variant='outlined'
                                   style={{ width: 70 }}
                                   name={`productQty${i}`}
                                   value={data.productQty}
@@ -425,20 +421,19 @@ function SalesTableFormat(props) {
                                   }
                                 />
                                 <Button
-                                  variant="text"
+                                  variant='text'
                                   onClick={() => {
                                     editableKeyToFocus.current = `productQty${i}`;
                                     let item = [...salesData];
                                     item[i].productQty =
                                       Number(item[i].productQty) + 1;
                                     setSalesData([...item]);
-                                  }}
-                                >
+                                  }}>
                                   <AddIcon />
                                 </Button>
                               </FormGroup>
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell align='center'>
                               {data.productQty !== ""
                                 ? data.productQty * data.productCost
                                 : data.productCost}
@@ -467,70 +462,116 @@ function SalesTableFormat(props) {
                   })}
                 />
               </Grid>
-              <Grid item md={4} sm={12}>
-                <Typography>Sub Total</Typography>
-                <Typography>
-                  Discount
-                  <FormControl variant="standard">
-                    <InputLabel htmlFor="standard-adornment-amount">
-                      Percentage
-                    </InputLabel>
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={
-                        <InputAdornment position="start">%</InputAdornment>
-                      }
-                      name={`discount`}
-                      autoFocus={`discount` === editableKeyToFocus.current}
-                      onChange={(e) => {
-                        editableKeyToFocus.current = `discount`;
-                        setDetails({
-                          ...details,
-                          discount: e.target.value,
-                        });
-                      }}
-                      value={details.discount}
-                    />
-                  </FormControl>
-                </Typography>
-                <Typography>
-                  Packing Charges{" "}
-                  <FormControl variant="standard">
-                    <InputLabel htmlFor="standard-adornment-amount">
-                      Amount
-                    </InputLabel>
-                    <Input
-                      id="standard-adornment-amount"
-                      name={`packingCharge`}
-                      autoFocus={`packingCharge` === editableKeyToFocus.current}
-                      onChange={(e) => {
-                        editableKeyToFocus.current = `packingCharge`;
-                        setDetails({
-                          ...details,
-                          packingCharge: e.target.value,
-                        });
-                      }}
-                      value={details.packingCharge}
-                      startAdornment={
-                        <InputAdornment position="start">Rs</InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                </Typography>
-                <Typography>
-                  Total{" "}
-                  {salesData.reduce(
-                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                    0
-                  ) -
-                    salesData.filter(e => e.isDiscount).reduce(
-                      (a, b) =>
-                        Number(b.productCost) * Number(b.productQty) + a,
-                      0
-                    ) *
-                      (Number(details.discount) / 100) +
-                    Number(details.packingCharge)}
-                </Typography>
+
+              <Grid
+                item
+                md={4}
+                sm={12}
+                sx={{ overflow: "auto", marginLeft: "auto" }}>
+                <TableContainer component={Paper} sx={{ mt: 2 }} id='printme'>
+                  <Table aria-label='customized table'>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell colSpan={4} align='right'>
+                          Subtotal
+                        </TableCell>
+                        <TableCell align='center'>
+                          {salesData.reduce(
+                            (a, b) =>
+                              Number(b.productCost) * Number(b.productQty) + a,
+                            0
+                          )}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} align='right'>
+                          Discount
+                        </TableCell>
+                        <TableCell align='center'>
+                          <FormControl variant='standard'>
+                            <InputLabel htmlFor='standard-adornment-amount'>
+                              Percentage
+                            </InputLabel>
+                            <Input
+                              id='standard-adornment-amount'
+                              startAdornment={
+                                <InputAdornment position='start'>
+                                  %
+                                </InputAdornment>
+                              }
+                              name={`discount`}
+                              autoFocus={
+                                `discount` === editableKeyToFocus.current
+                              }
+                              onChange={(e) => {
+                                editableKeyToFocus.current = `discount`;
+                                setDetails({
+                                  ...details,
+                                  discount: e.target.value,
+                                });
+                              }}
+                              value={details.discount}
+                            />
+                          </FormControl>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} align='right'>
+                          Packing Charge
+                        </TableCell>
+                        <TableCell align='center'>
+                          <FormControl variant='standard'>
+                            <InputLabel htmlFor='standard-adornment-amount'>
+                              Amount
+                            </InputLabel>
+                            <Input
+                              id='standard-adornment-amount'
+                              name={`packingCharge`}
+                              autoFocus={
+                                `packingCharge` === editableKeyToFocus.current
+                              }
+                              onChange={(e) => {
+                                editableKeyToFocus.current = `packingCharge`;
+                                setDetails({
+                                  ...details,
+                                  packingCharge: e.target.value,
+                                });
+                              }}
+                              value={details.packingCharge}
+                              startAdornment={
+                                <InputAdornment position='start'>
+                                  Rs
+                                </InputAdornment>
+                              }
+                            />
+                          </FormControl>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} align='right'>
+                          Total
+                        </TableCell>
+                        <TableCell align='center'>
+                          {salesData.reduce(
+                            (a, b) =>
+                              Number(b.productCost) * Number(b.productQty) + a,
+                            0
+                          ) -
+                            salesData
+                              .filter((e) => e.isDiscount)
+                              .reduce(
+                                (a, b) =>
+                                  Number(b.productCost) * Number(b.productQty) +
+                                  a,
+                                0
+                              ) *
+                              (Number(details.discount) / 100) +
+                            Number(details.packingCharge)}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </Grid>
             </Grid>
           </Box>
