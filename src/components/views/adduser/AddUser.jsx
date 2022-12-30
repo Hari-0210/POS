@@ -39,8 +39,8 @@ function AddUser(props) {
       type: ETTypes.string,
     },
     {
-      title: "Role ID",
-      field: "roleID",
+      title: "Store Name",
+      field: "storeName",
       align: "center",
       type: ETTypes.numeric,
     },
