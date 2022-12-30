@@ -49,7 +49,7 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(0)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
@@ -246,6 +246,7 @@ export default function Topbar() {
         // ModalProps={{
         //   keepMounted: true, // Better open performance on mobile.
         // }}
+        
         anchor='left'
         variant={"permanent"}
         open={open}>
@@ -260,7 +261,7 @@ export default function Topbar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem key={"Dashboard"} disablePadding sx={{ display: "block" }}>
+          <ListItem key={"Dashboard"} disablePadding >
             <RouterLink to={"/app/dashboard/"}>
               <ListItemButton
                 sx={{
