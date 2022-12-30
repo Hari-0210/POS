@@ -157,8 +157,16 @@ function SalesTableFormat(props) {
     city: "",
   });
   function matchProduct(data) {
-    console.log(data);
     let item = [...salesData];
+    var valueArr = salesData.map(function (item) {
+      return item.productCode;
+    });
+    var isDuplicate = valueArr.some(e => e === data.value);
+    if (isDuplicate) {
+      variant = "error";
+      enqueueSnackbar("This Product Already Added", { variant, anchorOrigin });
+      return;
+    }
     item.push(initialValues);
     product.map((e) => {
       if (e.productCode === data.value) {
@@ -178,6 +186,7 @@ function SalesTableFormat(props) {
   const [isLoading, setIsLoading] = useState(false);
   const checkCust = async (e) => {
     let item = { ...customerDetails };
+    setCustomerList([...customerList])
     for (var i = 0; i < customerList.length; i++) {
       if (customerList[i].mobileNo === customerDetails.mobileNo) {
         item.customerID = customerList[i].customerID;
@@ -218,11 +227,22 @@ function SalesTableFormat(props) {
     }
     await APIKit.post(URLS.addCustomer, pay).then((res) => {
       if (res.data.status === 200) {
-        variant = "success";
         setIsDis(true);
         getCustomer();
-        checkCust();
+        variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        let item = { ...customerDetails };
+        for (var i = 0; i < customerList.length; i++) {
+          if (customerList[i].mobileNo === customerDetails.mobileNo) {
+            item.customerID = customerList[i].customerID;
+            item.name = customerList[i].name;
+            item.city = customerList[i].city;
+            setCustomerDetails({
+              ...item,
+            });
+            break;
+          }
+        }
       } else {
         variant = "error";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -234,7 +254,7 @@ function SalesTableFormat(props) {
     setIsLoading(true);
     await APIKit.get(URLS.getCustomer).then((res) => {
       if (res.data.status === 200) {
-        setCustomerList(res.data.data);
+        setCustomerList([...res.data.data]);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -342,6 +362,7 @@ function SalesTableFormat(props) {
                         <StyledTableCell align='center'>
                           Quantity
                         </StyledTableCell>
+                        <StyledTableCell align='center'>Rate Per Unit</StyledTableCell>
                         <StyledTableCell align='center'>Rate</StyledTableCell>
                       </TableRow>
                     </TableHead>
@@ -434,9 +455,28 @@ function SalesTableFormat(props) {
                               </FormGroup>
                             </StyledTableCell>
                             <StyledTableCell align='center'>
-                              {data.productQty !== ""
-                                ? data.productQty * data.productCost
-                                : data.productCost}
+                            <TextField
+                                  variant='outlined'
+                                  style={{ width: 70 }}
+                                  name={`productCost${i}`}
+                                  value={data.productCost}
+                                  onChange={(e) => {
+                                    editableKeyToFocus.current = `productCost${i}`;
+                                    let item = [...salesData];
+                                    item[i].productCost = Number(e.target.value);
+                                    setSalesData([...item]);
+                                  }}
+                                  autoFocus={
+                                    `productCost${i}` ===
+                                    editableKeyToFocus.current
+                                  }
+                                />
+                             
+                            </StyledTableCell>
+                            <StyledTableCell align='center'>
+                            {data.productQty !== ""
+                                  ? data.productQty * data.productCost
+                                  : data.productCost}
                             </StyledTableCell>
                           </StyledTableRow>
                         );
