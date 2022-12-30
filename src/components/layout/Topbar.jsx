@@ -19,6 +19,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import StoreIcon from "@mui/icons-material/Store";
+
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Link as RouterLink } from "react-router-dom";
 import "./topbar.css";
@@ -103,6 +105,7 @@ export default function Topbar() {
   const location = useLocation();
   const menu = [
     { path: "/app/dashboard/", title: "Dashboard" },
+    { path: "/app/store/", title: "Store" },
     { path: "/app/product/", title: "Product" },
     { path: "/app/productCategories/", title: "Product Categories" },
     { path: "/app/brands/", title: "Brands" },
@@ -246,7 +249,7 @@ export default function Topbar() {
         // ModalProps={{
         //   keepMounted: true, // Better open performance on mobile.
         // }}
-        
+
         anchor='left'
         variant={"permanent"}
         open={open}>
@@ -261,7 +264,7 @@ export default function Topbar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem key={"Dashboard"} disablePadding >
+          <ListItem key={"Dashboard"} disablePadding>
             <RouterLink to={"/app/dashboard/"}>
               <ListItemButton
                 sx={{
@@ -404,6 +407,26 @@ export default function Topbar() {
               </ListItemButton>
             </>
           )}
+          <ListItem key={"Store"} disablePadding>
+            <RouterLink to={`/app/store/`}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}>
+                  <StoreIcon />
+                </ListItemIcon>
+                <ListItemText primary='Sales' sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </RouterLink>
+          </ListItem>
         </List>
       </Drawer>
     </Box>
