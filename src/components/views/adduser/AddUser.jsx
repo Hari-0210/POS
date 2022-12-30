@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -16,10 +17,12 @@ function AddUser(props) {
   const [payload, setPayload] = useState({
     userName: "",
     password: "",
+    storeID: "",
   });
   useEffect(() => {
-    getUserData()
-       // eslint-disable-next-line react-hooks/exhaustive-deps
+    getUserData();
+    getStore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const userColumn = [
     {
@@ -42,7 +45,16 @@ function AddUser(props) {
     },
   ];
 
-  const [userData, setUserData] = useState([])
+  const [storeData, setStoreData] = useState([]);
+  const getStore = async (data = "") => {
+    await APIKit.post(URLS.getStore, { searchText: data }).then((res) => {
+      if (res.data.status === 200) {
+        setStoreData(res.data.data);
+      } else {
+      }
+    });
+  };
+  const [userData, setUserData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
@@ -50,17 +62,17 @@ function AddUser(props) {
     await APIKit.get(URLS.getUser, payload).then((res) => {
       console.log(res);
       if (res.data.status === 200) {
-        setUserData(res.data.data)
-      } 
+        setUserData(res.data.data);
+      }
     });
-  }
+  };
   const adduser = async () => {
     await APIKit.post(URLS.addUser, payload).then((res) => {
       if (res.data.message === "Successfully added") {
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-        setPayload({userName: "", password: ""})
-        getUserData()
+        setPayload({ userName: "", password: "" });
+        getUserData();
       } else {
         variant = "error";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -69,7 +81,7 @@ function AddUser(props) {
   };
   return (
     <div>
-      <Grid  m={3}>
+      <Grid m={3}>
         <Grid item sm={11} md={11}>
           <Box
             sx={{
@@ -109,6 +121,31 @@ function AddUser(props) {
                 });
               }}
             />
+            <Grid
+              item
+              md={12}
+              sm={12}
+              sx={{ mt: 2, ml: matches ? 2 : 0, width: matches ? 300 : 200 }}>
+              <Select
+                menuPortalTarget={document.body}
+                menuPosition={"fixed"}
+                placeholder={"Search Store"}
+                value={payload.storeID}
+                onChange={(e) => {
+                  console.log(e);
+                  setPayload({
+                    ...payload,
+                    storeID: e.value,
+                  });
+                }}
+                options={storeData?.map((e) => {
+                  return {
+                    value: e.storeID,
+                    label: e.storeName,
+                  };
+                })}
+              />
+            </Grid>
             <Button
               sx={{
                 height: 50,
@@ -122,9 +159,8 @@ function AddUser(props) {
               variant='contained'>
               Add User
             </Button>
-           
           </Box>
-          
+
           <CommonTable columns={userColumn} data={userData} />
         </Grid>
       </Grid>

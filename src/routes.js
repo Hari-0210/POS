@@ -14,6 +14,7 @@ import CreateBrand from "./components/views/product/product_sub/CreateBrand";
 import Sales from "./components/views/sale/Sales";
 import SalesList from "./components/views/sale/SalesList";
 import SalesTableFormat from "./components/views/sale/SalesTableFormat";
+import Store from "./components/views/store/Store";
 
 const routes = [
   {
@@ -29,6 +30,7 @@ const routes = [
       { path: "brands", element: <Brands /> },
       { path: "product/create_product", element: <CreateProduct /> },
       { path: "adduser", element: <AddUser /> },
+      { path: "store", element: <Store /> },
 
       {
         path: "productCategories/create_productcategory",
