@@ -13,6 +13,7 @@ import CreateProductCategory from "./components/views/product/product_sub/Create
 import CreateBrand from "./components/views/product/product_sub/CreateBrand";
 import Sales from "./components/views/sale/Sales";
 import SalesList from "./components/views/sale/SalesList";
+import SalesTableFormat from "./components/views/sale/SalesTableFormat";
 
 const routes = [
   {
@@ -21,7 +22,8 @@ const routes = [
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "product", element: <Product /> },
-      { path: "sales", element: <Sales /> },
+      { path: "sales", element: <SalesTableFormat /> },
+      // { path: "sales", element: <Sales /> },
       { path: "salesList", element: <SalesList /> },
       { path: "productCategories", element: <ProductCategories /> },
       { path: "brands", element: <Brands /> },

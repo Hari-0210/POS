@@ -251,7 +251,7 @@ function Sales(props) {
   };
   const createCustomer = async () => {
     const pay = { ...customerDetails };
-    delete pay.customerID
+    delete pay.customerID;
     if (pay.name === "" || pay.city === "") {
       variant = "error";
       enqueueSnackbar("Name and City is Mandatory", { variant, anchorOrigin });
@@ -262,7 +262,7 @@ function Sales(props) {
         variant = "success";
         setIsDis(true);
         getCustomer();
-        checkCust()
+        checkCust();
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
       } else {
         variant = "error";
@@ -548,6 +548,7 @@ function Sales(props) {
                         id='outlined-basic'
                         name={`productQty${i}`}
                         variant='outlined'
+                        type='number'
                         // onBlur={() => {
                         //   addRemProduct("add",i)
                         // }}
