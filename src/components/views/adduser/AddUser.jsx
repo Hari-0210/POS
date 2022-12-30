@@ -18,6 +18,7 @@ function AddUser(props) {
     userName: "",
     password: "",
     storeID: "",
+    store: {},
   });
   useEffect(() => {
     getUserData();
@@ -67,11 +68,13 @@ function AddUser(props) {
     });
   };
   const adduser = async () => {
-    await APIKit.post(URLS.addUser, payload).then((res) => {
+    const pay = { ...payload };
+    delete pay.store;
+    await APIKit.post(URLS.addUser, pay).then((res) => {
       if (res.data.message === "Successfully added") {
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-        setPayload({ userName: "", password: "" });
+        setPayload({ userName: "", password: "", store: {}, storeID: "" });
         getUserData();
       } else {
         variant = "error";
@@ -89,15 +92,16 @@ function AddUser(props) {
               display: matches && "flex",
               justifyContent: "left",
             }}
-            direction={matches ? "row" : "column"}>
+            direction={matches ? "row" : "column"}
+          >
             <TextField
-              autoComplete='off'
+              autoComplete="off"
               sx={{ mt: 2, width: matches ? 300 : 200 }}
-              id='outlined-basic'
-              label='User Name'
-              name='userName'
+              id="outlined-basic"
+              label="User Name"
+              name="userName"
               value={payload.userName}
-              variant='outlined'
+              variant="outlined"
               onChange={(e) => {
                 setPayload({
                   ...payload,
@@ -107,12 +111,12 @@ function AddUser(props) {
             />
 
             <TextField
-              autoComplete='off'
+              autoComplete="off"
               sx={{ mt: 2, ml: matches ? 2 : 0, width: matches ? 300 : 200 }}
-              id='outlined-password-input'
-              label='Password'
-              type='password'
-              name='password'
+              id="outlined-password-input"
+              label="Password"
+              type="password"
+              name="password"
               value={payload.password}
               onChange={(e) => {
                 setPayload({
@@ -125,17 +129,19 @@ function AddUser(props) {
               item
               md={12}
               sm={12}
-              sx={{ mt: 2, ml: matches ? 2 : 0, width: matches ? 300 : 200 }}>
+              sx={{ mt: 2, ml: matches ? 2 : 0, width: matches ? 300 : 200 }}
+            >
               <Select
                 menuPortalTarget={document.body}
                 menuPosition={"fixed"}
                 placeholder={"Search Store"}
-                value={payload.storeID}
+                value={payload.store != "" ? payload.store : {}}
                 onChange={(e) => {
                   console.log(e);
                   setPayload({
                     ...payload,
                     storeID: e.value,
+                    store: e,
                   });
                 }}
                 options={storeData?.map((e) => {
@@ -154,9 +160,12 @@ function AddUser(props) {
                 ml: matches ? 10 : 0,
               }}
               onClick={adduser}
-              type='submit'
-              disabled={!(payload.userName && payload.password)}
-              variant='contained'>
+              type="submit"
+              disabled={
+                !(payload.userName && payload.password && payload.storeID)
+              }
+              variant="contained"
+            >
               Add User
             </Button>
           </Box>
