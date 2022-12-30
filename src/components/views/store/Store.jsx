@@ -150,7 +150,7 @@ function Store(props) {
             onChange={(e) => {
               setPayload({
                 ...payload,
-                storeName: e.target.value.trim(),
+                storeName: e.target.value,
               });
             }}
           />
