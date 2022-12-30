@@ -30,6 +30,7 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Checkbox from "@mui/material/Checkbox";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 function SalesTableFormat(props) {
   const matches = useMediaQuery("(max-width:320px)");
@@ -52,12 +53,70 @@ function SalesTableFormat(props) {
       border: 0,
     },
   }));
+  const saveSales = async () => {
+    const pay = {
+      customerID: customerDetails.customerID,
+      totalNoofProducts: Number(salesData.length),
+      subTotal: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        )
+      ),
+      discount: Number(details.discount),
+      packingCost: Number(details.packingCharge),
+      total: String(
+        salesData.reduce(
+          (a, b) =>
+            Number(b.productCost) * Number(b.productQty) + a,
+          0
+        ) -
+          salesData
+            .filter((e) => e.isDiscount)
+            .reduce(
+              (a, b) =>
+                Number(b.productCost) * Number(b.productQty) +
+                a,
+              0
+            ) *
+            (Number(details.discount) / 100) +
+          Number(details.packingCharge)
+      ),
+      products: salesData.map((e) => {
+        return {
+          productID: Number(e.productID),
+          productQty: Number(e.productQty),
+        };
+      }),
+    };
+    await APIKit.post(URLS.addSales, pay).then((res) => {
+      if (res.data.status === 200) {
+        setSalesData([]);
+        setDetails({
+          discount: "",
+          packingCharge: "",
+        });
+        setCustomerDetails({
+          customerID: "",
+          name: "",
+          mobileNo: "",
+          city: "",
+        });
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
+  };
   const [selectedOption, setSelectedOption] = useState(null);
   const initialValues = {
     productCode: "",
     productName: "",
     productQty: "",
     packingCost: "",
+    productID: "",
     isDiscount: true,
   };
   const [salesData, setSalesData] = useState([]);
@@ -174,6 +233,7 @@ function SalesTableFormat(props) {
         item[item.length - 1].productCode = e.productCode;
         item[item.length - 1].productName = e.productName;
         item[item.length - 1].productCost = e.productCost;
+        item[item.length - 1].productID = e.productID;
         setSalesData([...item]);
       }
     });
@@ -612,6 +672,21 @@ function SalesTableFormat(props) {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            "& > *": {
+              m: 2,
+            },
+          }}>
+          <ButtonGroup variant='outlined' aria-label='outlined button group'>
+            <Button onClick={saveSales}>Save</Button>
+            <Button>View</Button>
+            <Button >Print</Button>
+          </ButtonGroup>
+        </Box>
               </Grid>
             </Grid>
           </Box>
