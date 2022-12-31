@@ -15,6 +15,7 @@ import Sales from "./components/views/sale/Sales";
 import SalesList from "./components/views/sale/SalesList";
 import SalesTableFormat from "./components/views/sale/SalesTableFormat";
 import Store from "./components/views/store/Store";
+import Pos from "./components/views/pos/Pos";
 
 const routes = [
   {
@@ -38,6 +39,10 @@ const routes = [
       },
       { path: "brands/create_brand", element: <CreateBrand /> },
     ],
+  },
+  {
+    path: "/app1/pos/",
+    element: <Pos />,
   },
   {
     path: "/",

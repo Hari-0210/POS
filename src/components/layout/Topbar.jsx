@@ -8,6 +8,8 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -209,7 +211,10 @@ export default function Topbar() {
             {title.title}
           </Typography>
           <Box sx={{ marginLeft: "auto", display: "flex" }}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 1 }}>
+            <RouterLink to={"/app1/pos/"}>
+              <PointOfSaleIcon sx={{ mt: 1, mr: 4 }} />
+            </RouterLink>
+            <Typography variant='h6' gutterBottom sx={{ mt: 1 }}>
               <CapitalizedText text={userData.userName} />
             </Typography>
             <IconButton
