@@ -26,4 +26,6 @@ export const URLS = {
   addSales: `${baseUrl}addSales`,
   getSales: `${baseUrl}getSales`,
   deleteSales: `${baseUrl}deleteSales`,
+  updateUser: `${baseUrl}updateUser`,
+
 };

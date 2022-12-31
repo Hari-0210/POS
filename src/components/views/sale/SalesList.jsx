@@ -57,7 +57,7 @@ function SalesList() {
   const [salesProductsData, setSalesProductsData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
-
+  var userData = JSON.parse(sessionStorage.getItem("userData"))
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const salesColumn = [
@@ -65,6 +65,12 @@ function SalesList() {
       title: "SNo",
       align: "center",
       type: ETTypes.SNo,
+    },
+    userData.storeID === 0 && {
+      title: "Store Name",
+      field: "storeName",
+      align: "center",
+      type: ETTypes.string,
     },
     {
       title: "Customer Name",

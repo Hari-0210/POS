@@ -142,11 +142,7 @@ export default function Topbar() {
     {
       name: "Product Categories",
       route: "productCategories",
-    },
-    {
-      name: "Brands",
-      route: "brands",
-    },
+    }
   ];
   const salesSubMenu = [
     {
@@ -195,38 +191,40 @@ export default function Topbar() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position='fixed' open={open}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color='inherit'
-            aria-label='open drawer'
+            color="inherit"
+            aria-label="open drawer"
             onClick={handleDrawerOpen}
-            edge='start'
+            edge="start"
             sx={{
               marginRight: 5,
               ...(open && { display: "none" }),
-            }}>
+            }}
+          >
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' gutterBottom>
+          <Typography variant="h6" gutterBottom>
             {title.title}
           </Typography>
           <Box sx={{ marginLeft: "auto", display: "flex" }}>
-            <Typography variant='h6' gutterBottom sx={{ mt: 1 }}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 1 }}>
               <CapitalizedText text={userData.userName} />
             </Typography>
             <IconButton
-              size='large'
-              aria-label='account of current user'
-              aria-controls='menu-appbar'
-              aria-haspopup='true'
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
               onClick={handleMenu}
-              color='inherit'>
+              color="inherit"
+            >
               <AccountCircle />
             </IconButton>
             <Menu
               sx={{ mt: "45px" }}
-              id='menu-appbar'
+              id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
@@ -238,8 +236,12 @@ export default function Topbar() {
                 horizontal: "right",
               }}
               open={Boolean(anchorEl)}
-              onClose={handleClose}>
-              <MenuItem onClick={addUser}>Add User</MenuItem>
+              onClose={handleClose}
+            >
+              {userData.storeID === 0 && (
+                <MenuItem onClick={addUser}>Add User</MenuItem>
+              )}
+
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </Box>
@@ -250,9 +252,10 @@ export default function Topbar() {
         //   keepMounted: true, // Better open performance on mobile.
         // }}
 
-        anchor='left'
+        anchor="left"
         variant={"permanent"}
-        open={open}>
+        open={open}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -271,17 +274,19 @@ export default function Topbar() {
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
-                }}>
+                }}
+              >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary='Dashboard'
+                  primary="Dashboard"
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
@@ -293,19 +298,19 @@ export default function Topbar() {
                 <ListItemIcon>
                   <AddShoppingCartIcon />
                 </ListItemIcon>
-                <ListItemText primary='Product' />
+                <ListItemText primary="Product" />
                 {openNestedMenu ? (
                   <ExpandLess onClick={handleClickNestedMenu} />
                 ) : (
                   <ExpandMore onClick={handleClickNestedMenu} />
                 )}
               </ListItemButton>
-              <Collapse in={openNestedMenu} timeout='auto' unmountOnExit>
+              <Collapse in={openNestedMenu} timeout="auto" unmountOnExit>
                 {productSubMenu.map((txt, i) => {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component='div' disablePadding>
+                        <List component="div" disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -324,7 +329,7 @@ export default function Topbar() {
                     <ShoppingBagIcon />
                   </ListItemIcon>
                 </RouterLink>
-                <ListItemText primary='Sales' />
+                <ListItemText primary="Sales" />
 
                 {openNestedMenu1 ? (
                   <ExpandLess onClick={handleClickNestedMenu1} />
@@ -332,12 +337,12 @@ export default function Topbar() {
                   <ExpandMore onClick={handleClickNestedMenu1} />
                 )}
               </ListItemButton>
-              <Collapse in={openNestedMenu1} timeout='auto' unmountOnExit>
+              <Collapse in={openNestedMenu1} timeout="auto" unmountOnExit>
                 {salesSubMenu.map((txt, i) => {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component='div' disablePadding>
+                        <List component="div" disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -357,15 +362,17 @@ export default function Topbar() {
                 sx={{
                   justifyContent: open ? "initial" : "center",
                 }}
-                className={matches ? "dropdown" : ""}>
+                className={matches ? "dropdown" : ""}
+              >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
                   }}
-                  class='dropbtn'>
-                  <div class='dropdown-content'>
+                  class="dropbtn"
+                >
+                  <div class="dropdown-content">
                     {productSubMenu.map((txt, i) => {
                       return (
                         <>
@@ -383,15 +390,17 @@ export default function Topbar() {
                 sx={{
                   justifyContent: open ? "initial" : "center",
                 }}
-                className={matches ? "dropdown" : ""}>
+                className={matches ? "dropdown" : ""}
+              >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
                   }}
-                  class='dropbtn'>
-                  <div class='dropdown-content'>
+                  class="dropbtn"
+                >
+                  <div class="dropdown-content">
                     {salesSubMenu.map((txt, i) => {
                       return (
                         <>
@@ -407,26 +416,33 @@ export default function Topbar() {
               </ListItemButton>
             </>
           )}
-          <ListItem key={"Store"} disablePadding>
-            <RouterLink to={`/app/store/`}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}>
-                <ListItemIcon
+          {userData.storeID === 0 && (
+            <ListItem key={"Store"} disablePadding>
+              <RouterLink to={`/app/store/`}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}>
-                  <StoreIcon />
-                </ListItemIcon>
-                <ListItemText primary='Sales' sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </RouterLink>
-          </ListItem>
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <StoreIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Store"
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </RouterLink>
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </Box>

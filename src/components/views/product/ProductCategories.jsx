@@ -22,6 +22,7 @@ function ProductCategories(props) {
   const [payload, setPayload] = useState({
     productCategoryName: "",
   });
+  var userData = JSON.parse(sessionStorage.getItem("userData"))
   const matches = useMediaQuery("(min-width:600px)");
   const [productCategoryData, setProductCategoryData] = useState([]);
   const productCategoryColumn = [
@@ -29,6 +30,12 @@ function ProductCategories(props) {
       title: "SNo",
       align: "center",
       type: ETTypes.SNo,
+    },
+    userData.storeID === 0 && {
+      title: "Store Name",
+      field: "storeName",
+      align: "center",
+      type: ETTypes.string,
     },
     {
       title: "Product Category",

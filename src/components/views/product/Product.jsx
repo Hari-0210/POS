@@ -20,6 +20,7 @@ import { useConfirm } from "material-ui-confirm";
 import Loader from "../common/CommonLoader";
 
 function Product(props) {
+  var userData = JSON.parse(sessionStorage.getItem("userData"))
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const confirm = useConfirm();
@@ -79,6 +80,13 @@ function Product(props) {
       align: "center",
       type: ETTypes.SNo,
     },
+    userData.storeID === 0 && {
+      title: "Store Name",
+      field: "storeName",
+      align: "center",
+      type: ETTypes.string,
+    }
+    ,
     {
       title: "Product",
       field: "productName",
