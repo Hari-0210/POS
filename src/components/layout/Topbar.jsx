@@ -120,7 +120,7 @@ export default function Topbar() {
     { path: "/app/brands/create_brand/", title: "Create Brand" },
     { path: "/app/sales/", title: "Sales" },
     { path: "/app/dummySales/", title: "Dummy Sales" },
-
+    { path: "/app/dummySalesList/", title: "Dummy Sales" },
   ];
 
   const [title, setTitle] = React.useState({ path: "", title: "" });
@@ -154,8 +154,12 @@ export default function Topbar() {
       name: "Estimate",
       route: "sales",
     },{
-      name: "Dummy",
+      name: "Dummy Sales",
       route: "dummySales",
+    },
+    {
+      name: "Dummy Sales List",
+      route: "dummySalesList",
     },
   ];
   const addUser = () => {

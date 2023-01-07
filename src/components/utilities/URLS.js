@@ -28,6 +28,9 @@ export const URLS = {
   deleteSales: `${baseUrl}deleteSales`,
   updateUser: `${baseUrl}updateUser`,
   getProductByCategory: `${baseUrl}getProductByCategory`,
+  addDummySales: `${baseUrl}addDummySales`,
+  getDummySales: `${baseUrl}getDummySales`,
+  dummyDeleteSales: `${baseUrl}dummyDeleteSales`,
 
 
 };
