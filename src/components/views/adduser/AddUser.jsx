@@ -46,6 +46,12 @@ function AddUser(props) {
       type: ETTypes.numeric,
     },
     {
+      title: "User Password",
+      field: "pass",
+      align: "center",
+      type: ETTypes.numeric,
+    },
+    {
       title: "Action",
       field: "action",
       align: "center",

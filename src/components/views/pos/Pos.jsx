@@ -34,7 +34,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { MESSAGE } from "../../utilities/constant";
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 function Pos(props) {
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
@@ -150,8 +150,10 @@ function Pos(props) {
     });
     var isDuplicate = valueArr.some((e) => e === data.productID);
     if (isDuplicate) {
-      variant = "error";
-      enqueueSnackbar("This Product Already Added", { variant, anchorOrigin });
+      console.log();
+      item[valueArr.indexOf(data.productID)].productQty =
+        item[valueArr.indexOf(data.productID)].productQty + 1;
+      setSalesData([...item]);
       return;
     }
     item.push(initialValues);
@@ -226,7 +228,10 @@ function Pos(props) {
     delete pay.customerID;
     if (pay.name === "" || pay.city === "" || pay.mobileNo === "") {
       variant = "error";
-      enqueueSnackbar("Mobile, Name and City is Mandatory", { variant, anchorOrigin });
+      enqueueSnackbar("Mobile, Name and City is Mandatory", {
+        variant,
+        anchorOrigin,
+      });
       return;
     }
     await APIKit.post(URLS.addCustomer, pay).then((res) => {
@@ -310,15 +315,17 @@ function Pos(props) {
 
   // for fullscreen
   var elem = document.documentElement;
-function openFullscreen() {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
+  function openFullscreen() {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen();
+    }
   }
-}
   return (
     <div id="pos">
       <Grid container spacing={3} p={1}>
@@ -641,7 +648,7 @@ function openFullscreen() {
               />
             </Grid>
             <Grid item sm={12} md={1}>
-            < FullscreenIcon fontSize="large" onClick={openFullscreen}/>
+              <FullscreenIcon fontSize="large" onClick={openFullscreen} />
             </Grid>
             <Grid item sm={12} md={12}>
               <Card sx={{ minHeight: 535, backgroundColor: "aliceblue" }}>

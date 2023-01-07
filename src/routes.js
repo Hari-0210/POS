@@ -18,6 +18,7 @@ import Store from "./components/views/store/Store";
 import Pos from "./components/views/pos/Pos";
 import DummySales from "./components/views/sale/DummySales";
 import DummySalesList from "./components/views/sale/DummySalesList";
+import SalesNew from "./components/views/sale/SalesNew";
 
 const routes = [
   {
@@ -27,7 +28,7 @@ const routes = [
       { path: "dashboard", element: <Dashboard /> },
       { path: "product", element: <Product /> },
       { path: "sales", element: <SalesTableFormat /> },
-      // { path: "sales", element: <Sales /> },
+      { path: "sales1", element: <Sales /> },
       { path: "salesList", element: <SalesList /> },
       { path: "productCategories", element: <ProductCategories /> },
       { path: "brands", element: <Brands /> },
@@ -41,7 +42,8 @@ const routes = [
       },
       { path: "brands/create_brand", element: <CreateBrand /> },
       { path: "dummySales", element: <DummySales /> },
-      { path: "dummySalesList", element: <DummySalesList /> }
+      { path: "dummySalesList", element: <DummySalesList /> },
+      { path: "salesNew", element: <SalesNew /> }
     ],
   },
   {

@@ -119,8 +119,9 @@ export default function Topbar() {
 
     { path: "/app/brands/create_brand/", title: "Create Brand" },
     { path: "/app/sales/", title: "Sales" },
-    { path: "/app/dummySales/", title: "Dummy Sales" },
-    { path: "/app/dummySalesList/", title: "Dummy Sales" },
+    { path: "/app/dummySales/", title: "Sales" },
+    { path: "/app/dummySalesList/", title: "Sales" },
+    { path: "/app/salesNew/", title: "Sales" },
   ];
 
   const [title, setTitle] = React.useState({ path: "", title: "" });
@@ -147,19 +148,32 @@ export default function Topbar() {
     {
       name: "Product Categories",
       route: "productCategories",
-    }
+    },
   ];
   const salesSubMenu = [
     {
       name: "Estimate",
       route: "sales",
-    },{
-      name: "Dummy Sales",
+    },
+    {
+      name: "Estimate List",
+      route: "salesList",
+    },
+    {
+      name: "Sales",
       route: "dummySales",
     },
     {
-      name: "Dummy Sales List",
+      name: "Sales List",
       route: "dummySalesList",
+    },
+    // {
+    //   name: "Sales1",
+    //   route: "sales1",
+    // },
+    {
+      name: "Sales New",
+      route: "salesNew",
     },
   ];
   const addUser = () => {
@@ -224,7 +238,7 @@ export default function Topbar() {
             <RouterLink to={"/app1/pos/"}>
               <PointOfSaleIcon sx={{ mt: 1, mr: 4 }} />
             </RouterLink>
-            <Typography variant='h6' gutterBottom sx={{ mt: 1 }}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 1 }}>
               <CapitalizedText text={userData.userName} />
             </Typography>
             <IconButton
@@ -262,15 +276,7 @@ export default function Topbar() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer
-        // ModalProps={{
-        //   keepMounted: true, // Better open performance on mobile.
-        // }}
-
-        anchor="left"
-        variant={"permanent"}
-        open={open}
-      >
+      <Drawer anchor="left" variant={"permanent"} open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -339,11 +345,9 @@ export default function Topbar() {
                 })}
               </Collapse>
               <ListItemButton>
-                <RouterLink to={`/app/salesList/`}>
-                  <ListItemIcon>
-                    <ShoppingBagIcon />
-                  </ListItemIcon>
-                </RouterLink>
+                <ListItemIcon>
+                  <ShoppingBagIcon />
+                </ListItemIcon>
                 <ListItemText primary="Sales" />
 
                 {openNestedMenu1 ? (
