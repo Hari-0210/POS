@@ -31,6 +31,10 @@ import FormGroup from "@mui/material/FormGroup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Checkbox from "@mui/material/Checkbox";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PropTypes from "prop-types";
+import { MESSAGE } from "../../utilities/constant";
 
 function SalesTableFormat(props) {
   const matches = useMediaQuery("(max-width:320px)");
@@ -67,16 +71,13 @@ function SalesTableFormat(props) {
       packingCost: Number(details.packingCharge),
       total: String(
         salesData.reduce(
-          (a, b) =>
-            Number(b.productCost) * Number(b.productQty) + a,
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
           0
         ) -
           salesData
             .filter((e) => e.isDiscount)
             .reduce(
-              (a, b) =>
-                Number(b.productCost) * Number(b.productQty) +
-                a,
+              (a, b) => Number(b.productCost) * Number(b.productQty) + a,
               0
             ) *
             (Number(details.discount) / 100) +
@@ -89,6 +90,16 @@ function SalesTableFormat(props) {
         };
       }),
     };
+    if (pay.customerID === "") {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
+      return;
+    }
+    if (!salesData.length) {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
+      return;
+    }
     await APIKit.post(URLS.addSales, pay).then((res) => {
       if (res.data.status === 200) {
         setSalesData([]);
@@ -220,7 +231,7 @@ function SalesTableFormat(props) {
     var valueArr = salesData.map(function (item) {
       return item.productCode;
     });
-    var isDuplicate = valueArr.some(e => e === data.value);
+    var isDuplicate = valueArr.some((e) => e === data.value);
     if (isDuplicate) {
       variant = "error";
       enqueueSnackbar("This Product Already Added", { variant, anchorOrigin });
@@ -246,7 +257,7 @@ function SalesTableFormat(props) {
   const [isLoading, setIsLoading] = useState(false);
   const checkCust = async (e) => {
     let item = { ...customerDetails };
-    setCustomerList([...customerList])
+    setCustomerList([...customerList]);
     for (var i = 0; i < customerList.length; i++) {
       if (customerList[i].mobileNo === customerDetails.mobileNo) {
         item.customerID = customerList[i].customerID;
@@ -277,12 +288,28 @@ function SalesTableFormat(props) {
       return;
     }
   };
+  useEffect(() => {
+    let item = { ...customerDetails };
+    for (var i = 0; i < customerList.length; i++) {
+      if (customerList[i].mobileNo === customerDetails.mobileNo) {
+        item.customerID = customerList[i].customerID;
+        item.name = customerList[i].name;
+        item.city = customerList[i].city;
+        setCustomerDetails({
+          ...item,
+        });
+      }
+    }
+  }, [customerList]);
   const createCustomer = async () => {
     const pay = { ...customerDetails };
     delete pay.customerID;
-    if (pay.name === "" || pay.city === "") {
+    if (pay.name === "" || pay.city === "" || pay.mobileNo === "") {
       variant = "error";
-      enqueueSnackbar("Name and City is Mandatory", { variant, anchorOrigin });
+      enqueueSnackbar("Mobile, Name and City is Mandatory", {
+        variant,
+        anchorOrigin,
+      });
       return;
     }
     await APIKit.post(URLS.addCustomer, pay).then((res) => {
@@ -291,18 +318,6 @@ function SalesTableFormat(props) {
         getCustomer();
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-        let item = { ...customerDetails };
-        for (var i = 0; i < customerList.length; i++) {
-          if (customerList[i].mobileNo === customerDetails.mobileNo) {
-            item.customerID = customerList[i].customerID;
-            item.name = customerList[i].name;
-            item.city = customerList[i].city;
-            setCustomerDetails({
-              ...item,
-            });
-            break;
-          }
-        }
       } else {
         variant = "error";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -321,378 +336,402 @@ function SalesTableFormat(props) {
       }
     });
   };
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+  let regEx = {
+    numbersOnly: /^[0-9]*$/,
+  };
 
   return (
-    <Grid spacing={3} m={!matches && 3}>
-      <Loader isLoading={isLoading} />
-      <Grid item sm={12} md={12}>
-        <Typography
-          color='black'
-          gutterBottom
-          variant='h6'
-          sx={{
-            marginBottom: "10px",
-            marginLeft: "20px",
-            marginTop: "20px",
-            display: "flex",
-            alignItems: "center",
-            width: 200,
-          }}>
-          Estimate
-        </Typography>
+    <>
+      <Grid spacing={3}>
+        <Grid item sm={12} md={12}>
+          <Card sx={{ borderRadius: 3, mt: 2, mr: 2, ml: 2, mb: 4 }}>
+            <Box
+              sx={{
+                p: 4,
+              }}
+            >
+              <Grid container spacing={4}>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="Enter Customer Mobile Number"
+                    name="mobileNo"
+                    onChange={(e) => {
+                      if (
+                        e.target.value === "" ||
+                        regEx.numbersOnly.test(e.target.value)
+                      ) {
+                        editableKeyToFocus.current = `mobileNo`;
+                        setCustomerDetails({
+                          ...customerDetails,
+                          mobileNo: e.target.value.trim(),
+                        });
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        checkCust();
+                      }
+                    }}
+                    value={customerDetails.mobileNo}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="Enter Customer Name"
+                    disabled={isDis}
+                    name="name"
+                    onChange={(e) => {
+                      setCustomerDetails({
+                        ...customerDetails,
+                        name: e.target.value,
+                      });
+                    }}
+                    fullWidth
+                    value={customerDetails.name}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="Customer City"
+                    name="city"
+                    disabled={isDis}
+                    onChange={(e) => {
+                      setCustomerDetails({
+                        ...customerDetails,
+                        city: e.target.value,
+                      });
+                    }}
+                    onBlur={createCustomer}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        createCustomer();
+                      }
+                    }}
+                    fullWidth
+                    value={customerDetails.city}
+                    variant="outlined"
+                  />
+                </Grid>
 
-        <Card sx={{ borderRadius: 3, mt: 2, mr: 2, ml: 2, mb: 4 }}>
-          <Box
-            sx={{
-              p: 4,
-            }}>
-            <Grid container spacing={4}>
-              <Grid item md={4} sm={12}>
-                <TextField
-                  id='outlined-basic'
-                  label='Enter Customer Mobile Number'
-                  name='mobileNo'
-                  onChange={(e) => {
-                    editableKeyToFocus.current = `mobileNo`;
-                    setCustomerDetails({
-                      ...customerDetails,
-                      mobileNo: e.target.value.trim(),
-                    });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      checkCust();
-                    }
-                  }}
-                  value={customerDetails.mobileNo}
-                  fullWidth
-                  variant='outlined'
-                />
-              </Grid>
-              <Grid item md={4} sm={12}>
-                <TextField
-                  id='outlined-basic'
-                  label='Enter Customer Name'
-                  disabled={isDis}
-                  name='name'
-                  onChange={(e) => {
-                    setCustomerDetails({
-                      ...customerDetails,
-                      name: e.target.value,
-                    });
-                  }}
-                  fullWidth
-                  value={customerDetails.name}
-                  variant='outlined'
-                />
-              </Grid>
-              <Grid item md={4} sm={12}>
-                <TextField
-                  id='outlined-basic'
-                  label='Customer City'
-                  name='city'
-                  disabled={isDis}
-                  onChange={(e) => {
-                    setCustomerDetails({
-                      ...customerDetails,
-                      city: e.target.value,
-                    });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      createCustomer();
-                    }
-                  }}
-                  fullWidth
-                  value={customerDetails.city}
-                  variant='outlined'
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} sx={{ overflow: "auto" }}>
-                <TableContainer component={Paper} sx={{ mt: 3 }} id='printme'>
-                  <Table sx={{ minWidth: 300 }} aria-label='customized table'>
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell padding='checkbox'></StyledTableCell>
-                        <StyledTableCell align='center'>SNo</StyledTableCell>
-                        <StyledTableCell align='center'>
-                          Product Name (Code)
-                        </StyledTableCell>
-                        <StyledTableCell align='center'>
-                          Quantity
-                        </StyledTableCell>
-                        <StyledTableCell align='center'>Rate Per Unit</StyledTableCell>
-                        <StyledTableCell align='center'>Rate</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {salesData.map((data, i) => {
-                        return (
-                          <StyledTableRow>
-                            <StyledTableCell padding='checkbox'>
-                              <Checkbox
-                                color='primary'
-                                checked={data.isDiscount}
-                                onChange={() => {
-                                  let item = [...salesData];
-                                  item[i].isDiscount = !item[i].isDiscount;
-                                  setSalesData([...item]);
-                                }}
-                                inputProps={{
-                                  "aria-label": "select all desserts",
-                                }}
-                              />
-                            </StyledTableCell>
-                            <StyledTableCell align='center'>
-                              {i + 1}
-                            </StyledTableCell>
-
-                            <StyledTableCell align='center'>
-                              {data.productName} ({data.productCode})
-                            </StyledTableCell>
-                            <StyledTableCell align='center'>
-                              {/* <Fab
-                              size="small"
-                              color="secondary"
-                              aria-label="add"
-                            >
-                              <RemoveIcon />
-                            </Fab>
-                          
-                          <TextField
-                           style = {{width: 50}} 
-                           id="input-with-sx" variant="standard" />
-                            <Fab
-                              size="small"
-                              color="secondary"
-                              aria-label="add"
-                            >
-                              <AddIcon />
-                            </Fab> */}
-                              <FormGroup
-                                sx={{ whiteSpace: "nowrap", display: "unset" }}>
-                                <Button
-                                  disabled={data.productQty <= 1}
-                                  variant='text'
-                                  sx={{ mt: 1 }}
-                                  onClick={() => {
-                                    editableKeyToFocus.current = `productQty${i}`;
+                <Grid item md={12} sm={12} sx={{ overflow: "auto" }}>
+                  <TableContainer component={Paper} sx={{ mt: 3 }} id="printme">
+                    <Table sx={{ minWidth: 300 }} aria-label="customized table">
+                      <TableHead>
+                        <TableRow>
+                          <StyledTableCell padding="checkbox"></StyledTableCell>
+                          <StyledTableCell align="center">SNo</StyledTableCell>
+                          <StyledTableCell align="center">
+                            Product Name (Code)
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                            Quantity
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                            Rate Per Unit
+                          </StyledTableCell>
+                          <StyledTableCell align="center">Rate</StyledTableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {salesData.map((data, i) => {
+                          return (
+                            <StyledTableRow>
+                              <StyledTableCell padding="checkbox">
+                                <Checkbox
+                                  color="primary"
+                                  checked={data.isDiscount}
+                                  onChange={() => {
                                     let item = [...salesData];
-                                    item[i].productQty =
-                                      Number(item[i].productQty) - 1;
-                                    setSalesData([...item]);
-                                  }}>
-                                  <RemoveIcon />
-                                </Button>
-                                <TextField
-                                  variant='outlined'
-                                  style={{ width: 70 }}
-                                  name={`productQty${i}`}
-                                  value={data.productQty}
-                                  onChange={(e) => {
-                                    editableKeyToFocus.current = `productQty${i}`;
-                                    let item = [...salesData];
-                                    item[i].productQty = Number(e.target.value);
+                                    item[i].isDiscount = !item[i].isDiscount;
                                     setSalesData([...item]);
                                   }}
-                                  autoFocus={
-                                    `productQty${i}` ===
-                                    editableKeyToFocus.current
-                                  }
+                                  inputProps={{
+                                    "aria-label": "select all desserts",
+                                  }}
                                 />
-                                <Button
-                                  variant='text'
-                                  onClick={() => {
-                                    editableKeyToFocus.current = `productQty${i}`;
-                                    let item = [...salesData];
-                                    item[i].productQty =
-                                      Number(item[i].productQty) + 1;
-                                    setSalesData([...item]);
-                                  }}>
-                                  <AddIcon />
-                                </Button>
-                              </FormGroup>
-                            </StyledTableCell>
-                            <StyledTableCell align='center'>
-                            <TextField
-                                  variant='outlined'
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {i + 1}
+                              </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {data.productName} ({data.productCode})
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <FormGroup
+                                  sx={{
+                                    whiteSpace: "nowrap",
+                                    display: "unset",
+                                  }}
+                                >
+                                  <Button
+                                    disabled={data.productQty <= 1}
+                                    variant="text"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => {
+                                      editableKeyToFocus.current = `productQty${i}`;
+                                      let item = [...salesData];
+                                      item[i].productQty =
+                                        Number(item[i].productQty) - 1;
+                                      setSalesData([...item]);
+                                    }}
+                                  >
+                                    <RemoveIcon />
+                                  </Button>
+                                  <TextField
+                                    variant="outlined"
+                                    style={{ width: 70 }}
+                                    name={`productQty${i}`}
+                                    value={data.productQty}
+                                    onBlur={() => {
+                                      if (data.productQty === 0) {
+                                        let item = [...salesData];
+                                        data.productQty === 0
+                                          ? (item[i].productQty = Number(1))
+                                          : (item[i].productQty = Number(
+                                              data.productQty
+                                            ));
+                                        setSalesData([...item]);
+                                      }
+                                    }}
+                                    onChange={(e) => {
+                                      if (
+                                        e.target.value === "" ||
+                                        regEx.numbersOnly.test(e.target.value)
+                                      ) {
+                                        editableKeyToFocus.current = `productQty${i}`;
+                                        let item = [...salesData];
+                                        item[i].productQty = Number(
+                                          e.target.value
+                                        );
+                                        setSalesData([...item]);
+                                      }
+                                    }}
+                                    autoFocus={
+                                      `productQty${i}` ===
+                                      editableKeyToFocus.current
+                                    }
+                                  />
+                                  <Button
+                                    variant="text"
+                                    onClick={() => {
+                                      editableKeyToFocus.current = `productQty${i}`;
+                                      let item = [...salesData];
+                                      item[i].productQty =
+                                        Number(item[i].productQty) + 1;
+                                      setSalesData([...item]);
+                                    }}
+                                  >
+                                    <AddIcon />
+                                  </Button>
+                                </FormGroup>
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <TextField
+                                  variant="outlined"
                                   style={{ width: 70 }}
                                   name={`productCost${i}`}
                                   value={data.productCost}
                                   onChange={(e) => {
-                                    editableKeyToFocus.current = `productCost${i}`;
-                                    let item = [...salesData];
-                                    item[i].productCost = Number(e.target.value);
-                                    setSalesData([...item]);
+                                    if (
+                                      e.target.value === "" ||
+                                      regEx.numbersOnly.test(e.target.value)
+                                    ) {
+                                      editableKeyToFocus.current = `productCost${i}`;
+                                      let item = [...salesData];
+                                      item[i].productCost = Number(
+                                        e.target.value
+                                      );
+                                      setSalesData([...item]);
+                                    }
                                   }}
                                   autoFocus={
                                     `productCost${i}` ===
                                     editableKeyToFocus.current
                                   }
                                 />
-                             
-                            </StyledTableCell>
-                            <StyledTableCell align='center'>
-                            {data.productQty !== ""
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {data.productQty !== ""
                                   ? data.productQty * data.productCost
                                   : data.productCost}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-              <Grid item md={4} sm={12}>
-                <Select
-                  styles={customStyles}
-                  menuPortalTarget={document.body}
-                  menuPosition={"fixed"}
-                  placeholder={"Search Material"}
-                  onChange={(e) => {
-                    matchProduct(e);
-                  }}
-                  options={product?.map((e) => {
-                    return {
-                      value: e.productCode,
-                      label: e.productName + " (" + e.productCode + ")",
-                    };
-                  })}
-                />
-              </Grid>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <Select
+                    styles={customStyles}
+                    menuPortalTarget={document.body}
+                    menuPosition={"fixed"}
+                    placeholder={"Search Material"}
+                    onChange={(e) => {
+                      matchProduct(e);
+                    }}
+                    options={product?.map((e) => {
+                      return {
+                        value: e.productCode,
+                        label: e.productName + " (" + e.productCode + ")",
+                      };
+                    })}
+                  />
+                </Grid>
 
-              <Grid
-                item
-                md={4}
-                sm={12}
-                sx={{ overflow: "auto", marginLeft: "auto" }}>
-                <TableContainer component={Paper} sx={{ mt: 2 }} id='printme'>
-                  <Table aria-label='customized table'>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell colSpan={4} align='right'>
-                          Subtotal
-                        </TableCell>
-                        <TableCell align='center'>
-                          {salesData.reduce(
-                            (a, b) =>
-                              Number(b.productCost) * Number(b.productQty) + a,
-                            0
-                          )}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell colSpan={4} align='right'>
-                          Discount
-                        </TableCell>
-                        <TableCell align='center'>
-                          <FormControl variant='standard'>
-                            <InputLabel htmlFor='standard-adornment-amount'>
-                              Percentage
-                            </InputLabel>
-                            <Input
-                              id='standard-adornment-amount'
-                              startAdornment={
-                                <InputAdornment position='start'>
-                                  %
-                                </InputAdornment>
-                              }
-                              name={`discount`}
-                              autoFocus={
-                                `discount` === editableKeyToFocus.current
-                              }
-                              onChange={(e) => {
-                                editableKeyToFocus.current = `discount`;
-                                setDetails({
-                                  ...details,
-                                  discount: e.target.value,
-                                });
-                              }}
-                              value={details.discount}
-                            />
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell colSpan={4} align='right'>
-                          Packing Charge
-                        </TableCell>
-                        <TableCell align='center'>
-                          <FormControl variant='standard'>
-                            <InputLabel htmlFor='standard-adornment-amount'>
-                              Amount
-                            </InputLabel>
-                            <Input
-                              id='standard-adornment-amount'
-                              name={`packingCharge`}
-                              autoFocus={
-                                `packingCharge` === editableKeyToFocus.current
-                              }
-                              onChange={(e) => {
-                                editableKeyToFocus.current = `packingCharge`;
-                                setDetails({
-                                  ...details,
-                                  packingCharge: e.target.value,
-                                });
-                              }}
-                              value={details.packingCharge}
-                              startAdornment={
-                                <InputAdornment position='start'>
-                                  Rs
-                                </InputAdornment>
-                              }
-                            />
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell colSpan={4} align='right'>
-                          Total
-                        </TableCell>
-                        <TableCell align='center'>
-                          {salesData.reduce(
-                            (a, b) =>
-                              Number(b.productCost) * Number(b.productQty) + a,
-                            0
-                          ) -
-                            salesData
-                              .filter((e) => e.isDiscount)
-                              .reduce(
-                                (a, b) =>
-                                  Number(b.productCost) * Number(b.productQty) +
-                                  a,
-                                0
-                              ) *
-                              (Number(details.discount) / 100) +
-                            Number(details.packingCharge)}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            "& > *": {
-              m: 2,
-            },
-          }}>
-          <ButtonGroup variant='outlined' aria-label='outlined button group'>
-            <Button onClick={saveSales}>Save</Button>
-            <Button>View</Button>
-            <Button >Print</Button>
-          </ButtonGroup>
-        </Box>
+                <Grid
+                  item
+                  md={4}
+                  sm={12}
+                  sx={{ overflow: "auto", marginLeft: "auto" }}
+                >
+                  <TableContainer component={Paper} sx={{ mt: 2 }} id="printme">
+                    <Table aria-label="customized table">
+                      <TableBody>
+                        <TableRow>
+                          <TableCell colSpan={4} align="right">
+                            Subtotal
+                          </TableCell>
+                          <TableCell align="center">
+                            {salesData.reduce(
+                              (a, b) =>
+                                Number(b.productCost) * Number(b.productQty) +
+                                a,
+                              0
+                            )}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={4} align="right">
+                            Discount
+                          </TableCell>
+                          <TableCell align="center">
+                            <FormControl variant="standard">
+                              <InputLabel htmlFor="standard-adornment-amount">
+                                Percentage
+                              </InputLabel>
+                              <Input
+                                id="standard-adornment-amount"
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    %
+                                  </InputAdornment>
+                                }
+                                name={`discount`}
+                                autoFocus={
+                                  `discount` === editableKeyToFocus.current
+                                }
+                                onChange={(e) => {
+                                  editableKeyToFocus.current = `discount`;
+                                  setDetails({
+                                    ...details,
+                                    discount: e.target.value,
+                                  });
+                                }}
+                                value={details.discount}
+                              />
+                            </FormControl>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={4} align="right">
+                            Packing Charge
+                          </TableCell>
+                          <TableCell align="center">
+                            <FormControl variant="standard">
+                              <InputLabel htmlFor="standard-adornment-amount">
+                                Amount
+                              </InputLabel>
+                              <Input
+                                id="standard-adornment-amount"
+                                name={`packingCharge`}
+                                autoFocus={
+                                  `packingCharge` === editableKeyToFocus.current
+                                }
+                                onChange={(e) => {
+                                  editableKeyToFocus.current = `packingCharge`;
+                                  setDetails({
+                                    ...details,
+                                    packingCharge: e.target.value,
+                                  });
+                                }}
+                                value={details.packingCharge}
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    Rs
+                                  </InputAdornment>
+                                }
+                              />
+                            </FormControl>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={4} align="right">
+                            Total
+                          </TableCell>
+                          <TableCell align="center">
+                            {salesData.reduce(
+                              (a, b) =>
+                                Number(b.productCost) * Number(b.productQty) +
+                                a,
+                              0
+                            ) -
+                              salesData
+                                .filter((e) => e.isDiscount)
+                                .reduce(
+                                  (a, b) =>
+                                    Number(b.productCost) *
+                                      Number(b.productQty) +
+                                    a,
+                                  0
+                                ) *
+                                (Number(details.discount) / 100) +
+                              Number(details.packingCharge)}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      "& > *": {
+                        m: 2,
+                      },
+                    }}
+                  >
+                    <ButtonGroup
+                      variant="outlined"
+                      aria-label="outlined button group"
+                    >
+                      <Button onClick={saveSales}>Save</Button>
+                      <Button>View</Button>
+                      <Button>Print</Button>
+                    </ButtonGroup>
+                  </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </Card>
+            </Box>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }
 

@@ -39,4 +39,10 @@
   
   /* Change the background color of the dropdown button when the dropdown content is shown */
   
-  
+  ::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color:gray;
+  /* border-radius: 10px; */
+}

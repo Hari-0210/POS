@@ -42,10 +42,7 @@ function Sales(props) {
       border: 0,
     },
   }));
-  useEffect(() => {
-    getProduct();
-    getCustomer();
-  }, []);
+  
   const printFun = () => {
     // var orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
     const oldPage = document.body.innerHTML;
@@ -195,6 +192,10 @@ function Sales(props) {
       }
     });
   };
+  useEffect(() => {
+    getProduct();
+    getCustomer();
+  }, []);
   let regEx = {
     numbersOnly: /^[0-9]*$/,
     numbWithoutLeadingZeros: /^(0|[1-9][0-9]{0,2})$/,

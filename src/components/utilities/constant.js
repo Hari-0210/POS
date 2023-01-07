@@ -8,5 +8,7 @@ export const MESSAGE = {
   brand: "Brand is required",
   quantity: "Quantity is required",
   cost: "Cost is required",
-  productName: "Product Name is required"
+  productName: "Product Name is required",
+  custDetails: "Please Fill Customer Details",
+  noProducts: "No Products Selected"
 };
