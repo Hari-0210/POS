@@ -19,6 +19,7 @@ import Pos from "./components/views/pos/Pos";
 import DummySales from "./components/views/sale/DummySales";
 import DummySalesList from "./components/views/sale/DummySalesList";
 import SalesNew from "./components/views/sale/SalesNew";
+import MyProfile from "./components/views/adduser/MyProfile";
 
 const routes = [
   {
@@ -43,7 +44,8 @@ const routes = [
       { path: "brands/create_brand", element: <CreateBrand /> },
       { path: "dummySales", element: <DummySales /> },
       { path: "dummySalesList", element: <DummySalesList /> },
-      { path: "salesNew", element: <SalesNew /> }
+      { path: "salesNew", element: <SalesNew /> },
+      { path: "profile", element: <MyProfile /> }
     ],
   },
   {

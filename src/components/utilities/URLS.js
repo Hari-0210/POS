@@ -31,6 +31,11 @@ export const URLS = {
   addDummySales: `${baseUrl}addDummySales`,
   getDummySales: `${baseUrl}getDummySales`,
   dummyDeleteSales: `${baseUrl}dummyDeleteSales`,
+  getCompanyDetails: `${baseUrl}getCompanyDetails`,
+  addCompanyDetails: `${baseUrl}addCompanyDetails`,
+  updatePassword: `${baseUrl}updatePassword`,
+
+
 
 
 };

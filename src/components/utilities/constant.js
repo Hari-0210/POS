@@ -10,5 +10,9 @@ export const MESSAGE = {
   cost: "Cost is required",
   productName: "Product Name is required",
   custDetails: "Please Fill Customer Details",
-  noProducts: "No Products Selected"
+  noProducts: "No Products Selected",
+  mobNo: "Mobile Number should be 10 number",
+  profile: "Profile Updated Successfully",
+  pass: "Password Updated Successfully"
+
 };

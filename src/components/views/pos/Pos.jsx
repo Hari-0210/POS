@@ -23,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
-import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
@@ -35,6 +35,8 @@ import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { MESSAGE } from "../../utilities/constant";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 function Pos(props) {
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
@@ -72,6 +74,7 @@ function Pos(props) {
       }
     });
   };
+  const navigate = useNavigate();
   const [customerList, setCustomerList] = useState([]);
   const getCustomer = async (data = "") => {
     await APIKit.get(URLS.getCustomer).then((res) => {
@@ -150,7 +153,6 @@ function Pos(props) {
     });
     var isDuplicate = valueArr.some((e) => e === data.productID);
     if (isDuplicate) {
-      console.log();
       item[valueArr.indexOf(data.productID)].productQty =
         item[valueArr.indexOf(data.productID)].productQty + 1;
       setSalesData([...item]);
@@ -326,6 +328,156 @@ function Pos(props) {
       elem.msRequestFullscreen();
     }
   }
+  const print = async () => {
+    const oldPage = document.body.innerHTML;
+    const html = `
+    <html>
+<head>
+<title>ESTIMATE</title>
+<style>
+@media print {
+    @page {
+        margin-top: 0; 
+        margin-bottom: 0; 
+		margin-left:20px;
+		margin-right:20px;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+}
+</style>
+</head>
+<body style="width: 793px; height:283mm; border: 1px solid black; margin-top:20px; font-family: 'Roboto', sans-serif;">
+    <div style="display: flex; width: 100%; padding-bottom:20px;">
+        <div style="width:50%; padding-left:30px; padding-top:15px;">
+            <div style="font-size:40px; color: #004aab;"><b>ESTIMATE </b></div> 
+            <div style="font-size:14px; padding-top:5px;">3/1300/5, Parani Krishna Agencies
+                Sivakasi To Sattur Road
+                Paraipatti, Sivakasi </div>
+            <div style="font-size:14px; padding-top:5px;">Mobile - 76399 47155 </div>
+            <div style="font-size:14px; padding-top:5px;">Email - sivakasikarthicrackers@gmail.com </div>
+        </div>
+		<div style="width:50%; align-self: center; text-align:right; padding-right:30px;">
+			<img src="images/logo.jpg" style="width:100px;">
+		</div>
+	</div>
+    <div style="display: flex; width: 100%;">
+        <div style="width:100%; padding:0 0px;">
+            <div style="border-top: 2px solid #eaeaea;"></div>
+        </div> 
+	</div>
+    <div style="display: flex; width:100%; font-size:14px;">
+		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Date: </b></div> 
+            <div style="font-size:14px;">${new Date().toJSON().slice(0,10).replace(/-/g,'/')} </div> 
+		</div>
+		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate No: </b></div> 
+            <div style="font-size:14px;">ES 202301</div>
+		</div>
+        <div style=" width:33.3%; padding:20px 40px 20px 40px; text-align: right;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate To: </b></div> 
+            <div style="font-size:14px;">${customerDetails.name} </div>
+            <div style="font-size:14px;">${customerDetails.mobileNo} </div>
+            <div style="font-size:14px;">${customerDetails.city} </div>
+		</div>
+	</div>
+    <div style="padding:0 0px;">
+        <table style="border-collapse: collapse; width:100%; padding:40px 50px 10px 50px;" class="clr">
+            <tr style="font-size:13px; background-color: #004aab; color:#fff;">
+                <th style="width:60px; padding: 15px 15px; text-align: center;">S.NO</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Name</th>
+                <th style="width:100px; padding: 15px 15px; text-align: center;">Product Qty</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost Per Unit</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost</th>
+            </tr> 
+            ${salesData.map((e, i) => {
+              return `
+              <tr style="font-size:14px; background:#fff; border-bottom:1px solid #ababab; color: #9d9d9d; padding:5px;">
+              <td style="width:60px;  padding:5px; text-align: center;">${
+                i + 1
+              } </td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productName
+              }</td>
+              <td style="width:100px; padding:5px; text-align: center;">${
+                e.productQty
+              }</td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productCost
+              }</td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productCost * e.productQty
+              }</td>
+              </tr>
+              `;
+            })}
+          
+            
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="4">Subtotal : </td>
+                <td style="width:10px; padding:5px 25px; text-align: right;" colspan="4">${salesData.reduce(
+                  (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                  0
+                )}</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="4">Discount : </td>
+                <td style="width:10px; padding:5px 25px; text-align: right;" colspan="4">${
+                  details.discount
+                }%</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+            <td style="width:100px; padding:5px 15px; text-align: right;" colspan="4">Packing Charges (3%) : </td>
+            <td style="width:10px; padding:5px 25px; text-align: right;" colspan="4">Rs.${
+              details.packingCharge
+            }</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="4">Total : </td>
+                <td style="width:10px; padding:5px 25px; text-align: right;" colspan="4">Rs.${
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) -
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) *
+                    (Number(details.discount) / 100) +
+                  Number(details.packingCharge)
+                }</td>
+            </tr>
+           
+          
+            <tr style="background:#004aab; color: #fff;">
+                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: left;" colspan="2">Total Items : ${
+                  salesData.length
+                }</td>
+                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: right;" colspan="2">Overall Total : </td>
+                <td style="width:120px; font-size:18px; padding:5px 25px; text-align: right;" colspan="2">Rs.${
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) -
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) *
+                    (Number(details.discount) / 100) +
+                  Number(details.packingCharge)
+                }</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+`;
+    document.body.innerHTML = html;
+    window.print();
+    document.body.innerHTML = oldPage;
+    window.location.reload();
+  };
   return (
     <div id="pos">
       <Grid container spacing={3} p={1}>
@@ -619,8 +771,7 @@ function Pos(props) {
                       aria-label="outlined button group"
                     >
                       <Button onClick={saveSales}>Save</Button>
-                      <Button>View</Button>
-                      <Button>Print</Button>
+                      <Button onClick={print}>Print</Button>
                     </ButtonGroup>
                   </Box>
                 </Box>
@@ -648,7 +799,10 @@ function Pos(props) {
               />
             </Grid>
             <Grid item sm={12} md={1}>
-              <FullscreenIcon fontSize="large" onClick={openFullscreen} />
+              <FullscreenIcon  onClick={openFullscreen} />
+              <ArrowBackIcon onClick={() => {
+                navigate("/app/dashboard/", { replace: true })
+              }}/>
             </Grid>
             <Grid item sm={12} md={12}>
               <Card sx={{ minHeight: 535, backgroundColor: "aliceblue" }}>
@@ -711,8 +865,28 @@ function Pos(props) {
                       </Grid>
                     </Box>
                   </Grid>
-                  <Grid item sm={12} md={12}>
-                    <Grid container spacing={2} m={1}>
+                  <Box sx={{ p: 3 }}>
+                    <TextField
+                      label="Search"
+                      onChange={(e) => {
+                        getProduct(e.target.value);
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment>
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Box>
+                  <Grid
+                    item
+                    sm={12}
+                    md={12}
+                    style={{ maxHeight: 490, overflow: "scroll" }}
+                  >
+                    <Grid container spacing={2}>
                       {productCard.map((e) => {
                         return (
                           <Grid item sm={12} md={3}>
@@ -721,7 +895,16 @@ function Pos(props) {
                                 matchProductCard(e);
                               }}
                               className="cardPorducts"
-                              sx={{ border: 1, width: 200, cursor: "pointer" }}
+                              sx={{
+                                border: 1,
+                                width: 200,
+                                cursor: "pointer",
+                                ...(salesData.some(
+                                  (o) => o.productID === e.productID
+                                ) && {
+                                  borderColor: "cornflowerblue !important",
+                                }),
+                              }}
                             >
                               <CardContent>
                                 {userData.storeID === 0 ? (

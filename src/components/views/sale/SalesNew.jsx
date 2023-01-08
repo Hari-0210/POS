@@ -84,26 +84,28 @@ function SalesNew() {
             (Number(details.discount) / 100) +
           Number(details.packingCharge)
       ),
-      products: salesData.map((e) => {
-        return {
-          productID: Number(e.productID),
-          productQty: Number(e.productQty),
-        };
-      }),
+      products: salesData
+        .filter((a) => a.productID !== "")
+        .map((e) => {
+          return {
+            productID: Number(e.productID),
+            productQty: Number(e.productQty),
+          };
+        }),
     };
     if (pay.customerID === "") {
       variant = "error";
       enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
       return;
     }
-    if (!salesData.length) {
+    if (!pay.products.length) {
       variant = "error";
       enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
       return;
     }
     await APIKit.post(URLS.addSales, pay).then((res) => {
       if (res.data.status === 200) {
-        setSalesData([]);
+        setSalesData([{ ...initialValues }]);
         setDetails({
           discount: "",
           packingCharge: "",
@@ -281,6 +283,15 @@ function SalesNew() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const checkCust = async (e) => {
+    console.log(customerDetails.mobileNo.length);
+    if (
+      customerDetails.mobileNo.length < 10 ||
+      customerDetails.mobileNo.length > 10
+    ) {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.mobNo, { variant, anchorOrigin });
+      return;
+    }
     let item = { ...customerDetails };
     setCustomerList([...customerList]);
     for (var i = 0; i < customerList.length; i++) {
@@ -398,6 +409,156 @@ function SalesNew() {
       }
     }
   };
+  const print = async () => {
+    const oldPage = document.body.innerHTML;
+    const html = `
+    <html>
+<head>
+<title>ESTIMATE</title>
+<style>
+@media print {
+    @page {
+        margin-top: 0; 
+        margin-bottom: 0; 
+		margin-left:20px;
+		margin-right:20px;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+}
+</style>
+</head>
+<body style="width: 793px; height:283mm; border: 1px solid black; margin-top:20px; font-family: 'Roboto', sans-serif;">
+    <div style="display: flex; width: 100%; padding-bottom:20px;">
+        <div style="width:50%; padding-left:30px; padding-top:15px;">
+            <div style="font-size:40px; color: #004aab;"><b>ESTIMATE </b></div> 
+            <div style="font-size:14px; padding-top:5px;">3/1300/5, Parani Krishna Agencies
+                Sivakasi To Sattur Road
+                Paraipatti, Sivakasi </div>
+            <div style="font-size:14px; padding-top:5px;">Mobile - 76399 47155 </div>
+            <div style="font-size:14px; padding-top:5px;">Email - sivakasikarthicrackers@gmail.com </div>
+        </div>
+		<div style="width:50%; align-self: center; text-align:right; padding-right:30px;">
+			<img src="images/logo.jpg" style="width:100px;">
+		</div>
+	</div>
+    <div style="display: flex; width: 100%;">
+        <div style="width:100%; padding:0 0px;">
+            <div style="border-top: 2px solid #eaeaea;"></div>
+        </div> 
+	</div>
+    <div style="display: flex; width:100%; font-size:14px;">
+		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Date: </b></div> 
+            <div style="font-size:14px;">${new Date().toJSON().slice(0,10).replace(/-/g,'/')} </div> 
+		</div>
+		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate No: </b></div> 
+            <div style="font-size:14px;">ES 202301</div>
+		</div>
+        <div style=" width:33.3%; padding:20px 40px 20px 40px; text-align: right;">
+            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate To: </b></div> 
+            <div style="font-size:14px;">${customerDetails.name} </div>
+            <div style="font-size:14px;">${customerDetails.mobileNo} </div>
+            <div style="font-size:14px;">${customerDetails.city} </div>
+		</div>
+	</div>
+    <div style="padding:0 0px;">
+        <table style="border-collapse: collapse; width:100%; padding:40px 50px 10px 50px;" class="clr">
+            <tr style="font-size:13px; background-color: #004aab; color:#fff;">
+                <th style="width:60px; padding: 15px 15px; text-align: center;">S.NO</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Name</th>
+                <th style="width:100px; padding: 15px 15px; text-align: center;">Product Qty</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost Per Unit</th>
+                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost</th>
+            </tr> 
+            ${salesData.map((e, i) => {
+              return `
+              <tr style="font-size:14px; background:#fff; border-bottom:1px solid #ababab; color: #9d9d9d; padding:5px;">
+              <td style="width:60px;  padding:5px; text-align: center;">${
+                i + 1
+              } </td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productName
+              }</td>
+              <td style="width:100px; padding:5px; text-align: center;">${
+                e.productQty
+              }</td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productCost
+              }</td>
+              <td style="width:60px; padding:5px; text-align: center;">${
+                e.productCost * e.productQty
+              }</td>
+              </tr>
+              `;
+            })}
+          
+            
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Subtotal : </td>
+                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${salesData.reduce(
+                  (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                  0
+                )}</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Discount : </td>
+                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${
+                  details.discount
+                }%</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+            <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Packing Charges (3%) : </td>
+            <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
+              details.packingCharge
+            }</td>
+            </tr>
+            <tr style="font-size:14px; background:#fff; color: #004aab;">
+                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Total : </td>
+                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) -
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) *
+                    (Number(details.discount) / 100) +
+                  Number(details.packingCharge)
+                }</td>
+            </tr>
+           
+          
+            <tr style="background:#004aab; color: #fff;">
+                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: left;" colspan="2">Total Items : ${
+                  salesData.length
+                }</td>
+                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: right;" colspan="2">Overall Total : </td>
+                <td style="width:120px; font-size:18px; padding:5px 25px; text-align: right;" colspan="2">Rs.${
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) -
+                  salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  ) *
+                    (Number(details.discount) / 100) +
+                  Number(details.packingCharge)
+                }</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+`;
+    document.body.innerHTML = html;
+    window.print();
+    document.body.innerHTML = oldPage;
+    window.location.reload();
+  };
 
   return (
     <>
@@ -415,6 +576,7 @@ function SalesNew() {
                     id="outlined-basic"
                     label="Enter Customer Mobile Number"
                     name="mobileNo"
+                    autoFocus
                     onChange={(e) => {
                       if (
                         e.target.value === "" ||
@@ -538,7 +700,7 @@ function SalesNew() {
                                   name={`productCode${i}`}
                                   variant="outlined"
                                   onBlur={() => {
-                                    matchProduct(i)
+                                    // matchProduct(i);
                                   }}
                                   onChange={(e) => {
                                     editableKeyToFocus.current = `productCode${i}`;
@@ -840,8 +1002,7 @@ function SalesNew() {
                       aria-label="outlined button group"
                     >
                       <Button onClick={saveSales}>Save</Button>
-                      <Button>View</Button>
-                      <Button>Print</Button>
+                      <Button onClick={print}>Print</Button>
                     </ButtonGroup>
                   </Box>
                 </Grid>

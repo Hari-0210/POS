@@ -122,6 +122,7 @@ export default function Topbar() {
     { path: "/app/dummySales/", title: "Sales" },
     { path: "/app/dummySalesList/", title: "Sales" },
     { path: "/app/salesNew/", title: "Sales" },
+    { path: "/app/profile/", title: "My Profile" }
   ];
 
   const [title, setTitle] = React.useState({ path: "", title: "" });
@@ -151,33 +152,37 @@ export default function Topbar() {
     },
   ];
   const salesSubMenu = [
+    // {
+    //   name: "Estimate",
+    //   route: "sales",
+    // },
     {
       name: "Estimate",
-      route: "sales",
+      route: "salesNew",
     },
     {
       name: "Estimate List",
       route: "salesList",
     },
-    {
-      name: "Sales",
-      route: "dummySales",
-    },
-    {
-      name: "Sales List",
-      route: "dummySalesList",
-    },
+    // {
+    //   name: "Sales",
+    //   route: "dummySales",
+    // },
+    // {
+    //   name: "Sales List",
+    //   route: "dummySalesList",
+    // },
     // {
     //   name: "Sales1",
     //   route: "sales1",
     // },
-    {
-      name: "Sales New",
-      route: "salesNew",
-    },
   ];
   const addUser = () => {
     navigate("/app/adduser/", { replace: true });
+    setAnchorEl(null);
+  };
+  const myProfile = () => {
+    navigate("/app/profile/", { replace: true });
     setAnchorEl(null);
   };
   const logout = () => {
@@ -270,7 +275,7 @@ export default function Topbar() {
               {userData.storeID === 0 && (
                 <MenuItem onClick={addUser}>Add User</MenuItem>
               )}
-
+              <MenuItem onClick={myProfile}>Profile</MenuItem>
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </Box>
