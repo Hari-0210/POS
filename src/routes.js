@@ -20,6 +20,7 @@ import DummySales from "./components/views/sale/DummySales";
 import DummySalesList from "./components/views/sale/DummySalesList";
 import SalesNew from "./components/views/sale/SalesNew";
 import MyProfile from "./components/views/adduser/MyProfile";
+import CustomerList from "./components/views/customer/CustomerList";
 
 const routes = [
   {
@@ -45,7 +46,8 @@ const routes = [
       { path: "dummySales", element: <DummySales /> },
       { path: "dummySalesList", element: <DummySalesList /> },
       { path: "salesNew", element: <SalesNew /> },
-      { path: "profile", element: <MyProfile /> }
+      { path: "profile", element: <MyProfile /> },
+      { path: "customer", element: <CustomerList /> }
     ],
   },
   {

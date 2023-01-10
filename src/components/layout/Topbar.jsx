@@ -36,6 +36,7 @@ import Collapse from "@mui/material/Collapse";
 import StarBorder from "@mui/icons-material/StarBorder";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -467,6 +468,31 @@ export default function Topbar() {
               </RouterLink>
             </ListItem>
           )}
+          <ListItem key={"Customer"} disablePadding>
+            <RouterLink to={"/app/customer/"}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <SupportAgentIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Customer"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </RouterLink>
+          </ListItem>
         </List>
       </Drawer>
     </Box>
