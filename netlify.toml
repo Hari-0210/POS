@@ -1,6 +1,4 @@
 [[redirects]]
-  from = "/api/*"
+  from = "https://fine-erin-tadpole-shoe.cyclic.app/"
   to = "https://fine-erin-tadpole-shoe.cyclic.app/"
-  status = 200
-  force = true # COMMENT: ensure that we always redirect
-  headers = {X-From = "Netlify"}
+
