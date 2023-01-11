@@ -1,5 +1,5 @@
 [[redirects]]
-  from = "/api/*"
+  from = "https://venerable-douhua-d53e33.netlify.app/api/*"
   to = "https://fine-erin-tadpole-shoe.cyclic.app/:splat"
   status = 200
   force = true # COMMENT: ensure that we always redirect
