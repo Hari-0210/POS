@@ -1,4 +1,4 @@
-const baseUrl = "/api/v1/";
+const baseUrl = "/services/POS-services/api/v1/";
 
 export const URLS = {
   login: `${baseUrl}login`,
