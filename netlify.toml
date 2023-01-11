@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "https://fine-erin-tadpole-shoe.cyclic.app/"
+  from = "/api/*"
   to = "https://fine-erin-tadpole-shoe.cyclic.app/"
-
+  
