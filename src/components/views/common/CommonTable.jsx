@@ -21,7 +21,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Icon } from "@iconify/react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-
+import PhoneIcon from '@mui/icons-material/Phone';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -61,6 +62,8 @@ const CommonTable = ({ columns, data = [], action }) => {
       let onPrint = head.list.find((x) => x === ETaction.onPrint);
       let onPayment = head.list.find((x) => x === ETaction.onPayment);
       let moveOnPurchase = head.list.find((x) => x === ETaction.moveOnPurchase);
+      let onCall = head.list.find((x) => x === ETaction.onCall);
+      let onWP = head.list.find((x) => x === ETaction.onWP);
       return (
         <>
           {onView && (
@@ -72,6 +75,16 @@ const CommonTable = ({ columns, data = [], action }) => {
                 }
               }}
             />
+          )}
+          {onCall && (
+            <a href={"tel:" + row.mobileNo}>
+            <PhoneIcon size="19" className="nav-linker"/>
+           </a>
+          )}
+          {onWP && (
+            <a target={"_blank"} href={"https://api.whatsapp.com/send?phone=" + row.mobileNo}>
+            <WhatsAppIcon size="19" className="nav-linker"/>
+           </a>
           )}
           {onEdit && (
             <EditIcon

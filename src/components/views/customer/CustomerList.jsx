@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 import CommonTable from "../common/CommonTable";
@@ -14,41 +14,28 @@ function CustomerList(props) {
       type: ETTypes.SNo,
     },
     {
-      title: "Product",
-      field: "productName",
+      title: "Customer Name",
+      field: "name",
       align: "center",
       type: ETTypes.string,
     },
     {
-      title: "Code",
-      field: "productCode",
+      title: "Customer Mobile Number",
+      field: "mobileNo",
       align: "center",
       type: ETTypes.string,
     },
     {
-      title: "Product Category",
-      field: "productCategoryName",
+      title: "Customer City",
+      field: "city",
       align: "center",
       type: ETTypes.string,
-    },
-    {
-      title: "Price",
-      field: "productCost",
-      align: "center",
-      type: ETTypes.string,
-    },
-
-    {
-      title: "Created On",
-      field: "createdDate",
-      align: "center",
-      type: ETTypes.date,
     },
     {
       title: "Action",
       field: "action",
       align: "center",
-      list: [ETaction.onView, ETaction.onDelete, ETaction.onEdit],
+      list: [ETaction.onCall, ETaction.onWP],
     },
   ];
   const [customer, setCustomer] = useState([]);
@@ -60,20 +47,30 @@ function CustomerList(props) {
       }
     });
   };
+  useEffect(() => {
+    getCustomer();
+  }, []);
+  const actions = {
+    onCall: (index, row) => {
+
+    },
+
+    
+  };
 
   return (
     <div>
       <Grid spacing={3} m={3}>
         <Grid item sm={11} md={11}>
           <Box
-            sx={{
-              p: "20px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
+            // sx={{
+            //   p: "20px",
+            //   display: "flex",
+            //   justifyContent: "space-between",
+            // }}
           >
 
-<CommonTable columns={productColumn}  />
+<CommonTable columns={productColumn} data={customer}  />
 
           </Box>
         </Grid>

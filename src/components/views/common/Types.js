@@ -22,6 +22,8 @@ export const ETaction = {
   onEdit: "edit",
   onPrint: "print",
   onPayment: "onPayment",
-  moveOnPurchase:'Purchase'
+  moveOnPurchase:'Purchase',
+  onCall: "call",
+  onWP: "wp",
 
 }
