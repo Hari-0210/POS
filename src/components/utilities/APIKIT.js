@@ -3,7 +3,7 @@ let APIKit = {
   get: (url) => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`https://fine-erin-tadpole-shoe.cyclic.app${url}`, {
+        .get(url, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getJWT()}`,
@@ -20,7 +20,7 @@ let APIKit = {
   post: (url, payload) => {
     return new Promise((resolve, reject) => {
       axios
-        .post(`https://fine-erin-tadpole-shoe.cyclic.app${url}`, payload, {
+        .post(url, payload, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getJWT()}`,
@@ -37,7 +37,7 @@ let APIKit = {
   put: (url, payload) => {
     return new Promise((resolve, reject) => {
       axios
-        .put(`https://fine-erin-tadpole-shoe.cyclic.app${url}`, payload, {
+        .put(url, payload, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getJWT()}`,
@@ -54,7 +54,7 @@ let APIKit = {
   delete: (url) => {
     return new Promise((resolve, reject) => {
       axios
-        .delete(`https://fine-erin-tadpole-shoe.cyclic.app${url}`, {
+        .delete(url, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getJWT()}`,
