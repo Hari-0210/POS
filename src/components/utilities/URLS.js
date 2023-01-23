@@ -34,6 +34,8 @@ export const URLS = {
   getCompanyDetails: `${baseUrl}getCompanyDetails`,
   addCompanyDetails: `${baseUrl}addCompanyDetails`,
   updatePassword: `${baseUrl}updatePassword`,
+  uploadAvatar: `${baseUrl}uploadAvatar`,
+
 
 
 

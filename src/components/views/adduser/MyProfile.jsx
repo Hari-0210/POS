@@ -92,6 +92,7 @@ function MyProfile(props) {
     branch: "",
     // orderMinAmount: ""
     isFirst: true,
+    imagePath: ""
   };
   const [payload, setPayload] = useState({ ...initialValues });
   const [pass, setPass] = useState({
@@ -171,6 +172,59 @@ function MyProfile(props) {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+  const [file, setFile] = useState("");
+  const isFileAllowed = (fileName) => {
+    let _isFileAllowed = false;
+    let allowedFiles = [];
+
+    allowedFiles = [".jpeg", ".jpg", ".png" , ".PNG", ".JPG", ".JPEG"];
+
+    const regex = /(?:\.([^.]+))?$/;
+    const extension = regex.exec(fileName);
+    if (undefined !== extension && null !== extension) {
+      for (const ext of allowedFiles) {
+        if (ext === extension[0]) {
+          _isFileAllowed = true;
+        }
+      }
+    }
+    return _isFileAllowed;
+  };
+  const handleUploadClick = async (event) => {
+    if (event.target.files[0] === undefined) {
+      return;
+    }
+    if (!isFileAllowed(event.target.files[0]?.name)) {
+      variant = "error";
+      enqueueSnackbar("File Format not allowed", { variant, anchorOrigin });
+      return;
+    }
+    if (event.target.files[0].size > 3145728) {
+      variant = "error";
+      enqueueSnackbar("File size more than 3mb", { variant, anchorOrigin });
+      return;
+    }
+    console.log(event.target.files[0]);
+    setFile(event.target.files[0]);
+    const data = new FormData();
+    data.append("file", event.target.files[0]);
+    console.log(Object.fromEntries(data));
+    APIKit.postImg(URLS.uploadAvatar, data)
+      .then((res) => {
+        if (res.data.status == 200) {
+          var replaceableString = String.raw`${res.data.data}`.replace(/\\/g,"\\\\");
+          console.log(replaceableString);
+          setPayload({
+            ...payload,
+            imagePath: replaceableString
+          })
+          variant = "success";
+          enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        } else {
+        }
+      })
+      .catch(() => {});
   };
   return (
     <div>
@@ -264,12 +318,28 @@ function MyProfile(props) {
                       !pass.reTypeNewPassword
                     }
                   >
-                     Update Password
+                    Update Password
                   </Button>
                 </Grid>
               </Grid>
             </Box>
           </Card>
+          {/* <Card sx={{ borderRadius: 3, mt: 2, mr: 2, ml: 2, mb: 4 }}>
+            <Box
+              sx={{
+                p: 4,
+              }}
+            >
+              <Grid container spacing={4}>
+                <Grid item md={3} sm={12}>
+                  <Button variant="contained" component="label">
+                    Upload File
+                    <input type="file" hidden />
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Card> */}
 
           <Card sx={{ borderRadius: 3, mt: 2, mr: 2, ml: 2, mb: 4 }}>
             <Box
@@ -278,6 +348,19 @@ function MyProfile(props) {
               }}
             >
               <Grid container spacing={4}>
+                <Grid item md={3} sm={12}>
+                  <Button variant="contained" component="label">
+                    Upload File
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => handleUploadClick(e)}
+                    />
+                  </Button>
+                  {payload.imagePath && (
+                    <a href={payload.imagePath} target="_blank">{payload.imagePath.substring(4, 25)}</a>
+                  )}
+                </Grid>
                 <Grid item md={3} sm={12}>
                   <TextField
                     id="outlined-basic"
@@ -317,7 +400,7 @@ function MyProfile(props) {
                     menuPortalTarget={document.body}
                     menuPosition={"fixed"}
                     placeholder={"Search State"}
-                    value={payload.state !== "" ? null : payload.state }
+                    value={payload.state !== "" ? null : payload.state}
                     onChange={(e) => {
                       setPayload({
                         ...payload,

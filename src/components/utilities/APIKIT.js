@@ -34,6 +34,23 @@ let APIKit = {
         });
     });
   },
+  postImg: (url, payload) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(url, payload, {
+          headers: {
+            "Content-Type": 'multipart/form-data',
+            Authorization: `Bearer ${getJWT()}`,
+          },
+        })
+        .then((res) => {
+          resolve(res);
+        })
+        .catch(function (e) {
+          reject(e);
+        });
+    });
+  },
   put: (url, payload) => {
     return new Promise((resolve, reject) => {
       axios
