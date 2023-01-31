@@ -1,11 +1,12 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-
+import { useSnackbar } from "notistack";
+import { useConfirm } from "material-ui-confirm";
 function CustomerList(props) {
   const productColumn = [
     {
@@ -35,7 +36,7 @@ function CustomerList(props) {
       title: "Action",
       field: "action",
       align: "center",
-      list: [ETaction.onCall, ETaction.onWP],
+      list: [ETaction.onCall, ETaction.onWP, ETaction.onDelete],
     },
   ];
   const [customer, setCustomer] = useState([]);
@@ -50,12 +51,35 @@ function CustomerList(props) {
   useEffect(() => {
     getCustomer();
   }, []);
+  const confirm = useConfirm();
+  const { enqueueSnackbar } = useSnackbar();
+  var variant = "";
+  const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const actions = {
-    onCall: (index, row) => {
-
+    onCall: (index, row) => {},
+    onDelete: (i, r) => {
+      console.log("hi");
+      remove(r.customerID, i);
     },
-
-    
+  };
+  const remove = (data, i) => {
+    confirm({ description: "you want to delete the record ?" })
+      .then(() => {
+        deleteCustomer(data);
+      })
+      .catch(() => console.log("Deletion cancelled."));
+  };
+  const deleteCustomer = async (customerID) => {
+    await APIKit.get(URLS.deleteCustomer + "/" + customerID).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        getCustomer();
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
   };
 
   return (
@@ -63,15 +87,13 @@ function CustomerList(props) {
       <Grid spacing={3} m={3}>
         <Grid item sm={11} md={11}>
           <Box
-            // sx={{
-            //   p: "20px",
-            //   display: "flex",
-            //   justifyContent: "space-between",
-            // }}
+          // sx={{
+          //   p: "20px",
+          //   display: "flex",
+          //   justifyContent: "space-between",
+          // }}
           >
-
-<CommonTable columns={productColumn} data={customer}  />
-
+            <CommonTable columns={productColumn} data={customer} action={actions}/>
           </Box>
         </Grid>
       </Grid>

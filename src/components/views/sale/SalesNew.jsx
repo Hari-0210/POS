@@ -88,8 +88,9 @@ function SalesNew() {
         .filter((a) => a.productID !== "")
         .map((e) => {
           return {
-            productID: Number(e.productID),
-            productQty: Number(e.productQty),
+            productName: e.productName,
+            productCost: e.productCost,
+            productQty: Number(e.productQty)
           };
         }),
     };
@@ -283,7 +284,6 @@ function SalesNew() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const checkCust = async (e) => {
-    console.log(customerDetails.mobileNo.length);
     if (
       customerDetails.mobileNo.length < 10 ||
       customerDetails.mobileNo.length > 10
@@ -303,6 +303,7 @@ function SalesNew() {
         setCustomerDetails({
           ...item,
         });
+        editableKeyToFocus.current = `productCode0`
         break;
       } else {
         setIsDis(false);
@@ -558,6 +559,7 @@ function SalesNew() {
     window.print();
     document.body.innerHTML = oldPage;
     window.location.reload();
+   
   };
 
   return (
@@ -591,6 +593,11 @@ function SalesNew() {
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
+                        checkCust();
+                      }
+                    }}
+                    onBlur={() => {
+                      if (customerDetails.mobileNo != "") {
                         checkCust();
                       }
                     }}
@@ -700,7 +707,9 @@ function SalesNew() {
                                   name={`productCode${i}`}
                                   variant="outlined"
                                   onBlur={() => {
-                                    // matchProduct(i);
+                                    if (data.productCode != "") {
+                                      matchProduct(i);
+                                    }
                                   }}
                                   onChange={(e) => {
                                     editableKeyToFocus.current = `productCode${i}`;

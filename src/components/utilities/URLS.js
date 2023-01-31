@@ -35,7 +35,7 @@ export const URLS = {
   addCompanyDetails: `${baseUrl}addCompanyDetails`,
   updatePassword: `${baseUrl}updatePassword`,
   uploadAvatar: `${baseUrl}uploadAvatar`,
-
+  deleteCustomer: `${baseUrl}deleteCustomer`,
 
 
 

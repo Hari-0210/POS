@@ -209,31 +209,7 @@ export default function CreateProduct() {
             }) => (
               <form autoComplete='off' onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
-                  <Grid item md={4} sm={12}>
-                    <TextField
-                      error={Boolean(
-                        touched.productName && errors.productName && (
-                          <div>{errors.productName}</div>
-                        )
-                      )}
-                      helperText={touched.productName && errors.productName}
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setPayload({
-                          ...payload,
-                          productName: e.target.value.trim(),
-                        });
-                      }}
-                      id='outlined-basic'
-                      label='Enter Product Name'
-                      name='productName'
-                      fullWidth
-                      value={payload.productName}
-                      variant='outlined'
-                    />
-                  </Grid>
-                  <Grid item md={4} sm={12}>
+                <Grid item md={4} sm={12}>
                     <TextField
                       error={Boolean(
                         touched.productCode && errors.productCode && (
@@ -247,7 +223,7 @@ export default function CreateProduct() {
                         handleChange(e);
                         setPayload({
                           ...payload,
-                          productCode: e.target.value.trim(),
+                          productCode: e.target.value,
                         });
                       }}
                       id='outlined-basic'
@@ -257,6 +233,31 @@ export default function CreateProduct() {
                       variant='outlined'
                     />
                   </Grid>
+                  <Grid item md={4} sm={12}>
+                    <TextField
+                      error={Boolean(
+                        touched.productName && errors.productName && (
+                          <div>{errors.productName}</div>
+                        )
+                      )}
+                      helperText={touched.productName && errors.productName}
+                      onBlur={handleBlur}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setPayload({
+                          ...payload,
+                          productName: e.target.value,
+                        });
+                      }}
+                      id='outlined-basic'
+                      label='Enter Product Name'
+                      name='productName'
+                      fullWidth
+                      value={payload.productName}
+                      variant='outlined'
+                    />
+                  </Grid>
+                  
 
                   <Grid item md={4} sm={12}>
                     <Autocomplete
@@ -382,7 +383,7 @@ export default function CreateProduct() {
                           handleChange(e);
                           setPayload({
                             ...payload,
-                            productCost: String(e.target.value.trim()),
+                            productCost: String(e.target.value),
                           });
                         }
                       }}

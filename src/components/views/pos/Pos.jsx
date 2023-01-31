@@ -496,6 +496,11 @@ function Pos(props) {
                     mobileNo: e.target.value.trim(),
                   });
                 }}
+                onBlur={() => {
+                  if (customerDetails.mobileNo != "") {
+                    checkCust();
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     checkCust();

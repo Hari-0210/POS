@@ -297,6 +297,7 @@ export default function Topbar() {
           <ListItem key={"Dashboard"} disablePadding>
             <RouterLink to={"/app/dashboard/"}>
               <ListItemButton
+              onClick={handleDrawerClose}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
@@ -337,7 +338,7 @@ export default function Topbar() {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component="div" disablePadding>
+                        <List onClick={handleDrawerClose} component="div" disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -367,7 +368,7 @@ export default function Topbar() {
                   return (
                     <>
                       <RouterLink to={`/app/${txt.route}/`}>
-                        <List component="div" disablePadding>
+                        <List onClick={handleDrawerClose} component="div" disablePadding>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                               <StarBorder />
@@ -471,6 +472,7 @@ export default function Topbar() {
           <ListItem key={"Customer"} disablePadding>
             <RouterLink to={"/app/customer/"}>
               <ListItemButton
+              onClick={handleDrawerClose}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",

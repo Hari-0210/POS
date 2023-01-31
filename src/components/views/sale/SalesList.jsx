@@ -134,6 +134,12 @@ function SalesList() {
       align: "center",
       type: ETTypes.string,
     },
+    {
+      title: "Product Cost",
+      field: "productCost",
+      align: "center",
+      type: ETTypes.string,
+    },
   ];
 
   useEffect(() => {

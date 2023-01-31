@@ -161,7 +161,7 @@ function ProductCategories(props) {
             onChange={(e) => {
               setPayload({
                 ...payload,
-                productCategoryName: e.target.value.trim(),
+                productCategoryName: e.target.value,
               });
             }}
           />
