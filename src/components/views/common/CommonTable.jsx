@@ -23,6 +23,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -122,18 +123,16 @@ const CommonTable = ({ columns, data = [], action }) => {
             />
           )}
           {onPrint && (
-            <Button
+            <LocalPrintshopIcon
               style={{ margin: "5px", cursor: "pointer" }}
-              color="primary"
-              variant="contained"
               onClick={(e) => {
                 if (action && action.onPrint) {
                   action.onPrint(index, row);
                 }
               }}
-            >
-              Print View
-            </Button>
+            />
+             
+           
           )}
           {onPayment && (
             <PaymentIcon
