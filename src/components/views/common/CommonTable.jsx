@@ -1,29 +1,24 @@
-import React from "react";
+import { Icon } from "@iconify/react";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import PaymentIcon from "@mui/icons-material/Payment";
+import PhoneIcon from '@mui/icons-material/Phone';
+import ShopIcon from "@mui/icons-material/Shop";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import {
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableHead,
+  Table, TableBody,
+  TableCell, tableCellClasses, TableContainer, TableHead,
   TablePagination,
   TableRow,
-  TextField,
-  Button,
-  tableCellClasses,
+  TextField
 } from "@mui/material";
-import PaymentIcon from "@mui/icons-material/Payment";
-import { ETTypes, EEditable, ETaction } from "./Types";
-import { dateFormate } from "./utilities";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import ShopIcon from "@mui/icons-material/Shop";
-import EditIcon from "@mui/icons-material/Edit";
-import { Icon } from "@iconify/react";
-import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import PhoneIcon from '@mui/icons-material/Phone';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import { styled } from "@mui/material/styles";
+import React from "react";
+import { EEditable, ETaction, ETTypes } from "./Types";
+import { dateFormate } from "./utilities";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -83,7 +78,7 @@ const CommonTable = ({ columns, data = [], action }) => {
            </a>
           )}
           {onWP && (
-            <a target={"_blank"} href={"https://api.whatsapp.com/send?phone=" + row.mobileNo}>
+            <a target={"_blank"} rel="noopener noreferrer" href={"https://api.whatsapp.com/send?phone=" + row.mobileNo}>
             <WhatsAppIcon size="19" className="nav-linker"/>
            </a>
           )}

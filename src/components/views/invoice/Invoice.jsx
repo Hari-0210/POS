@@ -1,39 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import { URLS } from "../../utilities/URLS";
-import APIKit from "../../utilities/APIKIT";
-import { useSnackbar } from "notistack";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
 import Select from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Input from "@mui/material/Input";
-import { dateForm, dateFormate, state } from "../common/utilities";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Checkbox from "@mui/material/Checkbox";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import { MESSAGE } from "../../utilities/constant";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useSelector } from "react-redux";
+import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import APIKit from "../../utilities/APIKIT";
+import { MESSAGE } from "../../utilities/constant";
+import { URLS } from "../../utilities/URLS";
+import { dateForm, state } from "../common/utilities";
 function Invoice() {
   const invoiceDataRedux = useSelector((x) => x.NavigationData.navigationData);
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -242,15 +241,11 @@ function Invoice() {
     isDiscount: true,
   };
   const [salesData, setSalesData] = useState([{ ...initialValues }]);
-  const actions = {
-    onView: (index, row) => {},
 
-    onEdit: (index, row) => {},
-    onDelete: (index, row) => {},
-  };
 
   useEffect(() => {
     getProduct();
+    // eslint-disable-next-line
   }, []);
   const [product, setProduct] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
@@ -284,7 +279,7 @@ function Invoice() {
             invoiceDataRedux.invoiceProducts.map((e) => {
               return {
                 productCode: res.data.data.find(
-                  (elem) => elem.productName == e.productName
+                  (elem) => elem.productName === e.productName
                 ).productCode,
                 productCost: e.productCost,
                 productName: e.productName,
@@ -299,7 +294,6 @@ function Invoice() {
       }
     });
   };
-  const [isDis, setIsDis] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
@@ -787,7 +781,7 @@ function Invoice() {
                                   name={`productCode${i}`}
                                   variant="outlined"
                                   onBlur={() => {
-                                    if (data.productCode != "") {
+                                    if (data.productCode !== "") {
                                       matchProduct(i);
                                     }
                                   }}

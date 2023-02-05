@@ -1,43 +1,41 @@
-import React, { useEffect } from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import MuiAppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiDrawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import { styled, useTheme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import React, { useEffect } from "react";
 
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import MenuIcon from "@mui/icons-material/Menu";
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import ReorderIcon from '@mui/icons-material/Reorder';
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import StarBorder from "@mui/icons-material/StarBorder";
+import StoreIcon from "@mui/icons-material/Store";
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import Collapse from "@mui/material/Collapse";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import StoreIcon from "@mui/icons-material/Store";
-import ReorderIcon from '@mui/icons-material/Reorder';
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { Link as RouterLink } from "react-router-dom";
-import "./topbar.css";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import CapitalizedText from "../utilities/CapitalizedText";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import Collapse from "@mui/material/Collapse";
-import StarBorder from "@mui/icons-material/StarBorder";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import "./topbar.css";
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -122,9 +120,12 @@ export default function Topbar() {
     { path: "/app/brands/create_brand/", title: "Create Brand" },
     { path: "/app/sales/", title: "Sales" },
     { path: "/app/dummySales/", title: "Sales" },
-    { path: "/app/dummySalesList/", title: "Sales" },
+    { path: "/app/salesList/", title: "Sales List" },
     { path: "/app/salesNew/", title: "Sales" },
-    { path: "/app/profile/", title: "My Profile" }
+    { path: "/app/profile/", title: "My Profile" },
+    { path: "/app/invoiceList/", title: "Invoice List" },
+    { path: "/app/invoice/", title: "Invoice" },
+    { path: "/app/customer/", title: "Customer List" },
   ];
 
   const [title, setTitle] = React.useState({ path: "", title: "" });

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import { useConfirm } from "material-ui-confirm";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
 import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { useSnackbar } from "notistack";
-import { useConfirm } from "material-ui-confirm";
 function CustomerList(props) {
   const productColumn = [
     {

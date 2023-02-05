@@ -1,43 +1,33 @@
-import React, { useEffect, useState, useRef } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Loader from "../common/CommonLoader";
-import { URLS } from "../../utilities/URLS";
-import APIKit from "../../utilities/APIKIT";
-import { useSnackbar } from "notistack";
-import Select from "react-select";
-import { EEditable, ETaction, ETTypes } from "../common/Types";
-import CommonTable from "../common/CommonTable";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Input from "@mui/material/Input";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Checkbox from "@mui/material/Checkbox";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
+import TextField from "@mui/material/TextField";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useRef, useState } from "react";
+import Select from "react-select";
+import APIKit from "../../utilities/APIKIT";
 import { MESSAGE } from "../../utilities/constant";
+import { URLS } from "../../utilities/URLS";
 
 function SalesTableFormat(props) {
-  const matches = useMediaQuery("(max-width:320px)");
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -121,7 +111,6 @@ function SalesTableFormat(props) {
       }
     });
   };
-  const [selectedOption, setSelectedOption] = useState(null);
   const initialValues = {
     productCode: "",
     productName: "",
@@ -131,51 +120,7 @@ function SalesTableFormat(props) {
     isDiscount: true,
   };
   const [salesData, setSalesData] = useState([]);
-  const actions = {
-    onView: (index, row) => {},
-
-    onEdit: (index, row) => {},
-    onDelete: (index, row) => {},
-  };
-  const salesColumn = [
-    {
-      title: "SNo",
-      align: "center",
-      type: ETTypes.SNo,
-    },
-    {
-      title: "Product Code",
-      field: "productCode",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Product Name",
-      field: "productName",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Quantity ",
-      field: "productQty",
-      align: "center",
-      type: ETTypes.string,
-      editable: EEditable.onEdit,
-    },
-    {
-      title: "Rate",
-      field: "productCost",
-      align: "center",
-      type: ETTypes.string,
-    },
-
-    {
-      title: "Action",
-      field: "action",
-      align: "center",
-      list: [ETaction.onEdit, ETaction.onDelete],
-    },
-  ];
+ 
   const customStyles = {
     control: (base) => ({
       ...base,
@@ -300,6 +245,7 @@ function SalesTableFormat(props) {
         });
       }
     }
+    // eslint-disable-next-line
   }, [customerList]);
   const createCustomer = async () => {
     const pay = { ...customerDetails };
@@ -336,12 +282,7 @@ function SalesTableFormat(props) {
       }
     });
   };
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
+
   let regEx = {
     numbersOnly: /^[0-9]*$/,
   };

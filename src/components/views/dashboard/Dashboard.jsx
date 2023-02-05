@@ -1,10 +1,10 @@
-import React from "react";
+import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
+import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import React from "react";
 
 function Dashboard(props) {
   const matches = useMediaQuery("(max-width:600px)");

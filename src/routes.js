@@ -1,28 +1,28 @@
 import React from "react";
 import MainLayout from "./components/layout/MainLayout";
-import Dashboard from "./components/views/dashboard/Dashboard";
 import AddUser from "./components/views/adduser/AddUser";
+import Dashboard from "./components/views/dashboard/Dashboard";
 
 import Login from "./components/views/login/Login";
 import Brands from "./components/views/product/Brands";
 import Product from "./components/views/product/Product";
 
-import ProductCategories from "./components/views/product/ProductCategories";
-import CreateProduct from "./components/views/product/product_sub/CreateProduct";
-import CreateProductCategory from "./components/views/product/product_sub/CreateProductCategory";
-import CreateBrand from "./components/views/product/product_sub/CreateBrand";
-import Sales from "./components/views/sale/Sales";
-import SalesList from "./components/views/sale/SalesList";
-import SalesTableFormat from "./components/views/sale/SalesTableFormat";
-import Store from "./components/views/store/Store";
-import Pos from "./components/views/pos/Pos";
-import DummySales from "./components/views/sale/DummySales";
-import DummySalesList from "./components/views/sale/DummySalesList";
-import SalesNew from "./components/views/sale/SalesNew";
 import MyProfile from "./components/views/adduser/MyProfile";
 import CustomerList from "./components/views/customer/CustomerList";
 import Invoice from "./components/views/invoice/Invoice";
 import InvoiceList from "./components/views/invoice/InvoiceList";
+import Pos from "./components/views/pos/Pos";
+import ProductCategories from "./components/views/product/ProductCategories";
+import CreateBrand from "./components/views/product/product_sub/CreateBrand";
+import CreateProduct from "./components/views/product/product_sub/CreateProduct";
+import CreateProductCategory from "./components/views/product/product_sub/CreateProductCategory";
+import DummySales from "./components/views/sale/DummySales";
+import DummySalesList from "./components/views/sale/DummySalesList";
+import Sales from "./components/views/sale/Sales";
+import SalesList from "./components/views/sale/SalesList";
+import SalesNew from "./components/views/sale/SalesNew";
+import SalesTableFormat from "./components/views/sale/SalesTableFormat";
+import Store from "./components/views/store/Store";
 
 const routes = [
   {
