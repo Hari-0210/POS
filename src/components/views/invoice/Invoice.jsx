@@ -3,14 +3,11 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Loader from "../common/CommonLoader";
 import { URLS } from "../../utilities/URLS";
 import APIKit from "../../utilities/APIKIT";
 import { useSnackbar } from "notistack";
-import Select from "react-select";
-import { EEditable, ETaction, ETTypes } from "../common/Types";
-import CommonTable from "../common/CommonTable";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -23,7 +20,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import Input from "@mui/material/Input";
-import Fab from "@mui/material/Fab";
+import { dateForm, dateFormate, state } from "../common/utilities";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Button from "@mui/material/Button";
@@ -31,16 +28,14 @@ import FormGroup from "@mui/material/FormGroup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Checkbox from "@mui/material/Checkbox";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
 import { MESSAGE } from "../../utilities/constant";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from "react-redux";
-
-function SalesNew() {
-  const salesDataRedux = useSelector((x) => x.NavigationData.navigationData);
-  const matches = useMediaQuery("(max-width:320px)");
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+function Invoice() {
+  const invoiceDataRedux = useSelector((x) => x.NavigationData.navigationData);
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -60,11 +55,18 @@ function SalesNew() {
       border: 0,
     },
   }));
-  const saveSales = async () => {
+  const saveInvoice = async () => {
     if (isEdit) {
       const pay = {
-        salesMasterID: salesDataRedux.salesMasterID,
-        customerID: customerDetails.customerID,
+        invoiceMasterID: invoiceDataRedux.invoiceMasterID,
+        invoiceNumber: payload.invoiceNo,
+        invoiceDate: String(dateForm(payload.invoiceDate)),
+        state: payload.state ?? "Tamil Nadu",
+        customerName: customerDetails.name,
+        customerMobile: customerDetails.mobileNo,
+        customerAddress: customerDetails.address,
+        gst: payload.gst,
+        email: payload.email,
         totalNoofProducts: Number(salesData.length),
         subTotal: String(
           salesData.reduce(
@@ -72,21 +74,35 @@ function SalesNew() {
             0
           )
         ),
-        discount: Number(details.discount),
-        packingCost: Number(details.packingCharge),
+        SGST: Number(details.SGST),
+        CGST: Number(details.CGST),
+        IGST: Number(details.IGST),
         total: String(
           salesData.reduce(
             (a, b) => Number(b.productCost) * Number(b.productQty) + a,
             0
-          ) -
+          ) +
             salesData
               .filter((e) => e.isDiscount)
               .reduce(
                 (a, b) => Number(b.productCost) * Number(b.productQty) + a,
                 0
               ) *
-              (Number(details.discount) / 100) +
-            Number(details.packingCharge)
+              (Number(details.SGST) / 100) +
+            salesData
+              .filter((e) => e.isDiscount)
+              .reduce(
+                (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                0
+              ) *
+              (Number(details.CGST) / 100) +
+            salesData
+              .filter((e) => e.isDiscount)
+              .reduce(
+                (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                0
+              ) *
+              (Number(details.IGST) / 100)
         ),
         products: salesData
           .filter((a) => a.productID !== "")
@@ -98,28 +114,28 @@ function SalesNew() {
             };
           }),
       };
-      if (pay.customerID === "") {
-        variant = "error";
-        enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
-        return;
-      }
       if (!pay.products.length) {
         variant = "error";
         enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
         return;
       }
-      await APIKit.put(URLS.updateSales, pay).then((res) => {
+      await APIKit.put(URLS.updateInvoice, pay).then((res) => {
         if (res.data.status === 200) {
           setSalesData([{ ...initialValues }]);
           setDetails({
-            discount: "",
-            packingCharge: "",
+            SGST: "",
+            CGST: "",
+            IGST: "",
           });
           setCustomerDetails({
-            customerID: "",
             name: "",
             mobileNo: "",
-            city: "",
+            address: "",
+          });
+          setPayload({
+            invoiceNo: "",
+            gst: "",
+            email: "",
           });
           variant = "success";
           enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -130,7 +146,14 @@ function SalesNew() {
       });
     } else {
       const pay = {
-        customerID: customerDetails.customerID,
+        invoiceNumber: payload.invoiceNo,
+        invoiceDate: String(dateForm(payload.invoiceDate)),
+        state: payload.state ?? "Tamil Nadu",
+        customerName: customerDetails.name,
+        customerMobile: customerDetails.mobileNo,
+        customerAddress: customerDetails.address,
+        gst: payload.gst,
+        email: payload.email,
         totalNoofProducts: Number(salesData.length),
         subTotal: String(
           salesData.reduce(
@@ -138,21 +161,35 @@ function SalesNew() {
             0
           )
         ),
-        discount: Number(details.discount),
-        packingCost: Number(details.packingCharge),
+        SGST: Number(details.SGST),
+        CGST: Number(details.CGST),
+        IGST: Number(details.IGST),
         total: String(
           salesData.reduce(
             (a, b) => Number(b.productCost) * Number(b.productQty) + a,
             0
-          ) -
+          ) +
             salesData
               .filter((e) => e.isDiscount)
               .reduce(
                 (a, b) => Number(b.productCost) * Number(b.productQty) + a,
                 0
               ) *
-              (Number(details.discount) / 100) +
-            Number(details.packingCharge)
+              (Number(details.SGST) / 100) +
+            salesData
+              .filter((e) => e.isDiscount)
+              .reduce(
+                (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                0
+              ) *
+              (Number(details.CGST) / 100) +
+            salesData
+              .filter((e) => e.isDiscount)
+              .reduce(
+                (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                0
+              ) *
+              (Number(details.IGST) / 100)
         ),
         products: salesData
           .filter((a) => a.productID !== "")
@@ -164,28 +201,28 @@ function SalesNew() {
             };
           }),
       };
-      if (pay.customerID === "") {
-        variant = "error";
-        enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
-        return;
-      }
       if (!pay.products.length) {
         variant = "error";
         enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
         return;
       }
-      await APIKit.post(URLS.addSales, pay).then((res) => {
+      await APIKit.post(URLS.addInvoice, pay).then((res) => {
         if (res.data.status === 200) {
           setSalesData([{ ...initialValues }]);
           setDetails({
-            discount: "",
-            packingCharge: "",
+            SGST: "",
+            CGST: "",
+            IGST: "",
           });
           setCustomerDetails({
-            customerID: "",
             name: "",
             mobileNo: "",
-            city: "",
+            address: "",
+          });
+          setPayload({
+            invoiceNo: "",
+            gst: "",
+            email: "",
           });
           variant = "success";
           enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -196,7 +233,6 @@ function SalesNew() {
       });
     }
   };
-  const [selectedOption, setSelectedOption] = useState(null);
   const initialValues = {
     productCode: "",
     productName: "",
@@ -212,70 +248,8 @@ function SalesNew() {
     onEdit: (index, row) => {},
     onDelete: (index, row) => {},
   };
-  const salesColumn = [
-    {
-      title: "SNo",
-      align: "center",
-      type: ETTypes.SNo,
-    },
-    {
-      title: "Product Code",
-      field: "productCode",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Product Name",
-      field: "productName",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Quantity ",
-      field: "productQty",
-      align: "center",
-      type: ETTypes.string,
-      editable: EEditable.onEdit,
-    },
-    {
-      title: "Rate",
-      field: "productCost",
-      align: "center",
-      type: ETTypes.string,
-    },
 
-    {
-      title: "Action",
-      field: "action",
-      align: "center",
-      list: [ETaction.onEdit, ETaction.onDelete],
-    },
-  ];
-  const customStyles = {
-    control: (base) => ({
-      ...base,
-      height: 45,
-      minHeight: 55,
-    }),
-    option: (styles, { isFocused, isSelected }) => ({
-      ...styles,
-      background: isFocused
-        ? "hsla(#0000ff, 64%, 42%, 0.5)"
-        : isSelected
-        ? "hsla(#0000ff, 64%, 42%, 1)"
-        : undefined,
-      zIndex: 1,
-    }),
-    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
-    menu: (base) => ({
-      ...base,
-      zIndex: 100,
-    }),
-  };
   useEffect(() => {
-    console.log(salesDataRedux);
-
-    getCustomer();
     getProduct();
   }, []);
   const [product, setProduct] = useState([]);
@@ -287,20 +261,27 @@ function SalesNew() {
       if (res.data.status === 200) {
         setProduct(res.data.data);
         setIsLoading(false);
-        if (Object.keys(salesDataRedux).length) {
-          setIsEdit(true)
+        if (Object.keys(invoiceDataRedux).length) {
+          setIsEdit(true);
           setDetails({
-            discount: salesDataRedux.discount,
-            packingCharge: salesDataRedux.packingCost,
-          })
+            SGST: invoiceDataRedux.SGST,
+            CGST: invoiceDataRedux.CGST,
+            IGST: invoiceDataRedux.IGST,
+          });
           setCustomerDetails({
-            customerID: salesDataRedux.customerID,
-            name: salesDataRedux.customerName,
-            mobileNo: salesDataRedux.customerMobile,
-            city: salesDataRedux.customerCity,
+            name: invoiceDataRedux.customerName,
+            mobileNo: invoiceDataRedux.customerMobile,
+            address: invoiceDataRedux.customerAddress,
+          });
+          setPayload({
+            invoiceNo: invoiceDataRedux.invoiceNumber,
+            invoiceDate: invoiceDataRedux.invoiceDate,
+            gst: invoiceDataRedux.gst,
+            email: invoiceDataRedux.email,
+            state: invoiceDataRedux.state,
           });
           setSalesData(
-            salesDataRedux.salesProducts.map((e) => {
+            invoiceDataRedux.invoiceProducts.map((e) => {
               return {
                 productCode: res.data.data.find(
                   (elem) => elem.productName == e.productName
@@ -308,7 +289,7 @@ function SalesNew() {
                 productCost: e.productCost,
                 productName: e.productName,
                 productQty: e.productQty,
-                isDiscount: true
+                isDiscount: true,
               };
             })
           );
@@ -319,17 +300,15 @@ function SalesNew() {
     });
   };
   const [isDis, setIsDis] = useState(false);
-  const [customerList, setCustomerList] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   let editableKeyToFocus = useRef(null);
 
   const [customerDetails, setCustomerDetails] = useState({
-    customerID: "",
     name: "",
     mobileNo: "",
-    city: "",
+    address: "",
   });
   function matchProduct(index) {
     let item = [...salesData];
@@ -380,100 +359,11 @@ function SalesNew() {
     }
   }
   const [details, setDetails] = useState({
-    discount: "",
-    packingCharge: "",
+    SGST: "",
+    CGST: "",
+    IGST: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const checkCust = async (e) => {
-    if (
-      customerDetails.mobileNo.length < 10 ||
-      customerDetails.mobileNo.length > 10
-    ) {
-      variant = "error";
-      enqueueSnackbar(MESSAGE.mobNo, { variant, anchorOrigin });
-      return;
-    }
-    let item = { ...customerDetails };
-    setCustomerList([...customerList]);
-    for (var i = 0; i < customerList.length; i++) {
-      if (customerList[i].mobileNo === customerDetails.mobileNo) {
-        item.customerID = customerList[i].customerID;
-        item.name = customerList[i].name;
-        item.city = customerList[i].city;
-        setIsDis(true);
-        setCustomerDetails({
-          ...item,
-        });
-        editableKeyToFocus.current = `productCode0`;
-        break;
-      } else {
-        setIsDis(false);
-        item.customerID = "";
-        item.name = "";
-        item.city = "";
-        setCustomerDetails({
-          ...item,
-        });
-      }
-    }
-    // setCustomerDetails({...customerDetails})
-    if (item.name === "") {
-      variant = "error";
-      enqueueSnackbar("Customer details not present", {
-        variant,
-        anchorOrigin,
-      });
-      return;
-    }
-  };
-  useEffect(() => {
-    let item = { ...customerDetails };
-    for (var i = 0; i < customerList.length; i++) {
-      if (customerList[i].mobileNo === customerDetails.mobileNo) {
-        item.customerID = customerList[i].customerID;
-        item.name = customerList[i].name;
-        item.city = customerList[i].city;
-        setCustomerDetails({
-          ...item,
-        });
-      }
-    }
-  }, [customerList]);
-  const createCustomer = async () => {
-    const pay = { ...customerDetails };
-    delete pay.customerID;
-    if (pay.name === "" || pay.city === "" || pay.mobileNo === "") {
-      variant = "error";
-      enqueueSnackbar("Mobile, Name and City is Mandatory", {
-        variant,
-        anchorOrigin,
-      });
-      return;
-    }
-    await APIKit.post(URLS.addCustomer, pay).then((res) => {
-      if (res.data.status === 200) {
-        setIsDis(true);
-        getCustomer();
-        variant = "success";
-        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-      } else {
-        variant = "error";
-        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
-      }
-    });
-  };
-
-  const getCustomer = async (data = "") => {
-    setIsLoading(true);
-    await APIKit.get(URLS.getCustomer).then((res) => {
-      if (res.data.status === 200) {
-        setCustomerList([...res.data.data]);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-      }
-    });
-  };
 
   let regEx = {
     numbersOnly: /^[0-9]*$/,
@@ -514,157 +404,167 @@ function SalesNew() {
   const print = async () => {
     const oldPage = document.body.innerHTML;
     const html = `
-    <html>
-<head>
-<title>ESTIMATE</title>
-<style>
-@media print {
-    @page {
-        margin-top: 0; 
-        margin-bottom: 0; 
-		margin-left:20px;
-		margin-right:20px;
-    }
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
-}
-</style>
-</head>
-<body style="width: 793px; height:283mm; border: 1px solid black; margin-top:20px; font-family: 'Roboto', sans-serif;">
-    <div style="display: flex; width: 100%; padding-bottom:20px;">
-        <div style="width:50%; padding-left:30px; padding-top:15px;">
-            <div style="font-size:40px; color: #004aab;"><b>ESTIMATE </b></div> 
-            <div style="font-size:14px; padding-top:5px;">3/1300/5, Parani Krishna Agencies
-                Sivakasi To Sattur Road
-                Paraipatti, Sivakasi </div>
-            <div style="font-size:14px; padding-top:5px;">Mobile - 76399 47155 </div>
-            <div style="font-size:14px; padding-top:5px;">Email - sivakasikarthicrackers@gmail.com </div>
-        </div>
-		<div style="width:50%; align-self: center; text-align:right; padding-right:30px;">
-			<img src="images/logo.jpg" style="width:100px;">
-		</div>
-	</div>
-    <div style="display: flex; width: 100%;">
-        <div style="width:100%; padding:0 0px;">
-            <div style="border-top: 2px solid #eaeaea;"></div>
-        </div> 
-	</div>
-    <div style="display: flex; width:100%; font-size:14px;">
-		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
-            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Date: </b></div> 
-            <div style="font-size:14px;">${new Date()
-              .toJSON()
-              .slice(0, 10)
-              .replace(/-/g, "/")} </div> 
-		</div>
-		<div style=" width:33.3%; padding:20px 40px 20px 40px;">
-            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate No: </b></div> 
-            <div style="font-size:14px;">ES 202301</div>
-		</div>
-        <div style=" width:33.3%; padding:20px 40px 20px 40px; text-align: right;">
-            <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate To: </b></div> 
-            <div style="font-size:14px;">${customerDetails.name} </div>
-            <div style="font-size:14px;">${customerDetails.mobileNo} </div>
-            <div style="font-size:14px;">${customerDetails.city} </div>
-		</div>
-	</div>
-    <div style="padding:0 0px;">
-        <table style="border-collapse: collapse; width:100%; padding:40px 50px 10px 50px;" class="clr">
-            <tr style="font-size:13px; background-color: #004aab; color:#fff;">
-                <th style="width:60px; padding: 15px 15px; text-align: center;">S.NO</th>
-                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Name</th>
-                <th style="width:100px; padding: 15px 15px; text-align: center;">Product Qty</th>
-                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost Per Unit</th>
-                <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost</th>
-            </tr> 
-            ${salesData.map((e, i) => {
-              return `
-              <tr style="font-size:14px; background:#fff; border-bottom:1px solid #ababab; color: #9d9d9d; padding:5px;">
-              <td style="width:60px;  padding:5px; text-align: center;">${
-                i + 1
-              } </td>
-              <td style="width:60px; padding:5px; text-align: center;">${
-                e.productName
-              }</td>
-              <td style="width:100px; padding:5px; text-align: center;">${
-                e.productQty
-              }</td>
-              <td style="width:60px; padding:5px; text-align: center;">${
-                e.productCost
-              }</td>
-              <td style="width:60px; padding:5px; text-align: center;">${
-                e.productCost * e.productQty
+      <html>
+  <head>
+  <title>ESTIMATE</title>
+  <style>
+  @media print {
+      @page {
+          margin-top: 0; 
+          margin-bottom: 0; 
+          margin-left:20px;
+          margin-right:20px;
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+  }
+  </style>
+  </head>
+  <body style="width: 793px; height:283mm; border: 1px solid black; margin-top:20px; font-family: 'Roboto', sans-serif;">
+      <div style="display: flex; width: 100%; padding-bottom:20px;">
+          <div style="width:50%; padding-left:30px; padding-top:15px;">
+              <div style="font-size:40px; color: #004aab;"><b>ESTIMATE </b></div> 
+              <div style="font-size:14px; padding-top:5px;">3/1300/5, Parani Krishna Agencies
+                  Sivakasi To Sattur Road
+                  Paraipatti, Sivakasi </div>
+              <div style="font-size:14px; padding-top:5px;">Mobile - 76399 47155 </div>
+              <div style="font-size:14px; padding-top:5px;">Email - sivakasikarthicrackers@gmail.com </div>
+          </div>
+          <div style="width:50%; align-self: center; text-align:right; padding-right:30px;">
+              <img src="images/logo.jpg" style="width:100px;">
+          </div>
+      </div>
+      <div style="display: flex; width: 100%;">
+          <div style="width:100%; padding:0 0px;">
+              <div style="border-top: 2px solid #eaeaea;"></div>
+          </div> 
+      </div>
+      <div style="display: flex; width:100%; font-size:14px;">
+          <div style=" width:33.3%; padding:20px 40px 20px 40px;">
+              <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Date: </b></div> 
+              <div style="font-size:14px;">${new Date()
+                .toJSON()
+                .slice(0, 10)
+                .replace(/-/g, "/")} </div> 
+          </div>
+          <div style=" width:33.3%; padding:20px 40px 20px 40px;">
+              <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate No: </b></div> 
+              <div style="font-size:14px;">ES 202301</div>
+          </div>
+          <div style=" width:33.3%; padding:20px 40px 20px 40px; text-align: right;">
+              <div style="font-size:16px; padding-bottom:10px; color: #004aab;"><b>Estimate To: </b></div> 
+              <div style="font-size:14px;">${customerDetails.name} </div>
+              <div style="font-size:14px;">${customerDetails.mobileNo} </div>
+              <div style="font-size:14px;">${customerDetails.address} </div>
+          </div>
+      </div>
+      <div style="padding:0 0px;">
+          <table style="border-collapse: collapse; width:100%; padding:40px 50px 10px 50px;" class="clr">
+              <tr style="font-size:13px; background-color: #004aab; color:#fff;">
+                  <th style="width:60px; padding: 15px 15px; text-align: center;">S.NO</th>
+                  <th style="width:60px; padding: 15px 15px; text-align: center;">Product Name</th>
+                  <th style="width:100px; padding: 15px 15px; text-align: center;">Product Qty</th>
+                  <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost Per Unit</th>
+                  <th style="width:60px; padding: 15px 15px; text-align: center;">Product Cost</th>
+              </tr> 
+              ${salesData.map((e, i) => {
+                return `
+                <tr style="font-size:14px; background:#fff; border-bottom:1px solid #ababab; color: #9d9d9d; padding:5px;">
+                <td style="width:60px;  padding:5px; text-align: center;">${
+                  i + 1
+                } </td>
+                <td style="width:60px; padding:5px; text-align: center;">${
+                  e.productName
+                }</td>
+                <td style="width:100px; padding:5px; text-align: center;">${
+                  e.productQty
+                }</td>
+                <td style="width:60px; padding:5px; text-align: center;">${
+                  e.productCost
+                }</td>
+                <td style="width:60px; padding:5px; text-align: center;">${
+                  e.productCost * e.productQty
+                }</td>
+                </tr>
+                `;
+              })}
+            
+              
+              <tr style="font-size:14px; background:#fff; color: #004aab;">
+                  <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Subtotal : </td>
+                  <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${salesData.reduce(
+                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+                    0
+                  )}</td>
+              </tr>
+              <tr style="font-size:14px; background:#fff; color: #004aab;">
+                  <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Discount : </td>
+                  <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${
+                    details.discount
+                  }%</td>
+              </tr>
+              <tr style="font-size:14px; background:#fff; color: #004aab;">
+              <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Packing Charges (3%) : </td>
+              <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
+                details.packingCharge
               }</td>
               </tr>
-              `;
-            })}
-          
+              <tr style="font-size:14px; background:#fff; color: #004aab;">
+                  <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Total : </td>
+                  <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
+                    salesData.reduce(
+                      (a, b) =>
+                        Number(b.productCost) * Number(b.productQty) + a,
+                      0
+                    ) -
+                    salesData.reduce(
+                      (a, b) =>
+                        Number(b.productCost) * Number(b.productQty) + a,
+                      0
+                    ) *
+                      (Number(details.discount) / 100) +
+                    Number(details.packingCharge)
+                  }</td>
+              </tr>
+             
             
-            <tr style="font-size:14px; background:#fff; color: #004aab;">
-                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Subtotal : </td>
-                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${salesData.reduce(
-                  (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                  0
-                )}</td>
-            </tr>
-            <tr style="font-size:14px; background:#fff; color: #004aab;">
-                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Discount : </td>
-                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">${
-                  details.discount
-                }%</td>
-            </tr>
-            <tr style="font-size:14px; background:#fff; color: #004aab;">
-            <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Packing Charges (3%) : </td>
-            <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
-              details.packingCharge
-            }</td>
-            </tr>
-            <tr style="font-size:14px; background:#fff; color: #004aab;">
-                <td style="width:100px; padding:5px 15px; text-align: right;" colspan="3">Total : </td>
-                <td style="width:10px; padding:5px 25px; text-align: left;" colspan="3">Rs.${
-                  salesData.reduce(
-                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                    0
-                  ) -
-                  salesData.reduce(
-                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                    0
-                  ) *
-                    (Number(details.discount) / 100) +
-                  Number(details.packingCharge)
-                }</td>
-            </tr>
-           
-          
-            <tr style="background:#004aab; color: #fff;">
-                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: left;" colspan="2">Total Items : ${
-                  salesData.length
-                }</td>
-                <td style="width:100px; font-size:14px; padding:5px 15px; text-align: right;" colspan="2">Overall Total : </td>
-                <td style="width:120px; font-size:18px; padding:5px 25px; text-align: right;" colspan="2">Rs.${
-                  salesData.reduce(
-                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                    0
-                  ) -
-                  salesData.reduce(
-                    (a, b) => Number(b.productCost) * Number(b.productQty) + a,
-                    0
-                  ) *
-                    (Number(details.discount) / 100) +
-                  Number(details.packingCharge)
-                }</td>
-            </tr>
-        </table>
-    </div>
-</body>
-</html>
-
-`;
+              <tr style="background:#004aab; color: #fff;">
+                  <td style="width:100px; font-size:14px; padding:5px 15px; text-align: left;" colspan="2">Total Items : ${
+                    salesData.length
+                  }</td>
+                  <td style="width:100px; font-size:14px; padding:5px 15px; text-align: right;" colspan="2">Overall Total : </td>
+                  <td style="width:120px; font-size:18px; padding:5px 25px; text-align: right;" colspan="2">Rs.${
+                    salesData.reduce(
+                      (a, b) =>
+                        Number(b.productCost) * Number(b.productQty) + a,
+                      0
+                    ) -
+                    salesData.reduce(
+                      (a, b) =>
+                        Number(b.productCost) * Number(b.productQty) + a,
+                      0
+                    ) *
+                      (Number(details.discount) / 100) +
+                    Number(details.packingCharge)
+                  }</td>
+              </tr>
+          </table>
+      </div>
+  </body>
+  </html>
+  
+  `;
     document.body.innerHTML = html;
     window.print();
     document.body.innerHTML = oldPage;
     window.location.reload();
   };
-
+  const [payload, setPayload] = useState({
+    invoiceNo: "",
+    invoiceDate: null,
+    gst: "",
+    email: "",
+    state: "",
+  });
   return (
     <>
       <Grid spacing={3}>
@@ -679,9 +579,72 @@ function SalesNew() {
                 <Grid item md={4} sm={12}>
                   <TextField
                     id="outlined-basic"
-                    label="Enter Customer Mobile Number"
-                    name="mobileNo"
+                    label="Invoice Number"
+                    name="invoiceNo"
                     autoFocus
+                    onChange={(e) => {
+                      if (
+                        e.target.value === "" ||
+                        regEx.numbersOnly.test(e.target.value)
+                      ) {
+                        editableKeyToFocus.current = `invoiceNo`;
+                        setPayload({
+                          ...payload,
+                          invoiceNo: e.target.value.trim(),
+                        });
+                      }
+                    }}
+                    value={payload.invoiceNo}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Invoice Date"
+                      openTo="year"
+                      views={["year", "month", "day"]}
+                      value={payload.invoiceDate}
+                      format="DD-MM-YYYY"
+                      onChange={(newValue) => {
+                        setPayload({
+                          ...payload,
+                          invoiceDate: newValue.$d,
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} fullWidth />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">State</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={payload.state || "Tamil Nadu"}
+                      label="State"
+                      onChange={(e) => {
+                        setPayload({
+                          ...payload,
+                          state: e.target.value,
+                        });
+                      }}
+                    >
+                      {state.map((data, i) => {
+                        return <MenuItem value={data}>{data}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="Customer Mobile Number"
+                    name="mobileNo"
                     onChange={(e) => {
                       if (
                         e.target.value === "" ||
@@ -694,16 +657,6 @@ function SalesNew() {
                         });
                       }
                     }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        checkCust();
-                      }
-                    }}
-                    onBlur={() => {
-                      if (customerDetails.mobileNo != "") {
-                        checkCust();
-                      }
-                    }}
                     value={customerDetails.mobileNo}
                     fullWidth
                     variant="outlined"
@@ -712,8 +665,7 @@ function SalesNew() {
                 <Grid item md={4} sm={12}>
                   <TextField
                     id="outlined-basic"
-                    label="Enter Customer Name"
-                    disabled={isDis}
+                    label="Customer Name"
                     name="name"
                     onChange={(e) => {
                       setCustomerDetails({
@@ -729,23 +681,48 @@ function SalesNew() {
                 <Grid item md={4} sm={12}>
                   <TextField
                     id="outlined-basic"
-                    label="Customer City"
-                    name="city"
-                    disabled={isDis}
+                    label="Address"
+                    name="address"
                     onChange={(e) => {
                       setCustomerDetails({
                         ...customerDetails,
-                        city: e.target.value,
+                        address: e.target.value,
                       });
                     }}
-                    onBlur={createCustomer}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        createCustomer();
-                      }
+                    fullWidth
+                    value={customerDetails.address}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="GST"
+                    name="gst"
+                    onChange={(e) => {
+                      setPayload({
+                        ...payload,
+                        gst: e.target.value,
+                      });
                     }}
                     fullWidth
-                    value={customerDetails.city}
+                    value={payload.gst}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={12}>
+                  <TextField
+                    id="outlined-basic"
+                    label="Email"
+                    name="email"
+                    onChange={(e) => {
+                      setPayload({
+                        ...payload,
+                        email: e.target.value,
+                      });
+                    }}
+                    fullWidth
+                    value={payload.email}
                     variant="outlined"
                   />
                 </Grid>
@@ -1010,7 +987,7 @@ function SalesNew() {
                         </TableRow>
                         <TableRow>
                           <TableCell colSpan={4} align="right">
-                            Discount
+                            SGST
                           </TableCell>
                           <TableCell align="center">
                             <FormControl variant="standard">
@@ -1024,50 +1001,82 @@ function SalesNew() {
                                     %
                                   </InputAdornment>
                                 }
-                                name={`discount`}
+                                name={`SGST`}
                                 autoFocus={
-                                  `discount` === editableKeyToFocus.current
+                                  `SGST` === editableKeyToFocus.current
                                 }
                                 onChange={(e) => {
-                                  editableKeyToFocus.current = `discount`;
+                                  editableKeyToFocus.current = `SGST`;
                                   setDetails({
                                     ...details,
-                                    discount: e.target.value,
+                                    SGST: e.target.value,
                                   });
                                 }}
-                                value={details.discount}
+                                value={details.SGST}
                               />
                             </FormControl>
                           </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell colSpan={4} align="right">
-                            Packing Charge
+                            CGST
                           </TableCell>
                           <TableCell align="center">
                             <FormControl variant="standard">
                               <InputLabel htmlFor="standard-adornment-amount">
-                                Amount
+                                Percentage
                               </InputLabel>
                               <Input
                                 id="standard-adornment-amount"
-                                name={`packingCharge`}
-                                autoFocus={
-                                  `packingCharge` === editableKeyToFocus.current
-                                }
-                                onChange={(e) => {
-                                  editableKeyToFocus.current = `packingCharge`;
-                                  setDetails({
-                                    ...details,
-                                    packingCharge: e.target.value,
-                                  });
-                                }}
-                                value={details.packingCharge}
                                 startAdornment={
                                   <InputAdornment position="start">
-                                    Rs
+                                    %
                                   </InputAdornment>
                                 }
+                                name={`CGST`}
+                                autoFocus={
+                                  `CGST` === editableKeyToFocus.current
+                                }
+                                onChange={(e) => {
+                                  editableKeyToFocus.current = `CGST`;
+                                  setDetails({
+                                    ...details,
+                                    CGST: e.target.value,
+                                  });
+                                }}
+                                value={details.CGST}
+                              />
+                            </FormControl>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={4} align="right">
+                            IGST
+                          </TableCell>
+                          <TableCell align="center">
+                            <FormControl variant="standard">
+                              <InputLabel htmlFor="standard-adornment-amount">
+                                Percentage
+                              </InputLabel>
+                              <Input
+                                id="standard-adornment-amount"
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    %
+                                  </InputAdornment>
+                                }
+                                name={`IGST`}
+                                autoFocus={
+                                  `IGST` === editableKeyToFocus.current
+                                }
+                                onChange={(e) => {
+                                  editableKeyToFocus.current = `discount`;
+                                  setDetails({
+                                    ...details,
+                                    IGST: e.target.value,
+                                  });
+                                }}
+                                value={details.IGST}
                               />
                             </FormControl>
                           </TableCell>
@@ -1077,12 +1086,13 @@ function SalesNew() {
                             Total
                           </TableCell>
                           <TableCell align="center">
-                            {salesData.reduce(
-                              (a, b) =>
-                                Number(b.productCost) * Number(b.productQty) +
-                                a,
-                              0
-                            ) -
+                            {(
+                              salesData.reduce(
+                                (a, b) =>
+                                  Number(b.productCost) * Number(b.productQty) +
+                                  a,
+                                0
+                              ) +
                               salesData
                                 .filter((e) => e.isDiscount)
                                 .reduce(
@@ -1092,8 +1102,28 @@ function SalesNew() {
                                     a,
                                   0
                                 ) *
-                                (Number(details.discount) / 100) +
-                              Number(details.packingCharge)}
+                                (Number(details.SGST) / 100) +
+                              salesData
+                                .filter((e) => e.isDiscount)
+                                .reduce(
+                                  (a, b) =>
+                                    Number(b.productCost) *
+                                      Number(b.productQty) +
+                                    a,
+                                  0
+                                ) *
+                                (Number(details.CGST) / 100) +
+                              salesData
+                                .filter((e) => e.isDiscount)
+                                .reduce(
+                                  (a, b) =>
+                                    Number(b.productCost) *
+                                      Number(b.productQty) +
+                                    a,
+                                  0
+                                ) *
+                                (Number(details.IGST) / 100)
+                            ).toFixed(2)}
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -1113,12 +1143,12 @@ function SalesNew() {
                       variant="outlined"
                       aria-label="outlined button group"
                     >
-                      {isEdit ? 
-                      <Button onClick={saveSales}>Update</Button>
-                      : 
-                      <Button onClick={saveSales}>Save</Button>
-                      }
-                      
+                      {isEdit ? (
+                        <Button onClick={saveInvoice}>Update</Button>
+                      ) : (
+                        <Button onClick={saveInvoice}>Save</Button>
+                      )}
+
                       <Button onClick={print}>Print</Button>
                     </ButtonGroup>
                   </Box>
@@ -1132,4 +1162,4 @@ function SalesNew() {
   );
 }
 
-export default SalesNew;
+export default Invoice;

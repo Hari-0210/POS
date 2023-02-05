@@ -10,8 +10,7 @@ export const dateOnly = (date = null) => {
 
 }
 export const dateForm = (date = null) => {
-  if (!date) return "-"
-  return moment(date).format("DD-MM-YYYY")
+  return moment(date ?? new Date()).format("DD-MM-YYYY")
 
 }
 
@@ -67,4 +66,39 @@ export const parseData = (data = null) => {
 
 }
 
-
+export let state = [ "Andhra Pradesh",
+"Arunachal Pradesh",
+"Assam",
+"Bihar",
+"Chhattisgarh",
+"Goa",
+"Gujarat",
+"Haryana",
+"Himachal Pradesh",
+"Jammu and Kashmir",
+"Jharkhand",
+"Karnataka",
+"Kerala",
+"Madhya Pradesh",
+"Maharashtra",
+"Manipur",
+"Meghalaya",
+"Mizoram",
+"Nagaland",
+"Odisha",
+"Punjab",
+"Rajasthan",
+"Sikkim",
+"Tamil Nadu",
+"Telangana",
+"Tripura",
+"Uttarakhand",
+"Uttar Pradesh",
+"West Bengal",
+"Andaman and Nicobar Islands",
+"Chandigarh",
+"Dadra and Nagar Haveli",
+"Daman and Diu",
+"Delhi",
+"Lakshadweep",
+"Puducherry"]

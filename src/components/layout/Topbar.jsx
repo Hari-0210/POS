@@ -22,7 +22,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StoreIcon from "@mui/icons-material/Store";
-
+import ReorderIcon from '@mui/icons-material/Reorder';
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Link as RouterLink } from "react-router-dom";
 import "./topbar.css";
@@ -37,6 +37,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -490,6 +491,58 @@ export default function Topbar() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Customer"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </RouterLink>
+          </ListItem>
+          <ListItem key={"Invoice"} disablePadding>
+            <RouterLink to={"/app/invoice/"}>
+              <ListItemButton
+              onClick={handleDrawerClose}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ReceiptIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Invoice"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </RouterLink>
+          </ListItem>
+          <ListItem key={"Invoice List"} disablePadding>
+            <RouterLink to={"/app/invoiceList/"}>
+              <ListItemButton
+              onClick={handleDrawerClose}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ReorderIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Invoice List"
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>

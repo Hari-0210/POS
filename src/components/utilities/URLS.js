@@ -24,6 +24,7 @@ export const URLS = {
   getCustomer: `${baseUrl}getCustomer`,
   addCustomer: `${baseUrl}addCustomer`,
   addSales: `${baseUrl}addSales`,
+  updateSales: `${baseUrl}updateSales`,
   getSales: `${baseUrl}getSales`,
   deleteSales: `${baseUrl}deleteSales`,
   updateUser: `${baseUrl}updateUser`,
@@ -36,8 +37,9 @@ export const URLS = {
   updatePassword: `${baseUrl}updatePassword`,
   uploadAvatar: `${baseUrl}uploadAvatar`,
   deleteCustomer: `${baseUrl}deleteCustomer`,
-
-
-
+  addInvoice: `${baseUrl}addInvoice`,
+  getInvoice: `${baseUrl}getInvoice`,
+  deleteInvoice: `${baseUrl}deleteInvoice`,
+  updateInvoice: `${baseUrl}updateInvoice`,
 
 };

@@ -21,6 +21,8 @@ import DummySalesList from "./components/views/sale/DummySalesList";
 import SalesNew from "./components/views/sale/SalesNew";
 import MyProfile from "./components/views/adduser/MyProfile";
 import CustomerList from "./components/views/customer/CustomerList";
+import Invoice from "./components/views/invoice/Invoice";
+import InvoiceList from "./components/views/invoice/InvoiceList";
 
 const routes = [
   {
@@ -47,7 +49,9 @@ const routes = [
       { path: "dummySalesList", element: <DummySalesList /> },
       { path: "salesNew", element: <SalesNew /> },
       { path: "profile", element: <MyProfile /> },
-      { path: "customer", element: <CustomerList /> }
+      { path: "customer", element: <CustomerList /> },
+      { path: "invoice", element: <Invoice /> },
+      { path: "invoiceList", element: <InvoiceList /> }
     ],
   },
   {
