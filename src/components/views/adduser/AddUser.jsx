@@ -57,6 +57,7 @@ function AddUser(props) {
       align: "center",
       list: [ETaction.onEdit],
     },
+    
   ];
   const [isEdit, setIsEdit] = useState(false);
   const actions = {

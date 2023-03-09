@@ -275,12 +275,12 @@ function Pos(props) {
       ),
       products: salesData.map((e) => {
         return {
-          productID: Number(e.productID),
+          productName: e.productName,
           productQty: Number(e.productQty),
+          productCost: e.productCost,
         };
       }),
     };
-    console.log(pay);
     if (pay.customerID === "") {
       variant = "error";
       enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
@@ -298,6 +298,7 @@ function Pos(props) {
           discount: "",
           packingCharge: "",
         });
+        setIsDis(false);
         setCustomerDetails({
           customerID: "",
           name: "",
@@ -327,7 +328,50 @@ function Pos(props) {
     }
   }
   const print = async () => {
-    const oldPage = document.body.innerHTML;
+    const pay = {
+      customerID: customerDetails.customerID,
+      totalNoofProducts: Number(salesData.length),
+      subTotal: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        )
+      ),
+      discount: Number(details.discount),
+      packingCost: Number(details.packingCharge),
+      total: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        ) -
+          salesData
+            .filter((e) => e.isDiscount)
+            .reduce(
+              (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+              0
+            ) *
+            (Number(details.discount) / 100) +
+          Number(details.packingCharge)
+      ),
+      products: salesData.map((e) => {
+        return {
+          productName: e.productName,
+          productQty: Number(e.productQty),
+          productCost: e.productCost,
+        };
+      }),
+    };
+    if (pay.customerID === "") {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
+      return;
+    }
+    if (!salesData.length) {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
+      return;
+    }
+    await saveSales()
     const html = `
     <html>
 <head>
@@ -471,10 +515,14 @@ function Pos(props) {
 </html>
 
 `;
-    document.body.innerHTML = html;
-    window.print();
-    document.body.innerHTML = oldPage;
-    window.location.reload();
+    // document.body.innerHTML = html;
+    // window.print();
+    // document.body.innerHTML = oldPage;
+    // window.location.reload();
+    var printWindow = window.open('', '', 'height=500,width=1000');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
   return (
     <div id="pos">
@@ -578,6 +626,9 @@ function Pos(props) {
                             >
                               <TableCell>
                                 <Checkbox
+                                style={{
+                                  transform: "scale(0.75)",
+                              }}
                                   color="primary"
                                   checked={row.isDiscount}
                                   onChange={() => {
@@ -887,12 +938,12 @@ function Pos(props) {
                     item
                     sm={12}
                     md={12}
-                    style={{ maxHeight: 490, overflow: "scroll" }}
+                    style={{ maxHeight: 490, overflowY: "scroll" }}
                   >
                     <Grid container spacing={2}>
                       {productCard.map((e) => {
                         return (
-                          <Grid item sm={12} md={3}>
+                          <Grid item sm={12} md={3} lg={2}>
                             <Card
                               onClick={() => {
                                 matchProductCard(e);
@@ -900,7 +951,7 @@ function Pos(props) {
                               className="cardPorducts"
                               sx={{
                                 border: 1,
-                                width: 200,
+                               
                                 cursor: "pointer",
                                 ...(salesData.some(
                                   (o) => o.productID === e.productID
@@ -912,23 +963,23 @@ function Pos(props) {
                               <CardContent>
                                 {userData.storeID === 0 ? (
                                   <Typography
-                                    sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                     gutterBottom
+                                    sx={{whiteSpace: "nowrap",fontSize: 14 }}
                                   >
                                     {e.storeName}
                                   </Typography>
                                 ) : (
                                   <Typography
-                                    sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                     gutterBottom
+                                    sx={{whiteSpace: "nowrap",fontSize: 14}}
                                   >
                                     {e.productCategoryName}
                                   </Typography>
                                 )}
 
-                                <Typography variant="h5" component="div">
+                                <Typography variant="h6" sx={{whiteSpace: "nowrap"}} component="div">
                                   {e.productName}
                                 </Typography>
                                 <Typography

@@ -16,6 +16,8 @@ import APIKit from "../../utilities/APIKIT";
 import { URLS } from "../../utilities/URLS";
 import CommonTable from "../common/CommonTable";
 import { ETaction, ETTypes } from "../common/Types";
+import { useReactToPrint } from 'react-to-print';
+import CommonPrint from "../common/CommonPrint";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -151,6 +153,7 @@ function SalesList() {
   }, []);
   const [openDialogue, setOpenDialogue] = React.useState(false);
   const handleCloseDialogue = () => setOpenDialogue(false);
+  const [content, setContent] = React.useState({});
 
   const actions = {
     onView: (index, row) => {
@@ -168,10 +171,12 @@ function SalesList() {
     },
     onPrint: (index, row) => {
       print(row)
+      setContent(row)
     }
   };
+ 
   const print = async (data) => {
-    const oldPage = document.body.innerHTML;
+  //   const oldPage = document.body.innerHTML;
     const html = `
       <html>
   <head>
@@ -322,10 +327,16 @@ function SalesList() {
   </html>
   
   `;
-    document.body.innerHTML = html;
-    window.print();
-    document.body.innerHTML = oldPage;
-    window.location.reload();
+  
+  //   // document.body.innerHTML = html;
+  //   // window.print();
+  //   // document.body.innerHTML = oldPage;
+  //   // // window.location.reload();
+  //   // window.close()
+var printWindow = window.open('', '', 'height=500,width=1000');
+printWindow.document.write(html);
+printWindow.document.close();
+printWindow.print();
   };
   const remove = (data, i) => {
     confirm({ description: "you want to delete the record ?" })
@@ -371,6 +382,7 @@ function SalesList() {
             data={salesData}
             action={actions}
           />
+        
         </Grid>
       </Grid>
 
@@ -387,8 +399,13 @@ function SalesList() {
           <CommonTable columns={salesProductsColumn} data={salesProductsData} />
         </DialogContent>
       </BootstrapDialog>
+      <div>
+      {/* <iframe id="ifmcontentstoprint" style="height: 0px; width: 0px; position: absolute"></iframe> */}
+      </div>
     </div>
   );
 }
 
 export default SalesList;
+
+

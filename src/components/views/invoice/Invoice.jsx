@@ -557,7 +557,7 @@ function Invoice() {
     invoiceDate: null,
     gst: "",
     email: "",
-    state: "",
+    state: "Tamil Nadu",
   });
   return (
     <>
@@ -619,7 +619,7 @@ function Invoice() {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={payload.state || "Tamil Nadu"}
+                      value={payload.state}
                       label="State"
                       onChange={(e) => {
                         setPayload({

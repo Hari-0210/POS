@@ -21,6 +21,7 @@ function Store(props) {
   const confirm = useConfirm();
   const [payload, setPayload] = useState({
     storeName: "",
+    isActive: 0,
   });
   const matches = useMediaQuery("(min-width:600px)");
   const [storeData, setStoreData] = useState([]);
@@ -41,7 +42,13 @@ function Store(props) {
       title: "Action",
       field: "action",
       align: "center",
-      list: [ETaction.onView, ETaction.onDelete, ETaction.onEdit],
+      list: [ETaction.onDelete, ETaction.onEdit],
+    },
+    {
+      title: "On/Off",
+      field: "action",
+      align: "center",
+      list: [ETaction.onOff],
     },
   ];
 
@@ -51,13 +58,17 @@ function Store(props) {
   const [isEdit, setIsEdit] = useState(false);
 
   const actions = {
-    onView: (index, row) => {},
+    onOff: async (index, row) => {
+      
+      updateStoreOnOff(row);
+    },
 
     onEdit: (index, row) => {
       setIsEdit(true);
       setPayload({
         storeName: row.storeName,
         storeID: row.storeID,
+        isActive: row.isActive,
       });
     },
     onDelete: (index, row) => {
@@ -87,7 +98,33 @@ function Store(props) {
     });
   };
   const updateStore = async () => {
+    const pay = {
+      storeID: payload.storeID,
+      storeName: payload.storeName,
+      isActive: payload.isActive,
+    };
     await APIKit.put(URLS.updateStore, payload).then((res) => {
+      if (res.data.status === 200) {
+        variant = "success";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+        setPayload({ storeName: "" });
+        setIsEdit(false);
+        getStore();
+      } else {
+        variant = "error";
+        enqueueSnackbar(res.data.message, { variant, anchorOrigin });
+      }
+    });
+  };
+
+  const updateStoreOnOff = async (row) => {
+    const pay = {
+      storeID: row.storeID,
+      storeName: row.storeName,
+      ...(row.isActive === 0 && { isActive: 1 }),
+      ...(row.isActive === 1 && { isActive: 0 }),
+    };
+    await APIKit.put(URLS.updateStore, pay).then((res) => {
       if (res.data.status === 200) {
         variant = "success";
         enqueueSnackbar(res.data.message, { variant, anchorOrigin });
@@ -138,15 +175,16 @@ function Store(props) {
             p: "0px 0px 20px",
             display: matches && "flex",
             justifyContent: "space-between",
-          }}>
+          }}
+        >
           <TextField
-            autoComplete='off'
+            autoComplete="off"
             sx={{ mt: 2, width: matches ? 300 : 200 }}
-            id='outlined-basic'
-            label=' Store'
-            name='storeName'
+            id="outlined-basic"
+            label=" Store"
+            name="storeName"
             value={payload.storeName}
-            variant='outlined'
+            variant="outlined"
             onChange={(e) => {
               setPayload({
                 ...payload,
@@ -161,8 +199,9 @@ function Store(props) {
                 <Button
                   sx={{ height: 50 }}
                   onClick={updateStore}
-                  variant='contained'
-                  disabled={!payload.storeName}>
+                  variant="contained"
+                  disabled={!payload.storeName}
+                >
                   Update Store
                 </Button>{" "}
                 <Button
@@ -171,7 +210,8 @@ function Store(props) {
                     setIsEdit(false);
                     setPayload({ storeName: "" });
                   }}
-                  variant='contained'>
+                  variant="contained"
+                >
                   Cancel
                 </Button>{" "}
               </Box>
@@ -179,31 +219,33 @@ function Store(props) {
               <Button
                 sx={{ height: 50, mt: 2 }}
                 onClick={createStore}
-                variant='contained'
-                disabled={!payload.storeName}>
+                variant="contained"
+                disabled={!payload.storeName}
+              >
                 Add Store
               </Button>
             )}
           </Stack>
         </Box>
         <Paper
-          component='form'
+          component="form"
           sx={{
             p: "2px 4px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
             width: matches ? 300 : 200,
-          }}>
+          }}
+        >
           <InputBase
             sx={{ ml: 1, flex: 1 }}
-            placeholder='Search'
+            placeholder="Search"
             onChange={(e) => {
               getStore(e.target.value);
             }}
             inputProps={{ "aria-label": "search google maps" }}
           />
-          <IconButton type='button' sx={{ p: "10px" }} aria-label='search'>
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon />
           </IconButton>
         </Paper>

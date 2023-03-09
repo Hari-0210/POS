@@ -358,6 +358,7 @@ function SalesNew() {
         setCustomerDetails({
           ...item,
         });
+        editableKeyToFocus.current = `productCode0`;
       }
     }
   }, [customerList]);
@@ -423,7 +424,7 @@ function SalesNew() {
         editableKeyToFocus.current = `productCode${i + 1}`;
       } else {
         setSalesData([...salesData]);
-        editableKeyToFocus.current = `productCode${i + 1}`;
+        editableKeyToFocus.current = `productCode${salesData.length - 1}`;
       }
     } else {
       if (salesData.length > 1) {
@@ -434,6 +435,52 @@ function SalesNew() {
     }
   };
   const print = async () => {
+    const pay = {
+      customerID: customerDetails.customerID,
+      totalNoofProducts: Number(salesData.length),
+      subTotal: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        )
+      ),
+      discount: Number(details.discount),
+      packingCost: Number(details.packingCharge),
+      total: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        ) -
+          salesData
+            .filter((e) => e.isDiscount)
+            .reduce(
+              (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+              0
+            ) *
+            (Number(details.discount) / 100) +
+          Number(details.packingCharge)
+      ),
+      products: salesData
+        .filter((a) => a.productID !== "")
+        .map((e) => {
+          return {
+            productName: e.productName,
+            productCost: String(e.productCost),
+            productQty: Number(e.productQty),
+          };
+        }),
+    };
+    if (pay.customerID === "") {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
+      return;
+    }
+    if (!pay.products.length) {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
+      return;
+    }
+    await saveSales()
     const oldPage = document.body.innerHTML;
     const html = `
     <html>
@@ -581,10 +628,11 @@ function SalesNew() {
 </html>
 
 `;
-    document.body.innerHTML = html;
-    window.print();
-    document.body.innerHTML = oldPage;
-    window.location.reload();
+   
+    var printWindow = window.open('', '', 'height=500,width=1000');
+printWindow.document.write(html);
+printWindow.document.close();
+printWindow.print();
   };
 
   return (
@@ -750,7 +798,6 @@ function SalesNew() {
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();
-                                      console.log("match", e.key);
                                       matchProduct(i);
                                     }
                                   }}
@@ -816,7 +863,6 @@ function SalesNew() {
                                     onKeyDown={(e) => {
                                       if (e.key === "Enter") {
                                         e.preventDefault();
-                                        console.log("add", e);
                                         addRemProduct("add", i);
                                       }
                                     }}
@@ -876,7 +922,6 @@ function SalesNew() {
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();
-                                      console.log("add", e);
                                       addRemProduct("add", i);
                                     }
                                   }}
@@ -950,6 +995,14 @@ function SalesNew() {
                                 autoFocus={
                                   `discount` === editableKeyToFocus.current
                                 }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    console.log("hi");
+                                    e.preventDefault();
+                                    editableKeyToFocus.current = `packingCharge`;
+                                    
+                                  }
+                                }}
                                 onChange={(e) => {
                                   editableKeyToFocus.current = `discount`;
                                   setDetails({
