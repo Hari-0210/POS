@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import { MESSAGE } from "../../../utilities/constant";
-import * as Yup from "yup";
+import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Typography from "@mui/material/Typography";
-import { useNavigate } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
-import APIKit from "../../../utilities/APIKIT";
-import { URLS } from "../../../utilities/URLS";
 import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import APIKit from "../../../utilities/APIKIT";
+import { MESSAGE } from "../../../utilities/constant";
+import { URLS } from "../../../utilities/URLS";
 
 export default function CreateProduct() {
   const productData = useSelector((x) => x.NavigationData.navigationData);
@@ -25,17 +25,17 @@ export default function CreateProduct() {
   let regEx = {
     numbersOnly: /^[0-9]*$/,
   };
-  const [brandData, setBrandData] = useState([]);
+  // const [brandData, setBrandData] = useState([]);
   const [productCategoryData, setProductCategoryData] = useState([]);
   const matches = useMediaQuery("(min-width:600px)");
 
-  const getBrand = async (data = "") => {
-    await APIKit.post(URLS.getBrand, { searchText: data }).then((res) => {
-      if (res.data.status === 200) {
-        setBrandData(res.data.data);
-      }
-    });
-  };
+  // const getBrand = async (data = "") => {
+  //   await APIKit.post(URLS.getBrand, { searchText: data }).then((res) => {
+  //     if (res.data.status === 200) {
+  //       setBrandData(res.data.data);
+  //     }
+  //   });
+  // };
   const getProductCategory = async (data = "") => {
     await APIKit.post(URLS.getProductCategory, { searchText: data }).then(
       (res) => {
@@ -127,7 +127,6 @@ export default function CreateProduct() {
         brandName: productData.brandName,
       });
     }
-    getBrand();
     getProductCategory();
     // eslint-disable-next-line
   }, []);

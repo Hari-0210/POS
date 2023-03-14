@@ -23,8 +23,8 @@ const useStyles = makeStyles(() => createStyles({
       color: 'black'
     },
     '#root': {
-      height: "100vh",
-      width: "100vw",
+      height: "100%",
+      width: "100%",
       color: 'black'
     },
     

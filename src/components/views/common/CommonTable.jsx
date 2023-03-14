@@ -1,29 +1,76 @@
-import React from "react";
+import { Icon } from "@iconify/react";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import PaymentIcon from "@mui/icons-material/Payment";
+import PhoneIcon from '@mui/icons-material/Phone';
+import ShopIcon from "@mui/icons-material/Shop";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import {
-  Table,
-  TableContainer,
-  TableBody,
-  TableCell,
-  TableHead,
+  Table, TableBody,
+  TableCell, tableCellClasses, TableContainer, TableHead,
   TablePagination,
   TableRow,
-  TextField,
-  Button,
-  tableCellClasses,
+  TextField
 } from "@mui/material";
-import PaymentIcon from "@mui/icons-material/Payment";
-import { ETTypes, EEditable, ETaction } from "./Types";
-import { dateFormate } from "./utilities";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import ShopIcon from "@mui/icons-material/Shop";
-import EditIcon from "@mui/icons-material/Edit";
-import { Icon } from "@iconify/react";
-import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import PhoneIcon from '@mui/icons-material/Phone';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import { styled } from "@mui/material/styles";
+import React from "react";
+import { EEditable, ETaction, ETTypes } from "./Types";
+import { dateFormate } from "./utilities";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  '& .MuiSwitch-switchBase': {
+    padding: 0,
+    margin: 2,
+    transitionDuration: '300ms',
+    '&.Mui-checked': {
+      transform: 'translateX(16px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
+        opacity: 1,
+        border: 0,
+      },
+      '&.Mui-disabled + .MuiSwitch-track': {
+        opacity: 0.5,
+      },
+    },
+    '&.Mui-focusVisible .MuiSwitch-thumb': {
+      color: '#33cf4d',
+      border: '6px solid #fff',
+    },
+    '&.Mui-disabled .MuiSwitch-thumb': {
+      color:
+        theme.palette.mode === 'light'
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxSizing: 'border-box',
+    width: 22,
+    height: 22,
+  },
+  '& .MuiSwitch-track': {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+    opacity: 1,
+    transition: theme.transitions.create(['background-color'], {
+      duration: 500,
+    }),
+  },
+}));
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -65,6 +112,7 @@ const CommonTable = ({ columns, data = [], action }) => {
       let moveOnPurchase = head.list.find((x) => x === ETaction.moveOnPurchase);
       let onCall = head.list.find((x) => x === ETaction.onCall);
       let onWP = head.list.find((x) => x === ETaction.onWP);
+      let onOff = head.list.find((x) => x === ETaction.onOff);
       return (
         <>
           {onView && (
@@ -77,13 +125,25 @@ const CommonTable = ({ columns, data = [], action }) => {
               }}
             />
           )}
+          {onOff && (
+             <FormControlLabel
+             control={<IOSSwitch checked={row.isActive === 0 ? true : false}
+              onChange={(e) => {
+                console.log(e.target.value);
+                if (action && action.onOff) {
+                  action.onOff(index, row);
+                }
+              }} />}
+             
+           />
+          )}
           {onCall && (
             <a href={"tel:" + row.mobileNo}>
             <PhoneIcon size="19" className="nav-linker"/>
            </a>
           )}
           {onWP && (
-            <a target={"_blank"} href={"https://api.whatsapp.com/send?phone=" + row.mobileNo}>
+            <a target={"_blank"} rel="noopener noreferrer" href={"https://api.whatsapp.com/send?phone=" + row.mobileNo}>
             <WhatsAppIcon size="19" className="nav-linker"/>
            </a>
           )}

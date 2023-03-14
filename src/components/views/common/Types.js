@@ -25,5 +25,5 @@ export const ETaction = {
   moveOnPurchase:'Purchase',
   onCall: "call",
   onWP: "wp",
-
+  onOff: "onOff",
 }

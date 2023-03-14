@@ -22,7 +22,7 @@ function ProductCategories(props) {
   const [payload, setPayload] = useState({
     productCategoryName: "",
   });
-  var userData = JSON.parse(sessionStorage.getItem("userData"))
+  var userData = JSON.parse(sessionStorage.getItem("userData"));
   const matches = useMediaQuery("(min-width:600px)");
   const [productCategoryData, setProductCategoryData] = useState([]);
   const productCategoryColumn = [
@@ -81,6 +81,16 @@ function ProductCategories(props) {
   var variant = "";
   const anchorOrigin = { horizontal: "right", vertical: "bottom" };
   const createProductCategory = async () => {
+    if (
+      productCategoryData.find(
+        (e) => e.productCategoryName.toLowerCase() === payload.productCategoryName.toLowerCase()
+      )
+    ) {
+      variant = "error";
+      enqueueSnackbar("Category Already Present", { variant, anchorOrigin });
+      return;
+    }
+  
     await APIKit.post(URLS.addProductCategory, payload).then((res) => {
       if (res.data.status === 200) {
         variant = "success";
@@ -149,15 +159,16 @@ function ProductCategories(props) {
             p: "0px 0px 20px",
             display: matches && "flex",
             justifyContent: "space-between",
-          }}>
+          }}
+        >
           <TextField
-            autoComplete='off'
+            autoComplete="off"
             sx={{ mt: 2, width: matches ? 300 : 200 }}
-            id='outlined-basic'
-            label='Product Category'
-            name='productCategoryName'
+            id="outlined-basic"
+            label="Product Category"
+            name="productCategoryName"
             value={payload.productCategoryName}
-            variant='outlined'
+            variant="outlined"
             onChange={(e) => {
               setPayload({
                 ...payload,
@@ -172,8 +183,9 @@ function ProductCategories(props) {
                 <Button
                   sx={{ height: 50 }}
                   onClick={updateProductCategory}
-                  variant='contained'
-                  disabled={!payload.productCategoryName}>
+                  variant="contained"
+                  disabled={!payload.productCategoryName}
+                >
                   Update Product Category
                 </Button>{" "}
                 <Button
@@ -182,7 +194,8 @@ function ProductCategories(props) {
                     setIsEdit(false);
                     setPayload({ productCategoryName: "" });
                   }}
-                  variant='contained'>
+                  variant="contained"
+                >
                   Cancel
                 </Button>{" "}
               </Box>
@@ -190,31 +203,33 @@ function ProductCategories(props) {
               <Button
                 sx={{ height: 50, mt: 2 }}
                 onClick={createProductCategory}
-                variant='contained'
-                disabled={!payload.productCategoryName}>
+                variant="contained"
+                disabled={!payload.productCategoryName}
+              >
                 Add Product Category
               </Button>
             )}
           </Stack>
         </Box>
         <Paper
-          component='form'
+          component="form"
           sx={{
             p: "2px 4px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
             width: matches ? 300 : 200,
-          }}>
+          }}
+        >
           <InputBase
             sx={{ ml: 1, flex: 1 }}
-            placeholder='Search'
+            placeholder="Search"
             onChange={(e) => {
               getProductCategory(e.target.value);
             }}
             inputProps={{ "aria-label": "search google maps" }}
           />
-          <IconButton type='button' sx={{ p: "10px" }} aria-label='search'>
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon />
           </IconButton>
         </Paper>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 let APIKit = {
   get: (url) => {
     return new Promise((resolve, reject) => {
@@ -10,6 +11,7 @@ let APIKit = {
           },
         })
         .then((res) => {
+         
           resolve(res);
         })
         .catch(function (e) {

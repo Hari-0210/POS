@@ -1,21 +1,21 @@
-import React,{useState, useEffect} from 'react';
+import CloseIcon from "@mui/icons-material/Close";
 import { Grid } from "@mui/material";
-import CommonTable from "../common/CommonTable";
-import { ETaction, ETTypes } from "../common/Types";
-import APIKit from '../../utilities/APIKIT';
-import { URLS } from '../../utilities/URLS';
-import PropTypes from "prop-types";
-import DialogContent from "@mui/material/DialogContent";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import { styled } from "@mui/material/styles";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
-import { getNavigationData } from "../../Redux/Common/action";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getNavigationData } from "../../Redux/Common/action";
+import APIKit from '../../utilities/APIKIT';
+import { URLS } from '../../utilities/URLS';
+import CommonTable from "../common/CommonTable";
+import { ETaction, ETTypes } from "../common/Types";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     "& .MuiDialogContent-root": {

@@ -1,46 +1,35 @@
-import React, { useEffect, useState, useRef } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Loader from "../common/CommonLoader";
-import { URLS } from "../../utilities/URLS";
-import APIKit from "../../utilities/APIKIT";
-import { useSnackbar } from "notistack";
-import Select from "react-select";
-import { EEditable, ETaction, ETTypes } from "../common/Types";
-import CommonTable from "../common/CommonTable";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Input from "@mui/material/Input";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Checkbox from "@mui/material/Checkbox";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
-import { MESSAGE } from "../../utilities/constant";
-import DeleteIcon from "@mui/icons-material/Delete";
+import TextField from "@mui/material/TextField";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import APIKit from "../../utilities/APIKIT";
+import { MESSAGE } from "../../utilities/constant";
+import { URLS } from "../../utilities/URLS";
 
 function SalesNew() {
   const salesDataRedux = useSelector((x) => x.NavigationData.navigationData);
-  const matches = useMediaQuery("(max-width:320px)");
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -196,7 +185,6 @@ function SalesNew() {
       });
     }
   };
-  const [selectedOption, setSelectedOption] = useState(null);
   const initialValues = {
     productCode: "",
     productName: "",
@@ -206,75 +194,9 @@ function SalesNew() {
     isDiscount: true,
   };
   const [salesData, setSalesData] = useState([{ ...initialValues }]);
-  const actions = {
-    onView: (index, row) => {},
-
-    onEdit: (index, row) => {},
-    onDelete: (index, row) => {},
-  };
-  const salesColumn = [
-    {
-      title: "SNo",
-      align: "center",
-      type: ETTypes.SNo,
-    },
-    {
-      title: "Product Code",
-      field: "productCode",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Product Name",
-      field: "productName",
-      align: "center",
-      type: ETTypes.string,
-    },
-    {
-      title: "Quantity ",
-      field: "productQty",
-      align: "center",
-      type: ETTypes.string,
-      editable: EEditable.onEdit,
-    },
-    {
-      title: "Rate",
-      field: "productCost",
-      align: "center",
-      type: ETTypes.string,
-    },
-
-    {
-      title: "Action",
-      field: "action",
-      align: "center",
-      list: [ETaction.onEdit, ETaction.onDelete],
-    },
-  ];
-  const customStyles = {
-    control: (base) => ({
-      ...base,
-      height: 45,
-      minHeight: 55,
-    }),
-    option: (styles, { isFocused, isSelected }) => ({
-      ...styles,
-      background: isFocused
-        ? "hsla(#0000ff, 64%, 42%, 0.5)"
-        : isSelected
-        ? "hsla(#0000ff, 64%, 42%, 1)"
-        : undefined,
-      zIndex: 1,
-    }),
-    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
-    menu: (base) => ({
-      ...base,
-      zIndex: 100,
-    }),
-  };
+  
+  
   useEffect(() => {
-    console.log(salesDataRedux);
-
     getCustomer();
     getProduct();
   }, []);
@@ -303,7 +225,7 @@ function SalesNew() {
             salesDataRedux.salesProducts.map((e) => {
               return {
                 productCode: res.data.data.find(
-                  (elem) => elem.productName == e.productName
+                  (elem) => elem.productName === e.productName
                 ).productCode,
                 productCost: e.productCost,
                 productName: e.productName,
@@ -436,6 +358,7 @@ function SalesNew() {
         setCustomerDetails({
           ...item,
         });
+        editableKeyToFocus.current = `productCode0`;
       }
     }
   }, [customerList]);
@@ -501,7 +424,7 @@ function SalesNew() {
         editableKeyToFocus.current = `productCode${i + 1}`;
       } else {
         setSalesData([...salesData]);
-        editableKeyToFocus.current = `productCode${i + 1}`;
+        editableKeyToFocus.current = `productCode${salesData.length - 1}`;
       }
     } else {
       if (salesData.length > 1) {
@@ -512,6 +435,52 @@ function SalesNew() {
     }
   };
   const print = async () => {
+    const pay = {
+      customerID: customerDetails.customerID,
+      totalNoofProducts: Number(salesData.length),
+      subTotal: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        )
+      ),
+      discount: Number(details.discount),
+      packingCost: Number(details.packingCharge),
+      total: String(
+        salesData.reduce(
+          (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+          0
+        ) -
+          salesData
+            .filter((e) => e.isDiscount)
+            .reduce(
+              (a, b) => Number(b.productCost) * Number(b.productQty) + a,
+              0
+            ) *
+            (Number(details.discount) / 100) +
+          Number(details.packingCharge)
+      ),
+      products: salesData
+        .filter((a) => a.productID !== "")
+        .map((e) => {
+          return {
+            productName: e.productName,
+            productCost: String(e.productCost),
+            productQty: Number(e.productQty),
+          };
+        }),
+    };
+    if (pay.customerID === "") {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.custDetails, { variant, anchorOrigin });
+      return;
+    }
+    if (!pay.products.length) {
+      variant = "error";
+      enqueueSnackbar(MESSAGE.noProducts, { variant, anchorOrigin });
+      return;
+    }
+    await saveSales()
     const oldPage = document.body.innerHTML;
     const html = `
     <html>
@@ -659,10 +628,11 @@ function SalesNew() {
 </html>
 
 `;
-    document.body.innerHTML = html;
-    window.print();
-    document.body.innerHTML = oldPage;
-    window.location.reload();
+   
+    var printWindow = window.open('', '', 'height=500,width=1000');
+printWindow.document.write(html);
+printWindow.document.close();
+printWindow.print();
   };
 
   return (
@@ -700,7 +670,7 @@ function SalesNew() {
                       }
                     }}
                     onBlur={() => {
-                      if (customerDetails.mobileNo != "") {
+                      if (customerDetails.mobileNo !== "") {
                         checkCust();
                       }
                     }}
@@ -810,7 +780,7 @@ function SalesNew() {
                                   name={`productCode${i}`}
                                   variant="outlined"
                                   onBlur={() => {
-                                    if (data.productCode != "") {
+                                    if (data.productCode !== "") {
                                       matchProduct(i);
                                     }
                                   }}
@@ -828,7 +798,6 @@ function SalesNew() {
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();
-                                      console.log("match", e.key);
                                       matchProduct(i);
                                     }
                                   }}
@@ -894,7 +863,6 @@ function SalesNew() {
                                     onKeyDown={(e) => {
                                       if (e.key === "Enter") {
                                         e.preventDefault();
-                                        console.log("add", e);
                                         addRemProduct("add", i);
                                       }
                                     }}
@@ -954,7 +922,6 @@ function SalesNew() {
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();
-                                      console.log("add", e);
                                       addRemProduct("add", i);
                                     }
                                   }}
@@ -1028,6 +995,14 @@ function SalesNew() {
                                 autoFocus={
                                   `discount` === editableKeyToFocus.current
                                 }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    console.log("hi");
+                                    e.preventDefault();
+                                    editableKeyToFocus.current = `packingCharge`;
+                                    
+                                  }
+                                }}
                                 onChange={(e) => {
                                   editableKeyToFocus.current = `discount`;
                                   setDetails({
