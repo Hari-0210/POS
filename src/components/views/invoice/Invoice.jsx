@@ -256,6 +256,7 @@ function Invoice() {
       if (res.data.status === 200) {
         setProduct(res.data.data);
         setIsLoading(false);
+        console.log(invoiceDataRedux);
         if (Object.keys(invoiceDataRedux).length) {
           setIsEdit(true);
           setDetails({
@@ -275,12 +276,13 @@ function Invoice() {
             email: invoiceDataRedux.email,
             state: invoiceDataRedux.state,
           });
+          console.log(res.data.data);
           setSalesData(
             invoiceDataRedux.invoiceProducts.map((e) => {
               return {
                 productCode: res.data.data.find(
                   (elem) => elem.productName === e.productName
-                ).productCode,
+                )?.productCode,
                 productCost: e.productCost,
                 productName: e.productName,
                 productQty: e.productQty,
@@ -600,7 +602,7 @@ function Invoice() {
                       openTo="year"
                       views={["year", "month", "day"]}
                       value={payload.invoiceDate}
-                      format="DD-MM-YYYY"
+                      format="YYYY-MM-DD"
                       onChange={(newValue) => {
                         setPayload({
                           ...payload,

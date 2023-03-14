@@ -45,6 +45,11 @@ function CustomerList(props) {
       if (res.data.status === 200) {
         setCustomer(res.data.data);
       } else {
+         if (res.data.message === "User Login from different browser. Please Login Again") {
+            variant = "error";
+            enqueueSnackbar("User Login from different browser. Please Login Again", { variant, anchorOrigin });
+            return;
+          }
       }
     });
   };
